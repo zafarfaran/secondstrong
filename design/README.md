@@ -7,6 +7,7 @@ Design work for the Second Strong app (native SwiftUI, iPhone first). Everything
 | Area | Decision | Where |
 |---|---|---|
 | Coach mascots | Soft style, seven coaches, nine states, v2 redraw | `mascots/` |
+| Coach clips (pilot) | Bramble's nine states as transparent video, seamless state player | `coach-clips/` |
 | Launch screen | Option A: the heavy S and clay dot, centred on almond | `launch/` |
 | Intro on open | Birds on a wire: the dot drops, draws the wire, the coaches land | `onboarding/coldstart.html`, `videos/cold-start.mp4` |
 | Between screens | Peek loader: your coach peeks up from the bottom edge while a screen loads | `onboarding/intro.html`, `videos/peek-loader.mp4` |
@@ -15,6 +16,7 @@ Design work for the Second Strong app (native SwiftUI, iPhone first). Everything
 ## Folders
 
 - `mascots/`: the coach board (all states, live), layered SVGs for Rive, PNGs, `states.json`. See its README.
+- `coach-clips/`: HyperFrames pilot. Bramble rendered to transparent WebM/ProRes, `manifest.json` segment times, `preview.html` state player. See its README.
 - `launch/`: launch screen assets ready for Xcode. See its README.
 - `onboarding/`: every onboarding and motion prototype explored, chosen or not. See its README.
 - `videos/`: MP4 recordings of the animations, for anyone who can't open the HTML.
