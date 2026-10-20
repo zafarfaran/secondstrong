@@ -37,6 +37,11 @@ h2{font:800 clamp(22px,2.6vw,28px)/1.05 var(--f-display); letter-spacing:-.03em;
 .stage video{position:absolute; width:300px; height:300px; left:50%; top:0; margin-left:-150px; visibility:hidden}
 .stage video.on{visibility:visible}
 .caption{min-height:44px; font:400 20px/1.15 "Gochi Hand", cursive; color:var(--terra); text-align:center; margin:-10px 0 0; text-wrap:balance}
+.bubble{position:absolute; right:10px; bottom:136px; max-width:210px; min-width:120px; z-index:3; background:#fff; color:var(--ink); border:1.5px solid var(--ink); border-radius:18px 18px 6px 18px; padding:10px 13px 11px; font:500 14.5px/1.3 var(--f-display); box-shadow:0 8px 18px -10px rgba(59,50,44,.45); transform-origin:85% 120%; transform:scale(.6) translateY(8px); opacity:0; transition:transform 240ms cubic-bezier(.3,1.5,.5,1), opacity 160ms; pointer-events:none; overflow-wrap:anywhere}
+.bubble.on{transform:none; opacity:1; pointer-events:auto}
+.bubble::after{content:""; position:absolute; right:34px; bottom:-9px; width:14px; height:14px; background:#fff; border-right:1.5px solid var(--ink); border-bottom:1.5px solid var(--ink); transform:rotate(45deg) skew(8deg,8deg); border-bottom-right-radius:3px}
+.bubble .act{display:table; margin-top:8px; padding:6px 11px; border-radius:99px; background:var(--terra); color:#fff; font:700 12.5px/1 var(--f-display)}
+.bubble .act:empty{display:none}
 .readout{margin-top:auto; display:flex; justify-content:space-between; gap:8px; font:500 10.5px/1.3 var(--f-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--ink2); border-top:1px solid var(--edge); padding-top:10px}
 .readout b{color:var(--terra); font-weight:500}
 .side{display:grid; gap:18px}
@@ -47,6 +52,15 @@ h2{font:800 clamp(22px,2.6vw,28px)/1.05 var(--f-display); letter-spacing:-.03em;
 .ev[aria-pressed="true"]{border-color:var(--terra); background:color-mix(in srgb,var(--terra) 8%,transparent)}
 .ev b{font:700 15px/1.15 var(--f-display)}
 .ev span{font:500 10.5px/1.3 var(--f-mono); letter-spacing:.05em; text-transform:uppercase; color:var(--deskInk2)}
+.suggest{border:1.5px solid color-mix(in srgb,var(--deskInk) 16%,transparent); border-radius:18px; padding:14px; display:grid; gap:10px}
+.suggest h4{margin:0; font:800 16px/1.2 var(--f-display)}
+.suggest p{margin:0; color:var(--deskInk2); font-size:14px}
+.suggest label{display:grid; gap:4px; font:500 10.5px/1.3 var(--f-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--deskInk2)}
+.suggest textarea, .suggest input{font:500 15px/1.35 var(--f-display); color:var(--deskInk); background:transparent; border:1.5px solid color-mix(in srgb,var(--deskInk) 22%,transparent); border-radius:12px; padding:9px 11px; resize:vertical; width:100%}
+.suggest textarea:focus, .suggest input:focus{outline:2px solid var(--terra); outline-offset:1px}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{appearance:none; border:1.5px solid color-mix(in srgb,var(--deskInk) 18%,transparent); background:transparent; border-radius:99px; padding:6px 11px; font:600 13px/1.1 var(--f-display); cursor:pointer}
+.chip:hover{border-color:var(--terra)}
 .how{margin:0; padding:0 0 0 18px; display:grid; gap:6px; color:var(--deskInk2); font-size:14.5px; max-width:60ch}
 .how b{color:var(--deskInk)}
 .sec{margin-top:46px; border-top:1px solid color-mix(in srgb,var(--deskInk) 12%,transparent); padding-top:26px}
@@ -71,7 +85,7 @@ h2{font:800 clamp(22px,2.6vw,28px)/1.05 var(--f-display); letter-spacing:-.03em;
 <div class="wrap">
   <div class="dmeta">Second Strong · coach clips · pilot</div>
   <h1>Bramble, <em>rendered.</em></h1>
-  <p class="lede">Nine states rendered with HyperFrames as transparent video, the way the app will play them. Press an app event and Bramble finishes the current move, comes back to neutral, and moves into the new state without a jump.</p>
+  <p class="lede">Sixteen states rendered with HyperFrames as transparent video, the way the app will play them. Press an app event and Bramble finishes the current move, comes back to neutral, and moves into the new state without a jump.</p>
 
   <div class="hero">
     <div class="frame"><div class="scr">
@@ -79,7 +93,7 @@ h2{font:800 clamp(22px,2.6vw,28px)/1.05 var(--f-display); letter-spacing:-.03em;
       <div class="app">
         <div class="meta" id="today"></div>
         <h3>How was <em>the night?</em></h3>
-        <div class="stage" id="stage" aria-label="Bramble"></div>
+        <div class="stage" id="stage" aria-label="Bramble"><div class="bubble" id="bubble" role="status" aria-live="polite"><span id="btext"></span><span class="act" id="bact"></span></div></div>
         <p class="caption" id="caption"></p>
         <div class="readout"><span>State <b id="rs">idle</b></span><span>Segment <b id="rg">loop</b></span></div>
       </div>
@@ -87,6 +101,13 @@ h2{font:800 clamp(22px,2.6vw,28px)/1.05 var(--f-display); letter-spacing:-.03em;
 
     <div class="side">
       <div class="events" id="events" role="group" aria-label="App events"></div>
+      <div class="suggest">
+        <h4>Suggest, with any text</h4>
+        <p>Bramble points up to the spot where the app draws a real speech bubble. Words and button come from the app, so they can say anything.</p>
+        <label>Message<textarea id="msg" rows="2" maxlength="160">Rough night. Swap squats for a 15-minute walk today?</textarea></label>
+        <label>Button (optional)<input id="act" maxlength="24" value="Swap it"></label>
+        <div class="chips" id="chips"></div>
+      </div>
       <ol class="how">
         <li><b>Each clip has three parts:</b> in (neutral to the state), a seamless loop, and out (back to neutral).</li>
         <li><b>An event waits for the loop to finish</b>, plays the out, then the next state's in. Every clip starts and ends on the same neutral frame, so the hand-over is invisible.</li>
@@ -96,7 +117,7 @@ h2{font:800 clamp(22px,2.6vw,28px)/1.05 var(--f-display); letter-spacing:-.03em;
   </div>
 
   <section class="sec">
-    <div class="sechead"><div><h2>All nine <em>clips</em></h2><p>Each whole file looping: in, loop, out. Switch the background to see they're truly transparent.</p></div>
+    <div class="sechead"><div><h2>All sixteen <em>clips</em></h2><p>Each whole file looping: in, loop, out. Switch the background to see they're truly transparent.</p></div>
       <div class="seg" role="group" aria-label="Background"><button type="button" data-bg="ivory" aria-pressed="true">Ivory</button><button type="button" data-bg="dark" aria-pressed="false">Dark</button><button type="button" data-bg="check" aria-pressed="false">Transparent</button></div></div>
     <div class="grid" id="grid"></div>
     <div class="note">
@@ -110,7 +131,7 @@ h2{font:800 clamp(22px,2.6vw,28px)/1.05 var(--f-display); letter-spacing:-.03em;
 <script>
 (function(){
 /* segment times from manifest.json */
-const M = {"coach":"bramble","fps":30,"size":400,"states":{"idle":{"in":[0,0],"loop":[0,4],"out":[4,4]},"hello":{"in":[0,0.5],"loop":[0.5,1.7],"out":[1.7,2.2]},"listening":{"in":[0,0.5],"loop":[0.5,2.5],"out":[2.5,3]},"thinking":{"in":[0,0.5],"loop":[0.5,2.9],"out":[2.9,3.4]},"proud":{"in":[0,0.4],"loop":[0.4,1.6],"out":[1.6,2]},"lifting":{"in":[0,0.5],"loop":[0.5,2.3],"out":[2.3,2.8]},"stretching":{"in":[0,0.7],"loop":[0.7,2.7],"out":[2.7,3.4]},"comfort":{"in":[0,0.6],"loop":[0.6,3],"out":[3,3.6]},"resting":{"in":[0,0.8],"loop":[0.8,3.8],"out":[3.8,4.6]}}};
+const M = {"coach":"bramble","fps":30,"size":400,"states":{"idle":{"in":[0,0],"loop":[0,4],"out":[4,4]},"hello":{"in":[0,0.5],"loop":[0.5,1.7],"out":[1.7,2.2]},"listening":{"in":[0,0.5],"loop":[0.5,2.5],"out":[2.5,3]},"thinking":{"in":[0,0.5],"loop":[0.5,2.9],"out":[2.9,3.4]},"proud":{"in":[0,0.4],"loop":[0.4,1.6],"out":[1.6,2]},"lifting":{"in":[0,0.5],"loop":[0.5,2.3],"out":[2.3,2.8]},"stretching":{"in":[0,0.7],"loop":[0.7,2.7],"out":[2.7,3.4]},"comfort":{"in":[0,0.6],"loop":[0.6,3],"out":[3,3.6]},"resting":{"in":[0,0.8],"loop":[0.8,3.8],"out":[3.8,4.6]},"suggest":{"in":[0,0.5],"loop":[0.5,2.9],"out":[2.9,3.4],"cues":{"bubble":[0.5,2.9]}},"cheer":{"in":[0,0.4],"loop":[0.4,1.6],"out":[1.6,2]},"wow":{"in":[0,0.4],"loop":[0.4,2],"out":[2,2.5]},"encourage":{"in":[0,0.5],"loop":[0.5,1.7],"out":[1.7,2.2]},"oops":{"in":[0,0.5],"loop":[0.5,2.5],"out":[2.5,3]},"gotit":{"in":[0,0.4],"loop":[0.4,2],"out":[2,2.4]},"breathe":{"in":[0,0.6],"loop":[0.6,8.6],"out":[8.6,9.2],"cues":{"breathe in":[0.6,4.6],"breathe out":[4.6,8.6]}}}};
 const EVENTS = [
   ["idle", "Back to Today", "idle"],
   ["hello", "Opens the app", "hello"],
@@ -120,9 +141,23 @@ const EVENTS = [
   ["lifting", "Strength set running", "lifting"],
   ["stretching", "Warm-up started", "stretching"],
   ["comfort", "Rough-night check-in", "comfort"],
-  ["resting", "Rest day", "resting"]
+  ["resting", "Rest day", "resting"],
+  ["suggest", "Coach suggests something", "suggest"],
+  ["cheer", "Streak milestone", "cheer"],
+  ["wow", "New personal best", "wow"],
+  ["encourage", "About to start", "encourage"],
+  ["oops", "Something didn't save", "oops"],
+  ["gotit", "Entry saved", "gotit"],
+  ["breathe", "Wind-down breathing", "breathe"]
 ];
-const CAPTION = { idle:"", hello:"Morning.", listening:"I'm listening.", thinking:"Let me think…", proud:"Up 4kg on week one.", lifting:"Two more. Nice and slow.", stretching:"Reach up, then let it go.", comfort:"Rough night. We'll go gently.", resting:"Rest is training too." };
+const PRESETS = [
+  ["Rough night. Swap squats for a 15-minute walk today?", "Swap it"],
+  ["You've drunk 3 of 8 glasses. Grab one now?", "Logged one"],
+  ["Ready to try 2kg more on your deadlift?", "Let's try"],
+  ["Ten minutes of stretching before bed?", "Start"],
+  ["It's been four days. A short session counts too.", ""]
+];
+const CAPTION = { idle:"", hello:"Morning.", listening:"I'm listening.", thinking:"Let me think…", proud:"Up 4kg on week one.", lifting:"Two more. Nice and slow.", stretching:"Reach up, then let it go.", comfort:"Rough night. We'll go gently.", resting:"Rest is training too.", suggest:"", cheer:"Five weeks in a row!", wow:"New best: 42kg deadlift.", encourage:"You've got this.", oops:"That didn't save. Trying again.", gotit:"Saved.", breathe:"" };
 const STATES = Object.keys(M.states);
 document.getElementById("today").textContent = new Date().toLocaleDateString("en-GB", {weekday:"long", day:"numeric", month:"long"});
 
@@ -158,10 +193,22 @@ function watch(v, s, id){
   const tick = (now, meta) => {
     if (id !== token) return;
     const t = meta ? meta.mediaTime : v.currentTime;
+    cues(s, t);
     if (t >= M.states[s][seg][1] - 1.5 / FPS) advance();
     if (id === token) later(tick);
   };
   later(tick);
+}
+/* the clip's cues drive the app's own UI: the bubble shows only while suggest loops, breathing labels follow the clip */
+const bubble = document.getElementById("bubble"), btext = document.getElementById("btext"), bact = document.getElementById("bact");
+const msg = document.getElementById("msg"), actIn = document.getElementById("act");
+function syncBubble(){ btext.textContent = msg.value.trim() || "…"; bact.textContent = actIn.value.trim(); }
+msg.addEventListener("input", syncBubble); actIn.addEventListener("input", syncBubble); syncBubble();
+function cues(s, t){
+  const c = M.states[s].cues || {};
+  const inside = r => !!r && t >= r[0] && t < r[1];
+  bubble.classList.toggle("on", seg === "loop" && !next && inside(c.bubble));
+  if (s === "breathe") cap.textContent = inside(c["breathe in"]) ? "Breathe in…" : inside(c["breathe out"]) ? "…and out." : "";
 }
 function advance(){
   const s = cur, st = M.states[s];
@@ -184,6 +231,7 @@ function startNext(){
 }
 function request(s){
   document.querySelectorAll(".ev").forEach(b => b.setAttribute("aria-pressed", b.dataset.s === s));
+  if (s !== "suggest") bubble.classList.remove("on");
   if (s === cur && !next) return;
   next = s; readout();
 }
@@ -193,12 +241,17 @@ const ev = document.getElementById("events");
 ev.innerHTML = EVENTS.map(([s, label, st]) => `<button class="ev" type="button" data-s="${s}" aria-pressed="${s === "idle"}"><b>${label}</b><span>${st} · ${(M.states[s].out[1]).toFixed(1)}s</span></button>`).join("");
 ev.addEventListener("click", e => { const b = e.target.closest(".ev"); if (b) request(b.dataset.s); });
 
+document.getElementById("chips").innerHTML = PRESETS.map(([m, a], i) => `<button class="chip" type="button" data-i="${i}">${m.split(/[.?]/)[0].slice(0, 28)}…</button>`).join("");
+document.getElementById("chips").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; const [m, a] = PRESETS[b.dataset.i]; msg.value = m; actIn.value = a; syncBubble(); request("suggest"); });
+
 /* start: wait until the idle clip can play, then loop it */
 V.idle.addEventListener("loadeddata", () => playFrom("idle", "loop"), { once:true });
 
-/* all nine looping */
+/* all sixteen looping; only the ones on screen play */
 const grid = document.getElementById("grid");
-grid.innerHTML = EVENTS.map(([s, label]) => `<div class="tile"><div class="well"><video src="webm/${s}.webm" muted playsinline loop autoplay preload="auto" aria-label="${s} clip"></video></div><b>${s[0].toUpperCase() + s.slice(1)}</b><span>${label} · ${(M.states[s].out[1]).toFixed(1)}s</span></div>`).join("");
+grid.innerHTML = EVENTS.map(([s, label]) => `<div class="tile"><div class="well"><video src="webm/${s}.webm" muted playsinline loop preload="metadata" aria-label="${s} clip"></video></div><b>${s[0].toUpperCase() + s.slice(1)}</b><span>${label} · ${(M.states[s].out[1]).toFixed(1)}s</span></div>`).join("");
+const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? e.target.play().catch(() => {}) : e.target.pause()), { rootMargin: "100px" });
+grid.querySelectorAll("video").forEach(v => io.observe(v));
 document.querySelector(".seg").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", x === b));

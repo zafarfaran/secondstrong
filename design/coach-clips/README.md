@@ -1,6 +1,6 @@
 # Coach clips: Bramble pilot
 
-Bramble's nine coach states rendered as transparent video from the same SVG rig as the mascot board
+Bramble's sixteen coach states rendered as transparent video from the same SVG rig as the mascot board
 (`../mascots/mascot-board.html`), animated with HyperFrames (HTML + GSAP, rendered frame by frame).
 
 `preview.html` shows them inside a phone, driven by app events, the way the app will play them.
@@ -25,6 +25,32 @@ Player rule (see the `<script>` in `preview.html`, mirror it in Swift):
 - `in` runs straight into `loop` and `loop` into `out` with no seek; the only seek is the jump back to
   `loop[0]`, since the loop's end frame matches its start
 
+## States
+
+| state | app moment | | state | app moment |
+|---|---|---|---|---|
+| idle | resting on Today | | suggest | coach suggests an action (bubble) |
+| hello | opens the app | | cheer | streak or milestone |
+| listening | typing to the coach | | wow | new personal best |
+| thinking | waiting for a reply | | encourage | about to start a session |
+| proud | session logged | | oops | something failed or didn't save |
+| lifting | strength set running | | gotit | entry saved |
+| stretching | warm-up | | breathe | guided wind-down breathing, 4s in / 4s out |
+| comfort | rough-night check-in | | | |
+| resting | rest day | | | |
+
+## Cues: the app's own UI on top
+
+Text is never baked into a clip. `manifest.json` gives some states `cues`, time ranges the app hangs
+its own UI on:
+
+- `suggest.cues.bubble`: Bramble points up and right; the app shows a native speech bubble (any text,
+  optional action button) during this range and hides it when the out starts.
+- `breathe.cues["breathe in"]` / `["breathe out"]`: drive the "Breathe in… / …and out." label.
+
+A new request waits for the current loop to end, so breathe (an 8s loop) finishes its breath first.
+Only the latest request is kept.
+
 ## Files
 
 | path | |
@@ -44,7 +70,7 @@ From this folder:
 ```bash
 node tools/build.mjs
 npx hyperframes check
-for s in idle hello listening thinking proud lifting stretching comfort resting; do
+for s in $(node -p "Object.keys(require('./manifest.json').states).join(' ')"); do
   npx hyperframes render -c compositions/$s.html --format mov -o renders/$s.mov
 done
 python tools/verify.py      # expect "all clips join up"
