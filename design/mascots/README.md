@@ -1,6 +1,6 @@
 # Coach mascots
 
-Seven soft coaches a member picks and names during onboarding. Chosen 16 October 2026 (soft style), redrawn 20 October 2026 (v2: lit volume, glossy eyes, acting brows).
+Seven soft coaches a member picks and names during onboarding. Chosen 16 October 2026 (soft style), redrawn 20 October 2026 (v2: lit volume, glossy eyes, acting brows), then refined so each coach reads as one body: every part shares one key light, the shading flows across ears, tails and wings, soft contact shadows sit where parts meet, and markings (muzzle, face, belly, shell plates) blend into the body instead of looking stitched on.
 
 | Coach | Temperament | Body | Accent |
 |---|---|---|---|
