@@ -6,12 +6,12 @@ async function oneline(root, e){
   const today = new Date().toLocaleDateString("en-GB", {weekday:"long", day:"numeric", month:"long"});
   root.innerHTML = `<div class="ol-doc" id="doc"></div>
     <div class="ol-top"><button class="icon-btn ol-back" id="back" type="button" aria-label="Back" hidden><svg viewBox="0 0 24 24"><path d="M15 5 L8 12 L15 19"/></svg></button><span class="ol-step" id="step"></span></div>
-    <div class="ol-end" id="end" hidden><p class="hand">Your first week, on one line.</p><button class="btn small" id="again" type="button">Play again</button></div>`;
+    <div class="ol-end" id="end" hidden><p class="hand">That's your first week. See you in the morning.</p><button class="btn small" id="again" type="button">Play again</button></div>`;
   const doc = root.querySelector("#doc"), backBtn = root.querySelector("#back"), stepEl = root.querySelector("#step");
   const tileStages = STAGES.map(([id,l],i) => `<button class="tile${i===4?" wide":""}" type="button" role="radio" data-v="${id}" aria-checked="false">${glyph(id)}<b>${l}</b></button>`).join("");
   const tileGoals = GOALS.map(([id,l,d]) => `<button class="tile" type="button" role="checkbox" data-v="${id}" aria-checked="false">${drawing(d)}<b>${l}</b></button>`).join("");
   doc.innerHTML = `
-    <section class="ol-sec" data-s="welcome"><div class="meta">Second Strong</div><h1 class="title ol-big">Strong, <em>for years.</em></h1><p class="ol-sub">Two minutes. One line. Your first week.</p><div class="ol-hero" id="hero"></div><div class="spacer"></div><button class="btn" data-next type="button">Begin</button></section>
+    <section class="ol-sec" data-s="welcome"><div class="meta">Second Strong</div><h1 class="title ol-big">Strong, <em>for years.</em></h1><p class="ol-sub">Four quick questions, then a first week built around you.</p><div class="ol-hero" id="hero"></div><div class="spacer"></div><button class="btn" data-next type="button">Begin</button></section>
     <section class="ol-sec" data-s="coach"><div class="meta">1 of 4 · your coach</div><h2 class="title">Pick your <em>coach.</em></h2><div class="ol-show" id="show"></div>
       <div class="thumbs" id="th" role="radiogroup" aria-label="Coach">${ORDER.map(k=>`<button class="thumb" type="button" role="radio" data-c="${k}" aria-checked="${k===S.coach}" aria-label="${CHARS[k].name}"><div data-state="idle">${mascot(k)}</div></button>`).join("")}</div>
       <div class="field"><label for="nm">Name</label><input id="nm" maxlength="14" autocomplete="off" value="${esc(S.name)}"></div><div class="spacer"></div><button class="btn" data-next type="button">Continue</button></section>
