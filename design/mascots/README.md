@@ -1,6 +1,6 @@
 # Coach mascots
 
-Seven soft coaches a member picks and names during onboarding. Chosen 16 October 2026 (soft style), redrawn 20 October 2026 (v2: lit volume, glossy eyes, acting brows), then refined so each coach reads as one body: every part shares one key light, the shading flows across ears, tails and wings, soft contact shadows sit where parts meet, and markings (muzzle, face, belly, shell plates) blend into the body instead of looking stitched on.
+Eight soft coaches a member picks and names during onboarding. Chosen 16 October 2026 (soft style), redrawn 20 October 2026 (v2: lit volume, glossy eyes, acting brows), then refined so each coach reads as one body: every part shares one key light, the shading flows across ears, tails and wings, soft contact shadows sit where parts meet, and markings (muzzle, face, belly, shell plates) blend into the body instead of looking stitched on.
 
 | Coach | Temperament | Body | Accent |
 |---|---|---|---|
@@ -11,6 +11,7 @@ Seven soft coaches a member picks and names during onboarding. Chosen 16 October
 | Luna | Calm. Good company at 3am. | `#EEE5C2` | star `#F5C77E` |
 | Otto | Warm and playful. Makes it lighter. | `#A98264` | face `#F3E3CF` |
 | Tilly | Patient. Here for the long run. | `#D2AE6E` | skin `#AFBE88` |
+| Miso (cat, added 21 October 2026) | Curious. Quietly keeps you honest. | `#C9C0D0` | muzzle `#F4ECE4`, inner ears `#EBADA3` |
 
 The colours live only inside the coach. App pages stay Sketchbook ivory and ink (`app-directions/SKETCHBOOK.md`).
 

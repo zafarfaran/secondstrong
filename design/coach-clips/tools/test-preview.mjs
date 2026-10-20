@@ -36,11 +36,11 @@ await send("Page.navigate", { url }); await sleep(2000);
 
 /* record every segment change the player makes */
 await run(`window.__log = []; (function poll(){ const s = window.__clips.state, k = s.cur + ":" + s.seg; if (__log[__log.length-1]?.k !== k) __log.push({ k, t: Math.round(performance.now()) }); requestAnimationFrame(poll); })()`);
-const plan = [["hello", 3000], ["suggest", 3500], ["cheer", 3000], ["breathe", 4000], ["oops", 3000], ["gotit", 3000], ["wow", 3000], ["encourage", 3000], ["comfort", 4500], ["idle", 3000]];
+const plan = [["hello", 3000], ["suggest", 3500], ["cheer", 3000], ["@wren", 2500], ["wow", 3000], ["suggest", 3500], ["@tilly", 2500], ["encourage", 3000], ["suggest", 3500], ["@pebble", 2500], ["oops", 3000], ["idle", 3000]];
 for (const [s, wait] of plan) {
-  await run(`window.__clips.request(${JSON.stringify(s)})`);
+  await run(s[0] === "@" ? `window.__clips.setCoach(${JSON.stringify(s.slice(1))})` : `window.__clips.request(${JSON.stringify(s)})`);
   await sleep(wait);
-  await shotOf(".frame", `phone-${s}`);
+  await shotOf(".frame", `phone-${(await run("window.__clips.state.coach"))}-${s.replace("@", "")}`);
 }
 console.log((await run("window.__log")).map(e => e.k).join("  →  "));
 await shotOf("#grid", "grid");

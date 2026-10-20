@@ -196,7 +196,7 @@ label.meta{display:block; margin-top:2px}
 <div class="wrap">
   <div class="meta">Keel · coach mascots · soft style v2 · 20 October</div>
   <h1>Who sits in <em class="s">your</em> margin?</h1>
-  <p class="lede">Seven soft coaches and nine ways to move, redrawn with real volume: a soft key light from the top left, shading underneath, glossy eyes and brows that act. Pick a state to see the whole cast act it out, and tap any coach to try it in the onboarding step.</p>
+  <p class="lede">Eight soft coaches and nine ways to move, redrawn with real volume: a soft key light from the top left, shading underneath, glossy eyes and brows that act. Pick a state to see the whole cast act it out, and tap any coach to try it in the onboarding step.</p>
 
   <div class="controls">
     <div class="chips" id="states" role="group" aria-label="Animation state"></div>
@@ -316,9 +316,27 @@ const CHARS = {
            {d:"M84 152 C86 144 92 140 100 140 C108 140 114 144 116 152 C110 156 90 156 84 152 Z",f:"x",soft:1},
            {d:"M28 158 h144 a7 7 0 0 1 0 14 h-144 a7 7 0 0 1 0 -14 Z",f:"r"},
            {d:circ(100,113,27),f:"a"}],
-    lines:[], eyes:[[90,111],[110,111]], mouth:[100,126], cheeks:[[80,122],[120,122]] }
+    lines:[], eyes:[[90,111],[110,111]], mouth:[100,126], cheeks:[[80,122],[120,122]] },
+  miso:{ name:"Miso", trait:"Curious. Quietly keeps you honest.",
+    say:"Two quiet days is fine. Shall we pick one short session for tomorrow?",
+    tones:{ b:["#EEE9F0","#C9C0D0","#9F95AB","#6E647C"], a:["#FFFBF6","#F4ECE4","#DDD0C6","#BBAA9E"],
+            x:["#F8D3CC","#EBADA3","#CC8A80","#A4665E"] },
+    box:[44,62,156,177], arms:[[52,146],[148,146]],
+    back:[{d:"M56 106 C55 90 58 76 63 67 C66 62 70 62 73 65 C80 72 88 80 95 89 Z",f:"b"},
+          {d:"M144 106 C145 90 142 76 137 67 C134 62 130 62 127 65 C120 72 112 80 105 89 Z",f:"b"},
+          {d:"M64 97 C64 87 66 79 68 74 C70 71 72 71 74 73 C78 78 83 84 87 90 Z",f:"x"},
+          {d:"M136 97 C136 87 134 79 132 74 C130 71 128 71 126 73 C122 78 117 84 113 90 Z",f:"x"},
+          {d:"M146 164 C166 168 182 158 185 140 C186 129 179 122 172 126 C176 133 176 143 168 149 C160 155 151 155 142 153 Z",f:"b"}],
+    body:"M44 144 C44 108 68 86 100 86 C132 86 156 108 156 144 C156 168 134 177 100 177 C66 177 44 168 44 144 Z",
+    front:[{d:"M79 141 C79 131 88 127 100 131 C112 127 121 131 121 141 C121 150 111 155 100 153 C89 155 79 150 79 141 Z",f:"a",soft:1},
+           {d:"M94.5 133 C94.5 130.5 105.5 130.5 105.5 133 C105.5 136 101.5 138.5 100 138.5 C98.5 138.5 94.5 136 94.5 133 Z",f:"#C9786D"},
+           {d:"M97 132 a2.6 1.3 0 1 0 5.2 0 a2.6 1.3 0 1 0 -5.2 0 Z",f:"#FFFFFF",o:.55}],
+    lines:[{d:"M100 138.5 v3.5",c:"b3",w:2.2},
+           {d:"M100 90 v9 M89 92.5 l2.4 7 M111 92.5 l-2.4 7",c:"b2",w:2.6},
+           {d:"M78 140 l-20 -4 M78 145 l-19 2 M122 140 l20 -4 M122 145 l19 2",c:"b3",w:1.3}],
+    eyes:[[81,118],[119,118]], mouth:[100,147], cheeks:[[64,137],[136,137]] }
 };
-const ORDER = ["pebble","fern","wren","bramble","luna","otto","tilly"];
+const ORDER = ["pebble","fern","wren","bramble","luna","otto","tilly","miso"];
 const STATES = [
   ["idle","Idle","Sits on <b>Today</b>, breathing and blinking."],
   ["hello","Hello","The first open of the day, and the moment a member meets their coach."],

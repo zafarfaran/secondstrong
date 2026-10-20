@@ -1,7 +1,64 @@
 {
-  "coach": "bramble",
   "fps": 30,
   "size": 400,
+  "coaches": {
+    "pebble": {
+      "name": "Pebble",
+      "anchor": [
+        328,
+        272
+      ]
+    },
+    "fern": {
+      "name": "Fern",
+      "anchor": [
+        295,
+        278
+      ]
+    },
+    "wren": {
+      "name": "Wren",
+      "anchor": [
+        305,
+        255
+      ]
+    },
+    "bramble": {
+      "name": "Bramble",
+      "anchor": [
+        305,
+        275
+      ]
+    },
+    "luna": {
+      "name": "Luna",
+      "anchor": [
+        298,
+        265
+      ]
+    },
+    "otto": {
+      "name": "Otto",
+      "anchor": [
+        298,
+        278
+      ]
+    },
+    "tilly": {
+      "name": "Tilly",
+      "anchor": [
+        312,
+        288
+      ]
+    },
+    "miso": {
+      "name": "Miso",
+      "anchor": [
+        308,
+        278
+      ]
+    }
+  },
   "states": {
     "idle": {
       "in": [

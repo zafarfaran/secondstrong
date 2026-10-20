@@ -1,5 +1,6 @@
-// Builds one HyperFrames composition per coach state from the mascot board, plus manifest.json
-// describing each clip's in / loop / out segments. Usage: node tools/build.mjs [coach]   (default bramble)
+// Builds one HyperFrames composition per coach and state from the mascot board, plus manifest.json
+// describing each clip's in / loop / out segments.
+// Usage: node tools/build.mjs [coach ...]   (default: every coach on the board)
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -8,40 +9,63 @@ const here = dirname(fileURLToPath(import.meta.url));
 const project = join(here, "..");
 const board = readFileSync(join(project, "..", "mascots", "mascot-board.html"), "utf8");
 const src = board.slice(board.indexOf("const EYE"), board.indexOf("/* state chips */"));
-const { mascot, CHARS } = new Function(`${src}; return { mascot, CHARS };`)();
-const COACH = process.argv[2] || "bramble";
-const c = CHARS[COACH];
+const { mascot, CHARS, ORDER } = new Function(`${src}; return { mascot, CHARS, ORDER };`)();
+const COACHES = process.argv.length > 2 ? process.argv.slice(2) : ORDER;
 
-/* the coach as one SVG, with each ear pulled into its own group so it can lag and flop */
-let svg = mascot(COACH)
-  .replace('class="m"', 'class="m" id="coach"')
-  .replace('viewBox="0 0 200 200"', 'viewBox="-20 -50 240 240"')
-  .replace(/data-layer=/g, "data-part=")
-  .replace(/<text x="(\d+)" y="(\d+)" font-size="(\d+)">z<\/text>/g, (_, x, y, fs) => {
-    const k = +fs * .62, X = +x, Y = +y;
-    return `<path class="zz" d="M${X} ${Y - k} h${k} l${-k} ${k} h${k}" fill="none" stroke="var(--terra)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`;
-  });
-const back = svg.match(/<g data-part="back">([\s\S]*?)<\/g>(?=\s*<g data-part="body">)/);
-if (back && c.back.length >= 2) {
-  const paths = back[1].match(/<path[^>]*\/>/g) || [];
-  const rest = back[1].replace(/<path[^>]*\/>/g, "");
-  /* ears: [outer L, outer R, inner L, inner R] when four parts, else [L, R] */
-  const left = paths.length >= 4 ? paths[0] + paths[2] : paths[0];
-  const right = paths.length >= 4 ? paths[1] + paths[3] : paths[1];
-  const extra = paths.length > 4 ? paths.slice(4).join("") : (paths.length === 3 ? paths[2] : "");
-  svg = svg.replace(back[0], `<g data-part="back"><g id="earL">${left}</g><g id="earR">${right}</g>${extra}${rest}</g>`);
-}
+/* what moves on each body besides the shared rig. ears: indices into the board's back parts,
+   [outer, inner] per side; tail: the part that wags (a tail, Wren's wings, Fern's leaves, Luna's star);
+   top: the highest point of the head, so effects above it clear ears, crests and leaves */
+const RIGS = {
+  pebble:  { top: 73 },
+  fern:    { top: 34, tail: { sel: "sway", origin: "101 103", amp: 5 } },
+  wren:    { top: 55, tail: { parts: [0, 1], origin: "144 134", amp: 10 } },
+  bramble: { top: 74, ears: [[0, 2], [1, 3]] },
+  luna:    { top: 79, drop: [172, 96], tail: { sel: "bob", bob: true, amp: 4 } },
+  otto:    { top: 88, ears: [[1, 3], [2, 4]], tail: { parts: [0], origin: "138 156", amp: 7 } },
+  tilly:   { top: 86, tail: { parts: [2], origin: "160 158", amp: 9 } },
+  miso:    { top: 62, ears: [[0, 2], [1, 3]], tail: { parts: [4], origin: "144 158", amp: 8 } }
+};
 
-/* effects the board doesn't have: drawn on top of the coach, plus a breathing ring behind */
-const FX_EXTRA = `
+/* the coach as one SVG: ears pulled into their own groups so they lag and flop, the wagging part
+   into #tail, and the extra effects placed around this coach's head and paw */
+function coachSvg(key) {
+  const c = CHARS[key], rig = RIGS[key];
+  if (!rig) throw new Error(`no rig for ${key}: add it to RIGS`);
+  let svg = mascot(key)
+    .replace('class="m"', 'class="m" id="coach"')
+    .replace('viewBox="0 0 200 200"', 'viewBox="-20 -50 240 240"')
+    .replace(/data-layer=/g, "data-part=")
+    .replace(/<text x="(\d+)" y="(\d+)" font-size="(\d+)">z<\/text>/g, (_, x, y, fs) => {
+      const k = +fs * .62, X = +x, Y = +y;
+      return `<path class="zz" d="M${X} ${Y - k} h${k} l${-k} ${k} h${k}" fill="none" stroke="var(--terra)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`;
+    });
+  const back = svg.match(/<g data-part="back">([\s\S]*?)<\/g>(?=\s*<g data-part="body">)/);
+  const paths = back ? back[1].match(/<path[^>]*\/>/g) || [] : [];
+  const rest = back ? back[1].replace(/<path[^>]*\/>/g, "") : "";
+  const used = new Set(), take = ix => ix.map(i => (used.add(i), paths[i])).join("");
+  const earL = rig.ears ? take(rig.ears[0]) : "", earR = rig.ears ? take(rig.ears[1]) : "";
+  const tail = rig.tail && rig.tail.parts ? take(rig.tail.parts) : "";
+  const others = paths.filter((_, i) => !used.has(i)).join("");
+  if (back) svg = svg.replace(back[0], `<g data-part="back">${others}${tail ? `<g id="tail">${tail}</g>` : ""}<g id="earL">${earL}</g><g id="earR">${earR}</g>${rest}</g>`);
+  if (rig.tail && rig.tail.sel) svg = svg.replace(`<g class="${rig.tail.sel}">`, `<g class="${rig.tail.sel}" id="tail">`);
+  if (rig.tail && !svg.includes('id="tail"')) throw new Error(`${key}: tail not found`);
+
+  /* effects the board doesn't have, placed for this coach: on top of it, plus a breathing ring behind */
+  const T = rig.top, [sx, sy] = c.arms[1], [x1, y1, x2, y2] = c.box;
+  const cx = (x1 + x2) / 2, cy = (y1 + y2) / 2, rx = (x2 - x1) / 2 + 12, ry = (y2 - y1) / 2 + 14;
+  const FX_EXTRA = `
       <g class="fx-cheer"><path d="M27 56 h12 M33 50 v12"/><path d="M167 40 h14 M174 33 v14"/><path d="M51 18 h10 M56 13 v10"/><path d="M149 8 h10 M154 3 v10"/><circle cx="14" cy="100" r="2.8" fill="var(--terra)" stroke="none"/><circle cx="190" cy="90" r="2.8" fill="var(--terra)" stroke="none"/><circle cx="100" cy="20" r="2.4" fill="var(--terra)" stroke="none"/></g>
-      <g class="fx-wow"><path class="draw" d="M100 54 v-18"/><path class="draw" d="M70 60 l-10 -13"/><path class="draw" d="M130 60 l10 -13"/></g>
-      <g class="fx-pump"><path class="draw" d="M178 100 l9 -7"/><path class="draw" d="M182 114 h11"/></g>
-      <g class="fx-oops"><path d="M168 66 q-6 9 -6 13 a6 6 0 0 0 12 0 q0 -4 -6 -13 z"/></g>
-      <g class="fx-tick"><circle class="draw2" cx="170" cy="56" r="14"/><path class="draw" d="M163 56 l5 5 l9 -11"/></g>`;
-svg = svg.replace(/<\/g><\/svg>$/, `${FX_EXTRA}</g></svg>`)
-  .replace('<g class="rig">', '<g class="fx fx-back"><g class="fx-breathe"><circle cx="100" cy="122" r="62" fill="var(--terra)" fill-opacity=".07" stroke="var(--terra)" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round" stroke-opacity=".6"/></g></g><g class="rig">');
-if (!svg.includes("fx-pump") || !svg.includes("fx-breathe")) throw new Error("could not add the extra effects");
+      <g class="fx-wow"><path class="draw" d="M100 ${T - 14} v-18"/><path class="draw" d="M70 ${T - 8} l-10 -13"/><path class="draw" d="M130 ${T - 8} l10 -13"/></g>
+      <g class="fx-pump"><path class="draw" d="M${sx + 32} ${sy - 44} l9 -7"/><path class="draw" d="M${sx + 36} ${sy - 30} h11"/></g>
+      <g class="fx-oops"><path d="M${rig.drop ? rig.drop[0] : x2 + 14} ${rig.drop ? rig.drop[1] : T - 8} q-6 9 -6 13 a6 6 0 0 0 12 0 q0 -4 -6 -13 z"/></g>
+      <g class="fx-tick"><circle class="draw2" cx="170" cy="${T - 18}" r="14"/><path class="draw" d="M163 ${T - 18} l5 5 l9 -11"/></g>`;
+  svg = svg.replace(/<\/g><\/svg>$/, `${FX_EXTRA}</g></svg>`)
+    .replace('<g class="rig">', `<g class="fx fx-back"><g class="fx-breathe"><ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="var(--terra)" fill-opacity=".07" stroke="var(--terra)" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round" stroke-opacity=".6"/></g></g><g class="rig">`);
+  if (!svg.includes("fx-pump") || !svg.includes("fx-breathe")) throw new Error(`${key}: could not add the extra effects`);
+  /* where the paw ends up while suggesting, in clip pixels: the app points its bubble's tail here */
+  const anchor = [Math.round((sx + 17 + 20) * 400 / 240), Math.round((sy - 29 + 50) * 400 / 240)];
+  return { svg, anchor, tail: rig.tail ? { origin: rig.tail.origin || null, bob: !!rig.tail.bob, amp: rig.tail.amp } : null };
+}
 
 /* segment lengths in seconds: in (neutral to state), loop (seamless), out (state to neutral) */
 const STATES = {
@@ -71,9 +95,17 @@ const CUES = {
 
 /* the animation, written once and embedded in every clip; build(state, seg) fills a paused timeline */
 const RUNTIME = String.raw`
-function build(tl, state, S) {
+function build(tl, state, S, TAILRIG) {
   const I = S.in || 0, L = S.loop, O = S.out || 0, A = I, B = I + L;   // loop runs A..B
   const q = s => document.querySelectorAll("#coach " + s);
+  /* not every coach has every part (Wren has no mouth, Pebble no ears): tweens on nothing are skipped */
+  for (const m of ["to", "set", "fromTo"]) { const f = tl[m].bind(tl); tl[m] = (tg, ...a) => (tg && tg.length === 0) ? tl : f(tg, ...a); }
+  /* the tail (or wings, leaves, star) swings out and back an even number of times, so it ends where it began */
+  const wag = (t, dur, cycles, k = 1) => {
+    if (!TAILRIG) return;
+    const v = TAILRIG.bob ? { y: -TAILRIG.amp * k } : { rotation: TAILRIG.amp * k, svgOrigin: TAILRIG.origin };
+    tl.to(q("#tail"), { ...v, duration: dur / (cycles * 2), ease: "sine.inOut", yoyo: true, repeat: cycles * 2 - 1 }, t);
+  };
   const R = q(".rig"), P = q(".pose"), EL = q("#earL"), ER = q("#earR"), SH = q(".shadow");
   const blink = t => tl.to(q(".blink"), { scaleY: .08, duration: .06, ease: "power1.in", transformOrigin: "50% 50%" }, t)
                        .to(q(".blink"), { scaleY: 1, duration: .1, ease: "power1.out" }, t + .06);
@@ -100,7 +132,7 @@ function build(tl, state, S) {
   tl.set([...R, ...P], { svgOrigin: "100 178" }, 0);
 
   if (state === "idle") {
-    breathe(0, L, 2, .03);
+    breathe(0, L, 2, .03); wag(0, L, 2);
     blink(1.3); blink(3.05); blink(3.3);
     tl.to(q(".look"), { x: 2.5, y: -.5, duration: .35, ease: "power2.inOut" }, .6).to(q(".look"), { x: 0, y: 0, duration: .4, ease: "power2.inOut" }, 2.3);
     /* a little ear twitch, with follow-through */
@@ -116,6 +148,7 @@ function build(tl, state, S) {
     tl.to(P, { rotation: -4, duration: .4, ease: "power2.out" }, .1);
     fx("hello", true, .2);
     /* loop: two waves, ears bob in time */
+    wag(A, L, 2);
     for (let i = 0; i < 2; i++) { arm("r", { rotation: -103 }, A + i * .6, .3, "sine.inOut"); arm("r", { rotation: -140 }, A + i * .6 + .3, .3, "sine.inOut"); }
     tl.to(EL, { rotation: -3, duration: .3, ease: "sine.inOut", yoyo: true, repeat: 3 }, A);
     tl.to(ER, { rotation: 3, duration: .3, ease: "sine.inOut", yoyo: true, repeat: 3 }, A);
@@ -130,6 +163,7 @@ function build(tl, state, S) {
     tl.to(q(".look"), { x: -2, y: 1, scale: 1.1, duration: .35, ease: "power2.out", transformOrigin: "50% 50%" }, .05);
     brows({ y: -2.5 }, { y: -2.5 }, .05); ears(-12, -5, .05, .3, "back.out(2)");
     /* loop: two slow nods, the sound arcs drawn each time */
+    wag(A, L, 1, .6);
     for (let i = 0; i < 2; i++) {
       tl.to(P, { rotation: -9.5, duration: .5, ease: "sine.inOut" }, A + i * 1).to(P, { rotation: -6, duration: .5, ease: "sine.inOut" }, A + i * 1 + .5);
       fx("listen", true, A + i, .15); draw(".fx-listen .draw", A + i, .55); fx("listen", false, A + i + .7, .25);
@@ -177,7 +211,7 @@ function build(tl, state, S) {
     /* the tick fades before the loop ends, so the loop starts and ends on the same frame */
     tl.set(q(".fx-proud .draw"), { opacity: 1 }, A + .24); tl.to(q(".fx-proud .draw"), { opacity: 0, duration: .16, ease: "power1.in" }, A + .98);
     /* out: rise out of the crouch with a small settle */
-    tl.to(R, { scaleY: 1.03, scaleX: .98, duration: .22, ease: "power2.out" }, B).to(R, { scaleY: 1, scaleX: 1, duration: .2, ease: "sine.inOut" }, B + .22);
+    tl.to(R, { scaleY: 1.03, scaleX: .98, duration: .2, ease: "power2.out" }, B).to(R, { scaleY: 1, scaleX: 1, duration: .18, ease: "sine.inOut" }, B + .2);
     tl.to(SH, { scaleX: 1, duration: .3 }, B);
     eyes("open", B + .1); mouth(false, B + .1); brows(B0, B0, B, .3, "power2.out"); ears(0, 0, B, .4, "elastic.out(1,.5)"); fx("proud", false, B, .15);
   }
@@ -249,6 +283,7 @@ function build(tl, state, S) {
     mouth(true, .08, .1); mouth(false, .36, .12);
     arm("r", { rotation: -146, scale: 1, opacity: 1 }, .05, .4);
     /* loop: the paw taps toward the bubble, the body sways with it, one blink */
+    wag(A, L, 2, .7);
     tl.to(q(".arm-r"), { rotation: -154, duration: .3, ease: "sine.inOut", yoyo: true, repeat: 7 }, A);
     tl.to(P, { rotation: 5.5, duration: .6, ease: "sine.inOut", yoyo: true, repeat: 3 }, A);
     tl.to(ER, { rotation: 12, duration: .12, ease: "power2.out" }, A + .9).to(ER, { rotation: 8, duration: .35, ease: "elastic.out(1,.5)" }, A + 1.02);
@@ -279,6 +314,7 @@ function build(tl, state, S) {
       ["l", "r"].forEach((s, k) => { arm(s, { rotation: -148 }, t0 + k * .04, .26, "sine.inOut"); arm(s, { rotation: -165 }, t0 + .3 + k * .04, .26, "sine.inOut"); });
       ears(12, -12, t0, .2); ears(-8, 8, t0 + .22, .2, "sine.inOut"); ears(4, -4, t0 + .42, .18, "elastic.out(1,.5)");
     }
+    wag(A, L, 4, 1.3);
     sp.forEach((s, i) => tl.to(s, { scale: i % 2 ? 1 : .55, duration: .3, ease: "sine.inOut", yoyo: true, repeat: 3 }, A));
     /* out */
     arm("l", { rotation: -40, scale: 0, opacity: 0 }, B, .35, "power2.in"); arm("r", { rotation: -40, scale: 0, opacity: 0 }, B + .03, .35, "power2.in");
@@ -296,6 +332,7 @@ function build(tl, state, S) {
     mouth(true, .1, .1);
     fx("wow", true, .1, .05); draw(".fx-wow .draw", .1, .25);
     /* loop: a delighted bob, eyes shining, the burst pulsing */
+    wag(A, L, 2);
     tl.to(R, { y: -4, duration: .4, ease: "sine.inOut", yoyo: true, repeat: 3 }, A);
     tl.to(q(".look"), { scale: 1.19, duration: .4, ease: "sine.inOut", yoyo: true, repeat: 3 }, A);
     tl.set(q(".fx-wow"), { transformOrigin: "50% 100%", scale: 1 }, 0);
@@ -315,6 +352,7 @@ function build(tl, state, S) {
     brows({ y: 1.5, rotation: 12 }, { y: 1.5, rotation: -12 }, .05); mouth(true, .12); ears(-5, 5, .05, .3);
     fx("pump", true, A, .05);
     /* loop: two fist pumps, the body dips into each */
+    wag(A, L, 2, .8);
     for (let i = 0; i < 2; i++) {
       const t0 = A + i * .6;
       arm("r", { rotation: -122 }, t0, .15, "power2.in"); arm("r", { rotation: -142 }, t0 + .15, .3, "back.out(2.4)");
@@ -358,6 +396,7 @@ function build(tl, state, S) {
     fx("tick", true, .05, .05); draw(".fx-tick .draw2", .05, .35, 90); draw(".fx-tick .draw", .2, .2);
     tl.to(P, { y: 3, scaleY: .97, duration: .14, ease: "power2.inOut" }, .05).to(P, { y: 0, scaleY: 1, duration: .2, ease: "back.out(2)" }, .19);
     /* loop: two nods, ears following, the tick breathing gently */
+    wag(A, L, 2, .6);
     for (let i = 0; i < 2; i++) {
       const t0 = A + i * .8;
       tl.to(P, { y: 3.5, scaleY: .965, duration: .2, ease: "power2.inOut" }, t0).to(P, { y: 0, scaleY: 1, duration: .3, ease: "back.out(2)" }, t0 + .2);
@@ -371,7 +410,7 @@ function build(tl, state, S) {
   if (state === "breathe") {
     /* in: eyes close, a calm face, the ring appears behind */
     eyes("shut", .1); brows({ y: -1.5 }, { y: -1.5 }, .1, .5, "power2.out"); ears(3, -3, .1, .5, "power2.inOut");
-    const RG = q(".fx-breathe circle");
+    const RG = q(".fx-breathe ellipse");
     tl.set(RG, { transformOrigin: "50% 50%", scale: .82 }, 0);
     fx("breathe", true, .1, .5);
     /* loop: four seconds in (body and ring grow, ears lift), four seconds out (mouth softly open) */
@@ -385,7 +424,8 @@ function build(tl, state, S) {
   }
 }`;
 
-const page = (state, S) => {
+const page = (coach, art, state, S) => {
+  const c = CHARS[coach], id = `${coach}-${state}`;
   const total = +((S.in || 0) + S.loop + (S.out || 0)).toFixed(3);
   return `<!doctype html>
 <html lang="en">
@@ -395,7 +435,7 @@ const page = (state, S) => {
     <title>${c.name} · ${state}</title>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
     <style>
-      @font-face { font-family: "Gochi Hand"; src: url("../assets/GochiHand.woff2") format("woff2"); }
+      @font-face { font-family: "Gochi Hand"; src: url("../../assets/GochiHand.woff2") format("woff2"); }
       :root { --shadow: rgba(59, 50, 44, 0.22); --terra: #A85A3C; }
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: 400px; height: 400px; overflow: hidden; background: transparent; }
@@ -409,16 +449,16 @@ const page = (state, S) => {
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="${state}" data-start="0" data-duration="${total}" data-width="400" data-height="400" data-fps="30">
+    <div id="root" data-composition-id="${id}" data-start="0" data-duration="${total}" data-width="400" data-height="400" data-fps="30">
       <div id="stage" class="clip" data-start="0" data-duration="${total}" data-track-index="0">
-        ${svg}
+        ${art.svg}
       </div>
     </div>
     <script>
       ${RUNTIME}
       const tl = gsap.timeline({ paused: true });
-      build(tl, ${JSON.stringify(state)}, ${JSON.stringify(S)});
-      window.__timelines[${JSON.stringify(state)}] = tl;
+      build(tl, ${JSON.stringify(state)}, ${JSON.stringify(S)}, ${JSON.stringify(art.tail)});
+      window.__timelines[${JSON.stringify(id)}] = tl;
       tl.seek(0);
     </script>
   </body>
@@ -426,13 +466,21 @@ const page = (state, S) => {
 `;
 };
 
-mkdirSync(join(project, "compositions"), { recursive: true });
-const manifest = { coach: COACH, fps: 30, size: 400, states: {} };
+/* every coach shares the same states and timings, so one manifest serves them all */
+const manifest = { fps: 30, size: 400, coaches: {}, states: {} };
 for (const [state, S] of Object.entries(STATES)) {
-  writeFileSync(join(project, "compositions", `${state}.html`), page(state, S));
   const i = S.in || 0, l = S.loop, o = S.out || 0;
   manifest.states[state] = { in: [0, i], loop: [i, +(i + l).toFixed(3)], out: [+(i + l).toFixed(3), +(i + l + o).toFixed(3)] };
   if (CUES[state]) manifest.states[state].cues = CUES[state](S);
 }
-writeFileSync(join(project, "manifest.json"), JSON.stringify(manifest, null, 2));
-console.log(`built ${Object.keys(STATES).length} ${c.name} clips`);
+const manifestPath = join(project, "manifest.json");
+let old = {}; try { old = JSON.parse(readFileSync(manifestPath, "utf8")).coaches || {}; } catch {}
+for (const coach of COACHES) {
+  const art = coachSvg(coach);
+  mkdirSync(join(project, "compositions", coach), { recursive: true });
+  for (const [state, S] of Object.entries(STATES)) writeFileSync(join(project, "compositions", coach, `${state}.html`), page(coach, art, state, S));
+  old[coach] = { name: CHARS[coach].name, anchor: art.anchor };
+}
+manifest.coaches = Object.fromEntries(ORDER.filter(k => old[k]).map(k => [k, old[k]]));
+writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+console.log(`built ${Object.keys(STATES).length} clips each for ${COACHES.map(k => CHARS[k].name).join(", ")}`);

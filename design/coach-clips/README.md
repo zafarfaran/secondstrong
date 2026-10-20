@@ -1,13 +1,15 @@
-# Coach clips: Bramble pilot
+# Coach clips
 
-Bramble's sixteen coach states rendered as transparent video from the same SVG rig as the mascot board
-(`../mascots/mascot-board.html`), animated with HyperFrames (HTML + GSAP, rendered frame by frame).
+All eight coaches (Pebble, Fern, Wren, Bramble, Luna, Otto, Tilly, Miso), sixteen states each, rendered as
+transparent video from the same SVG rig as the mascot board (`../mascots/mascot-board.html`), animated with
+HyperFrames (HTML + GSAP, rendered frame by frame). Every coach shares the same states and timings, so the
+app's player and `manifest.json` work for any of them.
 
 `preview.html` shows them inside a phone, driven by app events, the way the app will play them.
 
 ## The clip contract
 
-Each state is one clip with three parts, recorded in `manifest.json`:
+Each state is one clip with three parts, recorded once in `manifest.json` for every coach:
 
 | part | what it is |
 |---|---|
@@ -39,6 +41,15 @@ Player rule (see the `<script>` in `preview.html`, mirror it in Swift):
 | comfort | rough-night check-in | | | |
 | resting | rest day | | | |
 
+## Per-coach rig
+
+`RIGS` in `tools/build.mjs` says what moves on each body beyond the shared rig: which back parts are ears
+(they lag and flop), which part wags (tails, Wren's wings, Fern's leaves, Luna's star bobs), and how high
+the head reaches so effects above it clear ears and leaves. A new coach on the board needs one line there.
+
+`manifest.json` → `coaches.<key>.anchor` is where that coach's paw ends up while suggesting, in clip
+pixels (400 × 400); the app points its speech bubble's tail there.
+
 ## Cues: the app's own UI on top
 
 Text is never baked into a clip. `manifest.json` gives some states `cues`, time ranges the app hangs
@@ -55,9 +66,11 @@ Only the latest request is kept.
 
 | path | |
 |---|---|
-| `tools/build.mjs` | reads the rig from the mascot board, writes `compositions/<state>.html` and `manifest.json` |
-| `compositions/` | one HyperFrames composition per state (400 × 400, transparent) |
-| `webm/` | VP9 with alpha, 170–310 KB each (browser preview, Android) |
+| `tools/build.mjs` | reads the rig from the mascot board, writes `compositions/<coach>/<state>.html` and `manifest.json` |
+| `compositions/<coach>/` | one HyperFrames composition per state (400 × 400, transparent) |
+| `webm/<coach>/` | VP9 with alpha, mostly 150–350 KB each (browser preview, Android), plus `idle.png` thumbnail |
+| `tools/render.sh` | renders every composition that changed, four at a time |
+| `tools/sheet.mjs` | stills of every state without rendering, for a quick look |
 | `renders/` | ProRes 4444 masters with alpha (not in git; rebuild below) |
 | `hevc/` | HEVC with alpha for iOS (made on the Mac; not in git yet) |
 | `tools/verify.py` | checks loop seams and neutral starts/ends pixel by pixel |
@@ -68,11 +81,10 @@ Only the latest request is kept.
 From this folder:
 
 ```bash
-node tools/build.mjs
+node tools/build.mjs        # or: node tools/build.mjs miso   (one coach)
 npx hyperframes check
-for s in $(node -p "Object.keys(require('./manifest.json').states).join(' ')"); do
-  npx hyperframes render -c compositions/$s.html --format mov -o renders/$s.mov
-done
+node tools/sheet.mjs miso   # optional: stills to eyeball before rendering
+bash tools/render.sh        # only clips whose composition changed
 python tools/verify.py      # expect "all clips join up"
 bash tools/encode.sh        # webm/ everywhere, hevc/ on macOS only
 ```

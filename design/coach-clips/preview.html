@@ -1,4 +1,4 @@
-<title>Bramble Coach Clips</title>
+<title>Coach Clips</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Gochi+Hand&family=IBM+Plex+Mono:wght@500&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap">
 <style>
@@ -52,6 +52,11 @@ h2{font:800 clamp(22px,2.6vw,28px)/1.05 var(--f-display); letter-spacing:-.03em;
 .ev[aria-pressed="true"]{border-color:var(--terra); background:color-mix(in srgb,var(--terra) 8%,transparent)}
 .ev b{font:700 15px/1.15 var(--f-display)}
 .ev span{font:500 10.5px/1.3 var(--f-mono); letter-spacing:.05em; text-transform:uppercase; color:var(--deskInk2)}
+.coaches{display:flex; flex-wrap:wrap; gap:8px}
+.coach{appearance:none; display:flex; align-items:center; gap:8px; border:1.5px solid color-mix(in srgb,var(--deskInk) 16%,transparent); background:transparent; border-radius:99px; padding:4px 13px 4px 4px; cursor:pointer; font:700 14px/1 var(--f-display)}
+.coach img{width:34px; height:34px; border-radius:50%; background:#FBF8F4; object-fit:contain}
+.coach[aria-pressed="true"]{border-color:var(--terra); background:color-mix(in srgb,var(--terra) 9%,transparent)}
+.coach .new{font:500 9.5px/1 var(--f-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--terra)}
 .suggest{border:1.5px solid color-mix(in srgb,var(--deskInk) 16%,transparent); border-radius:18px; padding:14px; display:grid; gap:10px}
 .suggest h4{margin:0; font:800 16px/1.2 var(--f-display)}
 .suggest p{margin:0; color:var(--deskInk2); font-size:14px}
@@ -84,26 +89,27 @@ h2{font:800 clamp(22px,2.6vw,28px)/1.05 var(--f-display); letter-spacing:-.03em;
 
 <div class="wrap">
   <div class="dmeta">Second Strong · coach clips · pilot</div>
-  <h1>Bramble, <em>rendered.</em></h1>
-  <p class="lede">Sixteen states rendered with HyperFrames as transparent video, the way the app will play them. Press an app event and Bramble finishes the current move, comes back to neutral, and moves into the new state without a jump.</p>
+  <h1>The coaches, <em>rendered.</em></h1>
+  <p class="lede">Eight coaches, sixteen states each, rendered with HyperFrames as transparent video, the way the app will play them. Pick a coach, then press an app event: the coach finishes the current move, comes back to neutral, and moves into the new state without a jump.</p>
 
   <div class="hero">
     <div class="frame"><div class="scr">
       <div class="island"></div>
       <div class="app">
-        <div class="meta" id="today"></div>
+        <div class="meta"><span id="today"></span> · with <span id="who"></span></div>
         <h3>How was <em>the night?</em></h3>
-        <div class="stage" id="stage" aria-label="Bramble"><div class="bubble" id="bubble" role="status" aria-live="polite"><span id="btext"></span><span class="act" id="bact"></span></div></div>
+        <div class="stage" id="stage" aria-label="Coach"><div class="bubble" id="bubble" role="status" aria-live="polite"><span id="btext"></span><span class="act" id="bact"></span></div></div>
         <p class="caption" id="caption"></p>
         <div class="readout"><span>State <b id="rs">idle</b></span><span>Segment <b id="rg">loop</b></span></div>
       </div>
     </div></div>
 
     <div class="side">
+      <div class="coaches" id="coaches" role="group" aria-label="Coach"></div>
       <div class="events" id="events" role="group" aria-label="App events"></div>
       <div class="suggest">
         <h4>Suggest, with any text</h4>
-        <p>Bramble points up to the spot where the app draws a real speech bubble. Words and button come from the app, so they can say anything.</p>
+        <p>The coach points up to the spot where the app draws a real speech bubble. Words and button come from the app, so they can say anything.</p>
         <label>Message<textarea id="msg" rows="2" maxlength="160">Rough night. Swap squats for a 15-minute walk today?</textarea></label>
         <label>Button (optional)<input id="act" maxlength="24" value="Swap it"></label>
         <div class="chips" id="chips"></div>
@@ -111,13 +117,13 @@ h2{font:800 clamp(22px,2.6vw,28px)/1.05 var(--f-display); letter-spacing:-.03em;
       <ol class="how">
         <li><b>Each clip has three parts:</b> in (neutral to the state), a seamless loop, and out (back to neutral).</li>
         <li><b>An event waits for the loop to finish</b>, plays the out, then the next state's in. Every clip starts and ends on the same neutral frame, so the hand-over is invisible.</li>
-        <li><b>Back to Today</b> returns Bramble to idle.</li>
+        <li><b>Back to Today</b> returns the coach to idle.</li>
       </ol>
     </div>
   </div>
 
   <section class="sec">
-    <div class="sechead"><div><h2>All sixteen <em>clips</em></h2><p>Each whole file looping: in, loop, out. Switch the background to see they're truly transparent.</p></div>
+    <div class="sechead"><div><h2>All sixteen <em id="gridwho">clips</em></h2><p>Each whole file looping: in, loop, out. Switch the background to see they're truly transparent.</p></div>
       <div class="seg" role="group" aria-label="Background"><button type="button" data-bg="ivory" aria-pressed="true">Ivory</button><button type="button" data-bg="dark" aria-pressed="false">Dark</button><button type="button" data-bg="check" aria-pressed="false">Transparent</button></div></div>
     <div class="grid" id="grid"></div>
     <div class="note">
@@ -131,7 +137,7 @@ h2{font:800 clamp(22px,2.6vw,28px)/1.05 var(--f-display); letter-spacing:-.03em;
 <script>
 (function(){
 /* segment times from manifest.json */
-const M = {"coach":"bramble","fps":30,"size":400,"states":{"idle":{"in":[0,0],"loop":[0,4],"out":[4,4]},"hello":{"in":[0,0.5],"loop":[0.5,1.7],"out":[1.7,2.2]},"listening":{"in":[0,0.5],"loop":[0.5,2.5],"out":[2.5,3]},"thinking":{"in":[0,0.5],"loop":[0.5,2.9],"out":[2.9,3.4]},"proud":{"in":[0,0.4],"loop":[0.4,1.6],"out":[1.6,2]},"lifting":{"in":[0,0.5],"loop":[0.5,2.3],"out":[2.3,2.8]},"stretching":{"in":[0,0.7],"loop":[0.7,2.7],"out":[2.7,3.4]},"comfort":{"in":[0,0.6],"loop":[0.6,3],"out":[3,3.6]},"resting":{"in":[0,0.8],"loop":[0.8,3.8],"out":[3.8,4.6]},"suggest":{"in":[0,0.5],"loop":[0.5,2.9],"out":[2.9,3.4],"cues":{"bubble":[0.5,2.9]}},"cheer":{"in":[0,0.4],"loop":[0.4,1.6],"out":[1.6,2]},"wow":{"in":[0,0.4],"loop":[0.4,2],"out":[2,2.5]},"encourage":{"in":[0,0.5],"loop":[0.5,1.7],"out":[1.7,2.2]},"oops":{"in":[0,0.5],"loop":[0.5,2.5],"out":[2.5,3]},"gotit":{"in":[0,0.4],"loop":[0.4,2],"out":[2,2.4]},"breathe":{"in":[0,0.6],"loop":[0.6,8.6],"out":[8.6,9.2],"cues":{"breathe in":[0.6,4.6],"breathe out":[4.6,8.6]}}}};
+const M = {"fps":30,"size":400,"coaches":{"pebble":{"name":"Pebble","anchor":[328,272]},"fern":{"name":"Fern","anchor":[295,278]},"wren":{"name":"Wren","anchor":[305,255]},"bramble":{"name":"Bramble","anchor":[305,275]},"luna":{"name":"Luna","anchor":[298,265]},"otto":{"name":"Otto","anchor":[298,278]},"tilly":{"name":"Tilly","anchor":[312,288]},"miso":{"name":"Miso","anchor":[308,278]}},"states":{"idle":{"in":[0,0],"loop":[0,4],"out":[4,4]},"hello":{"in":[0,0.5],"loop":[0.5,1.7],"out":[1.7,2.2]},"listening":{"in":[0,0.5],"loop":[0.5,2.5],"out":[2.5,3]},"thinking":{"in":[0,0.5],"loop":[0.5,2.9],"out":[2.9,3.4]},"proud":{"in":[0,0.4],"loop":[0.4,1.6],"out":[1.6,2]},"lifting":{"in":[0,0.5],"loop":[0.5,2.3],"out":[2.3,2.8]},"stretching":{"in":[0,0.7],"loop":[0.7,2.7],"out":[2.7,3.4]},"comfort":{"in":[0,0.6],"loop":[0.6,3],"out":[3,3.6]},"resting":{"in":[0,0.8],"loop":[0.8,3.8],"out":[3.8,4.6]},"suggest":{"in":[0,0.5],"loop":[0.5,2.9],"out":[2.9,3.4],"cues":{"bubble":[0.5,2.9]}},"cheer":{"in":[0,0.4],"loop":[0.4,1.6],"out":[1.6,2]},"wow":{"in":[0,0.4],"loop":[0.4,2],"out":[2,2.5]},"encourage":{"in":[0,0.5],"loop":[0.5,1.7],"out":[1.7,2.2]},"oops":{"in":[0,0.5],"loop":[0.5,2.5],"out":[2.5,3]},"gotit":{"in":[0,0.4],"loop":[0.4,2],"out":[2,2.4]},"breathe":{"in":[0,0.6],"loop":[0.6,8.6],"out":[8.6,9.2],"cues":{"breathe in":[0.6,4.6],"breathe out":[4.6,8.6]}}}};
 const EVENTS = [
   ["idle", "Back to Today", "idle"],
   ["hello", "Opens the app", "hello"],
@@ -163,10 +169,12 @@ document.getElementById("today").textContent = new Date().toLocaleDateString("en
 
 /* one video per state, all preloaded; only the current one is visible */
 const stage = document.getElementById("stage");
+const COACHES = Object.keys(M.coaches);
+let coach = COACHES.includes("miso") ? "miso" : COACHES[0];
 const V = {};
 STATES.forEach(s => {
   const v = document.createElement("video");
-  v.src = `webm/${s}.webm`; v.muted = true; v.playsInline = true; v.preload = "auto"; v.setAttribute("aria-hidden", "true");
+  v.src = `webm/${coach}/${s}.webm`; v.muted = true; v.playsInline = true; v.preload = "auto"; v.setAttribute("aria-hidden", "true");
   stage.appendChild(v); V[s] = v;
 });
 
@@ -202,6 +210,11 @@ function watch(v, s, id){
 /* the clip's cues drive the app's own UI: the bubble shows only while suggest loops, breathing labels follow the clip */
 const bubble = document.getElementById("bubble"), btext = document.getElementById("btext"), bact = document.getElementById("bact");
 const msg = document.getElementById("msg"), actIn = document.getElementById("act");
+function placeBubble(){
+  const [ax, ay] = M.coaches[coach].anchor, k = 300 / M.size, vx = V.idle.offsetLeft;
+  bubble.style.right = Math.max(6, stage.clientWidth - (vx + ax * k) - 41) + "px";
+  bubble.style.bottom = Math.round(stage.clientHeight - (ay * k - 30)) + "px";
+}
 function syncBubble(){ btext.textContent = msg.value.trim() || "…"; bact.textContent = actIn.value.trim(); }
 msg.addEventListener("input", syncBubble); actIn.addEventListener("input", syncBubble); syncBubble();
 function cues(s, t){
@@ -244,19 +257,33 @@ ev.addEventListener("click", e => { const b = e.target.closest(".ev"); if (b) re
 document.getElementById("chips").innerHTML = PRESETS.map(([m, a], i) => `<button class="chip" type="button" data-i="${i}">${m.split(/[.?]/)[0].slice(0, 28)}…</button>`).join("");
 document.getElementById("chips").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; const [m, a] = PRESETS[b.dataset.i]; msg.value = m; actIn.value = a; syncBubble(); request("suggest"); });
 
-/* start: wait until the idle clip can play, then loop it */
-V.idle.addEventListener("loadeddata", () => playFrom("idle", "loop"), { once:true });
+/* coach picker: swap every clip's source, then start again from idle */
+const coachesEl = document.getElementById("coaches");
+coachesEl.innerHTML = COACHES.map(k => `<button class="coach" type="button" data-c="${k}" aria-pressed="${k === coach}"><img src="webm/${k}/idle.png" alt="">${M.coaches[k].name}${k === "miso" ? ' <span class="new">new</span>' : ""}</button>`).join("");
+function setCoach(k){
+  coach = k; token++; next = null; bubble.classList.remove("on"); cap.textContent = "";
+  coachesEl.querySelectorAll(".coach").forEach(b => b.setAttribute("aria-pressed", b.dataset.c === k));
+  document.querySelectorAll(".ev").forEach(b => b.setAttribute("aria-pressed", b.dataset.s === "idle"));
+  document.getElementById("who").textContent = M.coaches[k].name;
+  document.getElementById("gridwho").textContent = M.coaches[k].name;
+  STATES.forEach(s => { V[s].src = `webm/${k}/${s}.webm`; });
+  grid.querySelectorAll("video").forEach(v => { v.src = `webm/${k}/${v.dataset.s}.webm`; });
+  V.idle.addEventListener("loadeddata", () => { placeBubble(); playFrom("idle", "loop"); }, { once:true });
+}
+coachesEl.addEventListener("click", e => { const b = e.target.closest(".coach"); if (b && b.dataset.c !== coach) setCoach(b.dataset.c); });
+addEventListener("resize", placeBubble);
 
 /* all sixteen looping; only the ones on screen play */
 const grid = document.getElementById("grid");
-grid.innerHTML = EVENTS.map(([s, label]) => `<div class="tile"><div class="well"><video src="webm/${s}.webm" muted playsinline loop preload="metadata" aria-label="${s} clip"></video></div><b>${s[0].toUpperCase() + s.slice(1)}</b><span>${label} · ${(M.states[s].out[1]).toFixed(1)}s</span></div>`).join("");
+grid.innerHTML = EVENTS.map(([s, label]) => `<div class="tile"><div class="well"><video data-s="${s}" muted playsinline loop preload="metadata" aria-label="${s} clip"></video></div><b>${s[0].toUpperCase() + s.slice(1)}</b><span>${label} · ${(M.states[s].out[1]).toFixed(1)}s</span></div>`).join("");
 const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? e.target.play().catch(() => {}) : e.target.pause()), { rootMargin: "100px" });
 grid.querySelectorAll("video").forEach(v => io.observe(v));
+setCoach(coach);
 document.querySelector(".seg").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", x === b));
   document.querySelectorAll(".well").forEach(w => { w.classList.toggle("check", b.dataset.bg === "check"); w.style.setProperty("--wellbg", b.dataset.bg === "dark" ? "#211B17" : "#FBF8F4"); });
 });
-window.__clips = { request, get state(){ return { cur, seg, next }; } };
+window.__clips = { request, setCoach, get state(){ return { coach, cur, seg, next }; } };
 })();
 </script>
