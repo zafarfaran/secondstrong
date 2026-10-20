@@ -1,0 +1,741 @@
+<meta charset="utf-8">
+<title>Onboarding Line Variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Gochi+Hand&family=IBM+Plex+Mono:wght@500&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap">
+<style>
+/* Layout: a quiet desk. Left, the five line treatments and what each one means; right, one live phone running the chosen variant. */
+:root{
+  --bg:#FBF8F4; --card:#F6F0E8; --almond:#EDE3D6; --ink:#3B322C; --ink2:#5D534B;
+  --taupe:#A8968A; --terra:#A85A3C; --apricot:#F0C9A8; --edge:rgba(59,50,44,.10);
+  --desk:#EFE8DE; --deskInk:#3B322C; --deskInk2:#6E6158; --shadow:rgba(59,50,44,.22);
+  --f-display:"Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --f-serif:"Newsreader", Georgia, serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --f-hand:"Gochi Hand", "Comic Sans MS", cursive;
+  --t-fb:160ms; --t-ui:380ms;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --spring:linear(0, .009, .035 2.1%, .141, .281 6.7%, .723 12.9%, .938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.129 32.8%, 1.051 39.6%, 1.017 43.1%, .991, .977 51%, .974 53.8%, .975 57.1%, .997 69.8%, 1.003 76.9%, 1);
+  --spring-soft:linear(0, .02 1.5%, .1 4%, .38 10%, .72 18%, .92 26%, 1.02 34%, 1.05 40%, 1.04 48%, 1.01 60%, 1);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --desk:#1C1714; --deskInk:#F1E9DF; --deskInk2:#B8AA9D; color-scheme:dark }}
+:root[data-theme="dark"]{ --desk:#1C1714; --deskInk:#F1E9DF; --deskInk2:#B8AA9D; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--desk); color:var(--deskInk); font:400 16px/1.45 var(--f-display); margin:0}
+button{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--terra); outline-offset:3px}
+.wrap{max-width:1120px; margin:0 auto; padding-inline:clamp(16px,3vw,40px); padding-block:32px 48px; display:grid; grid-template-columns:minmax(0,1fr) 400px; gap:48px; align-items:start}
+@media (max-width:900px){ .wrap{grid-template-columns:minmax(0,1fr); gap:24px} }
+.side{position:sticky; top:32px; display:grid; gap:18px}
+@media (max-width:900px){ .side{position:static} }
+.dmeta{font:500 12px/1.2 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--deskInk2)}
+.side h1{font:800 clamp(30px,4vw,44px)/1.02 var(--f-display); letter-spacing:-.035em; margin:0; text-wrap:balance}
+.side h1 em{font-family:var(--f-serif); font-style:italic; font-weight:400}
+.side .lede{margin:0; color:var(--deskInk2); max-width:52ch}
+.vlist{display:grid; gap:8px; margin:6px 0 0; padding:0; list-style:none}
+.vbtn{appearance:none; width:100%; text-align:left; border:1.5px solid color-mix(in srgb,var(--deskInk) 14%,transparent); background:transparent; border-radius:16px; padding:12px 14px; cursor:pointer; display:grid; grid-template-columns:44px 1fr; gap:2px 12px; align-items:center; transition:border-color var(--t-fb), background var(--t-fb)}
+.vbtn:hover{border-color:color-mix(in srgb,var(--deskInk) 35%,transparent)}
+.vbtn[aria-pressed="true"]{border-color:var(--deskInk); background:color-mix(in srgb,var(--deskInk) 6%,transparent)}
+.vbtn svg{grid-row:span 2; width:44px; height:28px; fill:none; stroke:var(--terra); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round}
+.vbtn b{font:800 16px/1.15 var(--f-display)}
+.vbtn span{font-size:13.5px; color:var(--deskInk2); line-height:1.35}
+.vbtn i{font-style:normal; font:500 11px/1 var(--f-mono); color:var(--deskInk2); margin-right:6px}
+.tip{font:500 11px/1.4 var(--f-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--deskInk2); margin:0}
+
+.phone-col{display:grid; justify-items:center; gap:12px}
+.phone{position:relative; width:min(100%,390px); height:800px; border-radius:46px; background:#2A231F; padding:10px; box-shadow:0 30px 60px -20px rgba(40,30,20,.45), 0 0 0 1px rgba(0,0,0,.2)}
+@media (max-width:480px){ .phone{height:760px} }
+.page{position:relative; width:100%; height:100%; border-radius:37px; background:var(--bg); color:var(--ink); overflow:hidden; perspective:1400px; isolation:isolate}
+.page::before{content:""; position:absolute; inset:0; background:repeating-linear-gradient(transparent 0 31px, rgba(59,50,44,.04) 31px 32px); pointer-events:none}
+.replay{appearance:none; border:0; background:transparent; font:500 11px/1 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--deskInk2); cursor:pointer; padding:8px 10px; border-radius:8px}
+.replay:hover{color:var(--deskInk)}
+
+/* phone chrome */
+.top{position:absolute; inset:0 0 auto 0; z-index:7; display:grid; grid-template-columns:44px 1fr 52px; align-items:center; gap:6px; padding:16px 16px 0; height:58px}
+.icon-btn{appearance:none; border:0; background:transparent; width:40px; height:40px; border-radius:50%; display:grid; place-items:center; cursor:pointer; transition:background var(--t-fb), transform var(--t-fb), opacity var(--t-ui)}
+.icon-btn:hover{background:rgba(59,50,44,.06)} .icon-btn:active{transform:scale(.92)}
+.icon-btn svg{width:20px; height:20px; fill:none; stroke:var(--ink); stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+.skip{appearance:none; border:0; background:transparent; font:600 14px/1 var(--f-display); color:var(--ink2); cursor:pointer; padding:10px 4px; border-radius:10px; transition:opacity var(--t-ui)}
+.is-hidden{opacity:0; pointer-events:none}
+.prog{height:40px; width:100%; overflow:visible}
+
+.ink{position:absolute; inset:0; z-index:5; pointer-events:none; overflow:visible; mix-blend-mode:multiply}
+.ink path{fill:none; stroke-linecap:round; stroke-linejoin:round}
+.ink .fade{transition:opacity 360ms var(--ease); opacity:0}
+.ink path.pick,.ink path.hl,.ink path.hlnum{mix-blend-mode:multiply}
+.title:focus{outline:none}
+
+/* companion */
+.companion{position:absolute; left:0; top:0; width:180px; height:180px; z-index:6; transform-origin:0 0; transition:transform 760ms var(--spring-soft); pointer-events:none}
+.companion .host{position:absolute; inset:0}
+.companion .m{width:100%; height:100%; display:block}
+.companion .swap{animation:swap 460ms var(--spring) both}
+@keyframes swap{from{transform:scale(.82) translateY(10px)} to{transform:none}}
+.companion.pos-off{transform:translate(105px, 900px) scale(.7)}
+.companion.pos-stage{transform:translate(var(--cx), 150px) scale(1)}
+.companion.pos-corner{transform:translate(calc(var(--pw) - 98px), 58px) scale(.44)}
+.companion.pos-center{transform:translate(var(--cx), 230px) scale(1.05)}
+.companion .outline{position:absolute; inset:0; width:100%; height:100%; overflow:visible}
+.companion .outline path{fill:none; stroke:var(--ink); stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round}
+.v-connect .companion.pos-corner{pointer-events:auto; cursor:grab}
+
+/* scenes */
+.stage{position:absolute; inset:0; z-index:2}
+.scene{position:absolute; inset:0; padding:104px 22px 22px; display:flex; flex-direction:column; gap:16px; transform-origin:0 50%; backface-visibility:hidden}
+.scene.turning{background:var(--bg); box-shadow:-30px 0 60px -30px rgba(59,50,44,.35)}
+.meta{font:500 11.5px/1.2 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase}
+.title{font:800 34px/1.02 var(--f-display); letter-spacing:-.035em; margin:0; text-wrap:balance; max-width:calc(100% - 84px)}
+.title em{font-family:var(--f-serif); font-style:italic; font-weight:400; letter-spacing:-.015em}
+.spacer{flex:1}
+.btn{appearance:none; border:0; height:54px; border-radius:99px; background:var(--ink); color:var(--bg); font:600 16.5px/1 var(--f-display); cursor:pointer; width:100%; transition:transform var(--t-fb) var(--ease), opacity var(--t-ui); position:relative; z-index:3}
+.btn:active{transform:scale(.97)}
+.btn[aria-disabled="true"]{opacity:.3; cursor:default}
+.btn[aria-disabled="true"]:active{transform:none}
+.hint{font:400 18px/1 var(--f-hand); color:var(--terra); text-align:center; min-height:18px; margin:-6px 0 0}
+
+/* welcome */
+.welcome{padding-top:150px}
+.welcome .title{font-size:52px; max-width:7ch}
+.cast{position:absolute; left:-10px; right:-10px; bottom:100px; height:96px; display:flex; justify-content:center}
+.cast .peek{width:72px; height:72px; margin:0 -9px; flex:none; transform:translateY(130px); animation:peek 700ms var(--spring) forwards; cursor:pointer; appearance:none; border:0; background:transparent; padding:0; border-radius:50%}
+.cast .peek .m{width:100%; height:100%}
+.cast .peek:nth-child(even){margin-top:14px}
+@keyframes peek{to{transform:translateY(0)}}
+.cast.leaving .peek{animation:drop 420ms var(--ease) forwards}
+@keyframes drop{from{transform:translateY(0)} to{transform:translateY(160px)}}
+
+/* coach */
+.pick-gap{height:180px; flex:none}
+.thumbs{display:flex; gap:7px}
+.thumb{appearance:none; flex:1 1 0; min-width:0; aspect-ratio:1; border-radius:14px; border:1px solid var(--edge); background:var(--card); padding:2px; cursor:pointer; transition:transform 200ms var(--ease), border-color var(--t-fb), box-shadow var(--t-fb)}
+.thumb:active{transform:scale(.94)}
+.thumb .m{width:100%; height:100%; display:block}
+.thumb[aria-checked="true"]{border-color:var(--ink); box-shadow:inset 0 0 0 1px var(--ink)}
+.field{display:flex; align-items:baseline; gap:10px; border-bottom:1.5px solid var(--ink); padding:4px 2px 6px}
+.field label{font:500 11px/1 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase; flex:none}
+.field input{flex:1; min-width:0; border:0; background:transparent; color:var(--ink); font:800 26px/1.1 var(--f-display); letter-spacing:-.02em; padding:2px 0; outline:none}
+
+/* tiles */
+.tiles{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.tile{appearance:none; border:1.5px solid color-mix(in srgb,var(--ink) 14%,transparent); background:var(--card); border-radius:20px; padding:14px 12px 12px; cursor:pointer; display:grid; justify-items:center; gap:8px; position:relative; transition:transform var(--t-fb) var(--ease), border-color var(--t-ui), background var(--t-ui)}
+.tile:hover{border-color:color-mix(in srgb,var(--ink) 34%,transparent)}
+.tile:active{transform:scale(.96)}
+.tile b{font:700 14.5px/1.1 var(--f-display); letter-spacing:-.005em; position:relative; z-index:1}
+.tile.wide{grid-column:1 / -1; grid-template-columns:auto auto; justify-content:center; align-items:center}
+.tile[aria-checked="true"]{border-color:var(--ink); animation:stamp 420ms var(--spring)}
+@keyframes stamp{0%{transform:scale(.95)} 100%{transform:scale(1)}}
+.glyph{width:46px; height:46px; overflow:visible}
+.glyph path{fill:none; stroke:var(--ink); stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round}
+.tile[aria-checked="true"] .glyph path{stroke:var(--terra)}
+.draw{background:var(--ink); -webkit-mask:var(--src) center / contain no-repeat; mask:var(--src) center / contain no-repeat}
+.tile .draw{width:84px; height:84px}
+.tile[aria-checked="true"] .draw{background:var(--terra)}
+.sketch{animation:sketch 1000ms var(--ease) both}
+@keyframes sketch{from{clip-path:polygon(0 0,0 0,0 0)} to{clip-path:polygon(0 0,250% 0,0 250%)}}
+.v-drawn .tile[aria-checked="true"]{background:var(--bg)}
+.v-drawn .tile{background:transparent}
+
+/* week */
+.rack{display:flex; gap:4px; align-items:flex-end; justify-content:space-between; padding:14px 10px 10px; background:var(--card); border:1px solid var(--edge); border-radius:20px}
+.bell{appearance:none; border:0; background:transparent; cursor:pointer; display:grid; justify-items:center; gap:6px; padding:4px 1px; flex:1; border-radius:12px; transition:transform var(--t-fb) var(--ease)}
+.bell:active{transform:scale(.92)}
+.bell svg{display:block; transition:transform 420ms var(--spring)}
+.bell .plate{fill:color-mix(in srgb,var(--ink) 18%,transparent); transition:fill var(--t-ui)}
+.bell .bar{fill:color-mix(in srgb,var(--ink) 28%,transparent); transition:fill var(--t-ui)}
+.bell[aria-checked="true"] .plate{fill:var(--ink)}
+.bell[aria-checked="true"] .bar{fill:#6E6158}
+.bell[aria-checked="true"] svg{transform:translateY(-5px)}
+.bell em{font:500 11px/1 var(--f-mono); font-style:normal; color:var(--ink2)}
+.days{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+.day{appearance:none; border:1.5px solid color-mix(in srgb,var(--ink) 16%,transparent); background:transparent; border-radius:14px; height:54px; display:grid; place-items:center; cursor:pointer; font:600 14px/1 var(--f-display); transition:background var(--t-fb), color var(--t-fb), border-color var(--t-fb), transform var(--t-fb) var(--ease)}
+.day:active{transform:scale(.93)}
+.day[aria-checked="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink); animation:stamp 380ms var(--spring)}
+.sum{font:800 22px/1 var(--f-display); letter-spacing:-.02em; text-align:center; margin:2px 0 0; min-height:24px}
+.sum small{font:500 11px/1 var(--f-mono); letter-spacing:.06em; color:var(--ink2); text-transform:uppercase; display:block; margin-top:6px}
+
+/* reveal */
+.plan{gap:12px; padding-top:100px}
+.big{display:grid; grid-template-columns:auto 1fr; align-items:end; gap:4px 12px; padding:16px 16px 14px; background:var(--card); border:1px solid var(--edge); border-radius:20px}
+.big .num{font:800 64px/.9 var(--f-display); letter-spacing:-.05em}
+.big .num small{font-size:26px; letter-spacing:-.02em}
+.big .lab{font:500 11px/1.3 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase; padding-bottom:6px}
+.wkcard{padding:14px 16px; background:var(--card); border:1px solid var(--edge); border-radius:20px; display:grid; gap:10px}
+.wk{display:grid; grid-template-columns:repeat(7,1fr); gap:5px; text-align:center}
+.wk span{font:500 10px/1 var(--f-mono); color:var(--ink2)}
+.wk i{display:block; height:30px; margin-top:6px; border-radius:10px; background:rgba(59,50,44,.07); transform:scale(.5); opacity:0}
+.wk i.on{background:var(--ink)}
+.plan.go .wk i{animation:pop 420ms var(--spring) forwards}
+@keyframes pop{to{transform:scale(1); opacity:1}}
+.wkfoot{display:flex; justify-content:space-between; font:500 11px/1 var(--f-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--ink2)}
+.duo{display:grid; grid-template-columns:96px 1fr; gap:12px; align-items:center}
+.duo .draw{width:96px; height:96px}
+.bubble{font:400 21px/1.15 var(--f-hand); color:var(--terra); margin:0}
+.chartcard{padding:12px 14px 8px; background:var(--card); border:1px solid var(--edge); border-radius:20px}
+.chartcard svg{width:100%; height:90px; display:block; overflow:visible}
+
+.faces{display:flex; justify-content:space-between; padding:2px}
+.faces button{appearance:none; border:0; background:transparent; width:50px; height:50px; border-radius:50%; cursor:pointer; display:grid; place-items:center; transition:transform var(--t-fb) var(--ease)}
+.faces button:active{transform:scale(.9)}
+.faces svg{width:40px; height:40px; fill:none; stroke:var(--taupe); stroke-width:1.8; stroke-linecap:round}
+.faces button[aria-checked="true"] svg{stroke:var(--ink)}
+.faces button[aria-checked="true"]{box-shadow:0 0 0 2px var(--terra)}
+
+__MASCOT_CSS__
+.m .look{translate:var(--lx,0px) var(--ly,0px); transition:transform .35s ease, translate .14s linear}
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{animation-duration:1ms!important; animation-delay:0ms!important; transition-duration:1ms!important}
+}
+</style>
+
+<div class="wrap">
+  <div class="side">
+    <div class="dmeta">Second Strong · onboarding · line study</div>
+    <h1>Five ways to <em>draw the line.</em></h1>
+    <p class="lede">The same short flow, with far fewer words, in five line treatments. Pick one on the left and play it on the phone.</p>
+    <ul class="vlist" id="vlist"></ul>
+    <p class="tip">Esc goes back · Enter continues · the phone resets when you switch</p>
+  </div>
+  <div class="phone-col">
+    <div class="phone"><div class="page" id="page">
+      <div class="top">
+        <button class="icon-btn is-hidden" id="back" type="button" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5 L8 12 L15 19"/></svg></button>
+        <svg class="prog" id="prog" aria-hidden="true"></svg>
+        <button class="skip is-hidden" id="skip" type="button">Skip</button>
+      </div>
+      <div class="stage" id="stage"></div>
+      <svg class="ink" id="ink" aria-hidden="true"></svg>
+      <div class="companion pos-off" id="companion" data-state="idle" aria-hidden="true"><div class="host" id="coachHost"></div></div>
+    </div></div>
+    <button class="replay" id="replay" type="button">Replay from the start</button>
+  </div>
+</div>
+
+<script>
+(function(){
+__MASCOT_JS__
+
+const DRAW = { squat:"__SQUAT__", plate:"__PLATE__", morning:"__MORNING__", wind:"__WIND__" };
+const GLYPH = {
+  peri:"M23 6 a14 14 0 1 1 0 28 a14 14 0 1 1 0 -28 M23 6 a9 14 0 0 0 0 28",
+  meno:"M23 6 a14 14 0 1 1 0 28 a14 14 0 1 1 0 -28 M23 6 V34",
+  post:"M10 28 a13 13 0 0 1 26 0 M5 28 H41 M23 8 v4 M12 13 l3 3 M34 13 l-3 3",
+  surg:"M23 6 a14 14 0 1 1 -10 4.2 M13 10.2 l-1 -5 M13 10.2 l5 -.8",
+  unsure:"M16 16 a7 7 0 1 1 9.5 6.5 c-2.2 1 -2.5 2.6 -2.5 5 M23 34 v.2"
+};
+const STAGES = [["peri","Perimenopause"],["meno","Menopause"],["post","After menopause"],["surg","Surgical"],["unsure","Not sure",1]];
+const GOALS = [["strong","Strength","squat"],["protein","Protein","plate"],["energy","Energy","morning"],["sleep","Sleep","wind"]];
+const KIT = [2,4,6,8,10,12];
+const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const STEPS = ["welcome","coach","stage","goal","week","reveal","today"];
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const NS = "http://www.w3.org/2000/svg";
+
+const VARIANTS = [
+  {id:"pen", name:"The pen", desc:"The site's own line carries on. It underlines each question, rings your answer and leaves through the bottom of the page.", icon:"M3 20 C10 4 18 26 24 12 C28 4 34 8 30 14 C26 20 36 22 42 10"},
+  {id:"thread", name:"The thread", desc:"One line across the top is your progress. Every answer ties a small knot in it.", icon:"M2 14 H12 c3 -8 8 -8 8 0 s-6 6 -6 0 H30 c3 -8 8 -8 8 0 s-6 6 -6 0 H42"},
+  {id:"drawn", name:"Drawn to life", desc:"Everything starts as line art. Icons draw in, picks get an apricot highlighter, the coach is outlined before it fills.", icon:"M8 22 C4 14 10 6 22 6 C34 6 40 14 36 22 C32 27 12 27 8 22 Z"},
+  {id:"curve", name:"Strength curve", desc:"The progress bar is a small rising line that grows with each answer, then becomes the chart in your plan.", icon:"M2 24 C12 23 16 20 22 16 S34 6 42 4"},
+  {id:"connect", name:"Connect", desc:"You answer by drawing. Drag a line from your coach to a choice, or tap and the coach draws it for you.", icon:"M38 6 C30 6 24 10 20 16 S10 24 6 24 M4 20 l2 4 4 -1"}
+];
+
+const fresh = () => ({ step:0, coach:"bramble", name:"Bramble", named:false, stage:null, goals:[], kit:[], days:[] });
+let S = fresh(), V = "pen";
+try { V = localStorage.getItem("ss-lines-variant") || "pen"; } catch(e) {}
+
+const $ = id => document.getElementById(id);
+const page = $("page"), stage = $("stage"), comp = $("companion"), host = $("coachHost"), ink = $("ink"), prog = $("prog");
+const esc = s => String(s).replace(/[<>&"]/g, ch => ({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"})[ch]);
+const coachName = () => (S.name || "").trim() || CHARS[S.coach].name;
+const kitText = () => S.kit.length ? S.kit.slice().sort((a,b)=>a-b).join(" & ") + "kg" : "bodyweight";
+const sleep = ms => new Promise(r => setTimeout(r, REDUCED ? 0 : ms));
+
+/* ---------- geometry + ink helpers ---------- */
+let W = 370, H = 780;
+function measure(){
+  W = page.clientWidth; H = page.clientHeight;
+  page.style.setProperty("--pw", W + "px");
+  page.style.setProperty("--cx", Math.round((W - 180) / 2) + "px");
+  ink.setAttribute("viewBox", `0 0 ${W} ${H}`); ink.setAttribute("width", W); ink.setAttribute("height", H);
+}
+new ResizeObserver(measure).observe(page); measure();
+function rel(el){ const p = page.getBoundingClientRect(), r = el.getBoundingClientRect(); return {x:r.left-p.left, y:r.top-p.top, w:r.width, h:r.height}; }
+function smooth(pts){
+  let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i-1] || pts[i], p1 = pts[i], p2 = pts[i+1], p3 = pts[i+2] || p2;
+    const c1 = [p1[0] + (p2[0]-p0[0])/6, p1[1] + (p2[1]-p0[1])/6], c2 = [p2[0] - (p3[0]-p1[0])/6, p2[1] - (p3[1]-p1[1])/6];
+    d += ` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+  }
+  return d;
+}
+function ringPts(r, pad = 7, turns = 1.12, start = -2.5){
+  const cx = r.x + r.w/2, cy = r.y + r.h/2, rx = r.w/2 + pad, ry = r.h/2 + pad, n = 26, pts = [];
+  for (let i = 0; i <= n; i++) {
+    const t = i / n, a = start + t * Math.PI * 2 * turns, wob = 1 + Math.sin(t * 9) * 0.018 + t * 0.03;
+    pts.push([cx + Math.cos(a) * rx * wob, cy + Math.sin(a) * ry * wob]);
+  }
+  return pts;
+}
+function underPts(r, dy = 6){ const y = r.y + r.h + dy; return [[r.x - 4, y + 2], [r.x + r.w * 0.35, y - 1], [r.x + r.w * 0.7, y + 2], [r.x + r.w + 6, y - 2]]; }
+function stroke(d, o = {}){
+  const p = document.createElementNS(NS, "path");
+  p.setAttribute("d", d);
+  p.setAttribute("stroke", o.color || "var(--terra)");
+  p.setAttribute("stroke-width", o.w || 2.4);
+  if (o.cls) p.setAttribute("class", o.cls);
+  if (o.opacity) p.setAttribute("opacity", o.opacity);
+  (o.into || ink).appendChild(p);
+  const len = p.getTotalLength();
+  p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+  const a = p.animate([{strokeDashoffset:len}, {strokeDashoffset:0}], {duration: REDUCED ? 1 : (o.dur || 700), delay: REDUCED ? 0 : (o.delay || 0), easing: o.ease || "cubic-bezier(.45,0,.2,1)", fill:"forwards"});
+  p.done = a.finished.catch(() => {});
+  return p;
+}
+function clearInk(sel = "path"){
+  ink.querySelectorAll(sel).forEach(p => { p.classList.add("fade"); setTimeout(() => p.remove(), 380); });
+}
+
+/* ---------- companion ---------- */
+let stateTimer;
+function drawCoach(swap){ host.innerHTML = mascot(S.coach); if (swap) host.firstElementChild.classList.add("swap"); }
+function coachState(s, ms){ clearTimeout(stateTimer); comp.dataset.state = s; if (ms) stateTimer = setTimeout(() => comp.dataset.state = "idle", ms); }
+function coachPos(p){ comp.classList.remove("pos-off","pos-stage","pos-corner","pos-center"); comp.classList.add("pos-" + p); }
+function coachAnchor(){ /* left edge of the coach in the corner */ return [W - 90, 58 + 46]; }
+
+page.addEventListener("pointermove", e => {
+  if (REDUCED) return;
+  page.querySelectorAll(".m").forEach(svg => {
+    const r = svg.getBoundingClientRect(); if (!r.width) return;
+    const dx = e.clientX - (r.left + r.width/2), dy = e.clientY - (r.top + r.height*0.45);
+    const d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 220);
+    svg.style.setProperty("--lx", (dx/d*3.2*k).toFixed(2) + "px");
+    svg.style.setProperty("--ly", (dy/d*2.6*k).toFixed(2) + "px");
+  });
+});
+
+/* ---------- variant directors ---------- */
+const D = {};
+
+/* 1 · the pen: one continuous line, scene to scene */
+D.pen = {
+  x: 26,
+  enter(name, el){
+    const t = el.querySelector(".title"); if (!t) return;
+    const tr = rel(t.querySelector("em") || t), start = [10, -8];
+    if (name === "welcome") {
+      const pts = [[-10, 120], [40, 110]].concat(ringPts(tr, 10, 1.1, Math.PI)).concat([[tr.x + tr.w + 30, tr.y + tr.h + 60], [W/2, H - 210]]);
+      stroke(smooth(pts), {dur:1600, delay:300, cls:"s"});
+      this.x = W/2; this.pen = [W/2, H - 210]; return;
+    }
+    const u = underPts(tr, 4);
+    const pts = [start, [9, u[0][1] - 30], [u[0][0] - 2, u[0][1] - 2], ...u.slice(1), [u[3][0] + 10, u[3][1] + 10], [u[3][0] - 20, u[3][1] + 22], [12, u[3][1] + 40], [9, H * 0.55]];
+    stroke(smooth(pts), {dur:1100, cls:"s"});
+    this.pen = [8, H * 0.55];
+  },
+  select(el){
+    ink.querySelectorAll(".sel").forEach(p => { p.classList.add("fade"); setTimeout(() => p.remove(), 380); });
+    const r = rel(el), ring = ringPts(r, 6, 1.08, Math.PI * 0.85);
+    const pts = [this.pen, [(this.pen[0] + ring[0][0]) / 2, Math.min(this.pen[1], ring[0][1]) - 10], ...ring];
+    stroke(smooth(pts), {dur:620, cls:"sel"});
+  },
+  async leave(name){
+    const from = this.pen || [W/2, H*0.6];
+    const out = [from, [Math.max(10, from[0] - 30), from[1] + 50], [10, Math.min(H - 120, from[1] + 140)], [9, H + 20]];
+    await stroke(smooth(out), {dur:420, cls:"s"}).done;
+    clearInk();
+  },
+  reveal(el){
+    const n = rel(el.querySelector(".num")), wk = rel(el.querySelector(".wk"));
+    const pts = [[10, -8], [9, n.y - 10], ...ringPts(n, 10, 1.1, Math.PI * 1.05), [n.x - 6, n.y + n.h + 24], [9, wk.y + 20], [9, wk.y + wk.h + 40]];
+    stroke(smooth(pts), {dur:1500, delay:200});
+  }
+};
+
+/* 2 · the thread: progress line with knots */
+D.thread = {
+  init(){
+    prog.innerHTML = "";
+    const w = prog.clientWidth || 220;
+    prog.setAttribute("viewBox", `0 0 ${w} 40`);
+    this.w = w;
+    stroke(`M2 20 C${w*.3} 18 ${w*.6} 22 ${w-2} 19`, {into:prog, color:"rgba(59,50,44,.14)", w:2, dur:1});
+    this.done = 2;
+  },
+  enter(name){
+    if (!this.w) this.init();
+    const step = STEPS.indexOf(name), to = 2 + (this.w - 4) * Math.min(1, step / 5);
+    if (to > this.done + 1) {
+      stroke(`M${this.done} ${20 + Math.sin(this.done) * 0.6} L${to} ${20 + Math.sin(to) * 0.6}`, {into:prog, color:"var(--ink)", w:2.4, dur:700});
+      this.done = to;
+    }
+  },
+  select(el, name){
+    if (this.knotted?.[name]) return;
+    (this.knotted ||= {})[name] = true;
+    const x = 2 + (this.w - 4) * Math.min(1, (STEPS.indexOf(name) + 0.5) / 5);
+    stroke(`M${x-9} 20 C${x-4} 20 ${x-2} 8 ${x+3} 8 C${x+9} 8 ${x+8} 20 ${x+2} 21 C${x-3} 22 ${x-5} 15 ${x} 13 C${x+4} 11 ${x+6} 20 ${x+12} 20`, {into:prog, color:"var(--terra)", w:2.2, dur:520});
+    const r = rel(el); stroke(smooth(underPts(r, -6)), {w:2.2, dur:380, cls:"sel"});
+    ink.querySelectorAll(".sel").forEach((p, i, all) => { if (i < all.length - 1 && name !== "goal") { p.classList.add("fade"); setTimeout(() => p.remove(), 380); } });
+  },
+  async leave(){ clearInk(); },
+  reveal(el){
+    const n = rel(el.querySelector(".num"));
+    stroke(smooth(underPts(n, 2)), {dur:700, delay:500, color:"var(--terra)"});
+  }
+};
+
+/* 3 · drawn to life: line art first, highlighter for picks, coach outlined */
+D.drawn = {
+  enter(name, el){
+    el.querySelectorAll(".glyph path").forEach((p, i) => {
+      const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+      p.animate([{strokeDashoffset:len}, {strokeDashoffset:0}], {duration:REDUCED?1:800, delay:REDUCED?0:120 + i*110, easing:"cubic-bezier(.45,0,.2,1)", fill:"forwards"});
+    });
+    el.querySelectorAll(".tile .draw").forEach((d, i) => { d.classList.add("sketch"); d.style.animationDelay = (120 + i * 140) + "ms"; });
+    const t = el.querySelector(".title em"); if (t) stroke(smooth(underPts(rel(t), 2)), {color:"var(--apricot)", w:10, dur:520, delay:350, cls:"hl", opacity:.85});
+    if (name === "coach") this.outline();
+  },
+  outline(){
+    host.style.opacity = "0";
+    comp.querySelector(".outline")?.remove();
+    const c = CHARS[S.coach], svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("viewBox", "0 0 200 200"); svg.setAttribute("class", "outline");
+    comp.appendChild(svg);
+    const parts = [c.body, ...(c.back || []).filter(p => p.f === "b").map(p => p.d)];
+    const strokes = parts.map((d, i) => stroke(d, {into:svg, color:"var(--ink)", w:2.6, dur:900, delay:i*120}));
+    Promise.all(strokes.map(s => s.done)).then(() => {
+      host.style.transition = "opacity 420ms cubic-bezier(.22,1,.36,1)"; host.style.opacity = "1";
+      svg.style.transition = "opacity 420ms"; svg.style.opacity = "0"; setTimeout(() => svg.remove(), 450);
+    });
+  },
+  coachChanged(){ this.outline(); },
+  select(el, name){
+    const lab = el.querySelector("b") || el;
+    if (name !== "goal") ink.querySelectorAll(".pick").forEach(p => { p.classList.add("fade"); setTimeout(() => p.remove(), 380); });
+    stroke(smooth(underPts(rel(lab), -3)), {color:"var(--apricot)", w:12, dur:420, cls:"pick", opacity:.9});
+  },
+  unselect(el){ /* re-highlight current picks */
+    ink.querySelectorAll(".pick").forEach(p => p.remove());
+    stage.querySelectorAll('.tile[aria-checked="true"] b').forEach(b => stroke(smooth(underPts(rel(b), -3)), {color:"var(--apricot)", w:12, dur:1, cls:"pick", opacity:.9}));
+  },
+  async leave(){ clearInk(); },
+  reveal(el){
+    const n = rel(el.querySelector(".num"));
+    stroke(smooth(underPts(n, -14)), {color:"var(--apricot)", w:16, dur:600, delay:700, opacity:.85, cls:"hlnum"});
+    el.querySelectorAll(".wk i").forEach(i => { i.style.background = "transparent"; i.style.boxShadow = "inset 0 0 0 1.6px var(--ink)"; });
+    setTimeout(() => el.querySelectorAll(".wk i.on").forEach(i => { i.style.transition = "background 300ms"; i.style.background = "var(--ink)"; }), 1400);
+  }
+};
+
+/* 4 · strength curve: progress rises, then becomes the plan chart */
+D.curve = {
+  pts(w, upto){
+    const base = 30, pts = [];
+    for (let i = 0; i <= upto; i++) pts.push([4 + (w - 8) * i / 5, base - Math.pow(i / 5, 1.4) * 24]);
+    return pts;
+  },
+  init(){
+    prog.innerHTML = "";
+    this.w = prog.clientWidth || 220;
+    prog.setAttribute("viewBox", `0 0 ${this.w} 40`);
+    stroke(`M4 31 L${this.w - 4} 31`, {into:prog, color:"rgba(59,50,44,.14)", w:1.6, dur:1});
+    this.at = 0;
+  },
+  enter(name){
+    if (!this.w) this.init();
+    const step = STEPS.indexOf(name);
+    if (step > this.at) {
+      const all = this.pts(this.w, step), seg = all.slice(Math.max(0, this.at - 1));
+      if (seg.length > 1) stroke(smooth(seg), {into:prog, color:"var(--ink)", w:2.4, dur:650});
+      const p = all[step]; const dot = document.createElementNS(NS, "circle");
+      dot.setAttribute("cx", p[0]); dot.setAttribute("cy", p[1]); dot.setAttribute("r", 3.4); dot.setAttribute("fill", "var(--terra)");
+      dot.style.transformBox = "fill-box"; dot.style.transformOrigin = "center";
+      prog.appendChild(dot); dot.animate([{transform:"scale(0)"}, {transform:"scale(1)"}], {duration:420, delay:550, easing:"cubic-bezier(.3,1.6,.5,1)", fill:"backwards"});
+      this.at = step;
+    }
+  },
+  select(){ const d = prog.querySelector("circle:last-of-type"); d?.animate([{transform:"scale(1)"}, {transform:"scale(1.8)"}, {transform:"scale(1)"}], {duration:380, easing:"cubic-bezier(.3,1.6,.5,1)"}); },
+  async leave(){},
+  reveal(el){
+    const svg = el.querySelector(".chartcard svg"); if (!svg) return;
+    const w = svg.clientWidth, h = 90; svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    stroke(`M4 ${h-14} L${w-4} ${h-14}`, {into:svg, color:"rgba(59,50,44,.16)", w:1.6, dur:1});
+    const pts = []; for (let i = 0; i <= 12; i++) pts.push([4 + (w - 8) * i / 12, (h - 14) - Math.pow(i / 12, 1.25) * (h - 30) + Math.sin(i * 1.7) * 2]);
+    stroke(smooth(pts), {into:svg, color:"var(--ink)", w:2.8, dur:1400, delay:500});
+    const last = pts[pts.length - 1], dot = document.createElementNS(NS, "circle");
+    dot.setAttribute("cx", last[0]); dot.setAttribute("cy", last[1]); dot.setAttribute("r", 5); dot.setAttribute("fill", "var(--terra)");
+    svg.appendChild(dot); dot.animate([{opacity:0}, {opacity:1}], {duration:300, delay:1800, fill:"backwards"});
+    const r = rel(prog); prog.animate([{opacity:1}, {opacity:0}], {duration:300, fill:"forwards"});
+  }
+};
+
+/* 5 · connect: answer by drawing a line from the coach */
+D.connect = {
+  enter(){},
+  select(el){
+    ink.querySelectorAll(".sel").forEach(p => { p.classList.add("fade"); setTimeout(() => p.remove(), 380); });
+    if (this.dragged) { this.dragged = false; return; }
+    const a = coachAnchor(), r = rel(el), to = [r.x + r.w / 2, r.y + 10];
+    const mid = [(a[0] + to[0]) / 2 + 30, Math.min(a[1], to[1]) + 30];
+    stroke(smooth([a, mid, to]), {dur:520, cls:"sel"}).done.then(() => stroke(smooth(ringPts(r, 6, 1.05, -1.6)), {dur:420, cls:"sel"}));
+    coachState("hello", 900);
+  },
+  async leave(){ clearInk(); },
+  reveal(el){
+    const a = coachAnchor(), b = rel(el.querySelector(".bubble"));
+    stroke(smooth([[a[0] + 10, a[1] + 30], [W - 14, a[1] + 110], [W - 12, b.y - 30], [b.x + b.w - 10, b.y - 6]]), {dur:900, delay:900});
+  }
+};
+/* drag-to-answer for connect */
+let live = null;
+comp.addEventListener("pointerdown", e => {
+  if (V !== "connect" || !comp.classList.contains("pos-corner")) return;
+  e.preventDefault(); comp.setPointerCapture(e.pointerId);
+  live = document.createElementNS(NS, "path"); live.setAttribute("stroke", "var(--terra)"); live.setAttribute("stroke-width", 2.4);
+  ink.appendChild(live); coachState("listening");
+});
+comp.addEventListener("pointermove", e => {
+  if (!live) return;
+  const p = page.getBoundingClientRect(), a = coachAnchor(), to = [e.clientX - p.left, e.clientY - p.top];
+  live.setAttribute("d", smooth([a, [(a[0] + to[0]) / 2 + 24, Math.min(a[1], to[1]) + 24], to]));
+});
+comp.addEventListener("pointerup", e => {
+  if (!live) return;
+  const l = live; live = null;
+  const hit = document.elementsFromPoint(e.clientX, e.clientY).find(n => n.matches?.(".tile, .day, .bell") || n.closest?.(".tile, .day, .bell"));
+  const target = hit && (hit.matches(".tile, .day, .bell") ? hit : hit.closest(".tile, .day, .bell"));
+  if (target) { l.classList.add("sel"); D.connect.dragged = true; target.click(); stroke(smooth(ringPts(rel(target), 6, 1.05, -1.6)), {dur:380, cls:"sel"}); }
+  else { l.classList.add("fade"); setTimeout(() => l.remove(), 380); coachState("idle"); }
+});
+
+/* ---------- scenes ---------- */
+const scenes = {
+  welcome(){
+    const el = sceneEl("welcome");
+    el.innerHTML = `
+      <div class="meta">Second Strong</div>
+      <h1 class="title">Strong, <em>for years.</em></h1>
+      <div class="cast" id="cast">${ORDER.map((k,i)=>`<button class="peek" type="button" style="animation-delay:${250+i*55}ms" aria-label="${CHARS[k].name}"><div data-state="idle">${mascot(k)}</div></button>`).join("")}</div>
+      <div class="spacer"></div>
+      <button class="btn" data-next type="button">Begin</button>`;
+    el.querySelector("#cast").addEventListener("click", e => { const b = e.target.closest(".peek"); if (!b) return; const w = b.firstElementChild; w.dataset.state = "proud"; setTimeout(() => w.dataset.state = "idle", 1700); });
+    coachPos("off");
+    return el;
+  },
+  coach(){
+    const el = sceneEl("coach");
+    el.innerHTML = `
+      <div class="meta">Your coach</div>
+      <h2 class="title">Pick <em>one.</em></h2>
+      <div class="pick-gap"></div>
+      <div class="thumbs" role="radiogroup" aria-label="Coach" id="thumbs">${ORDER.map(k=>`<button class="thumb" type="button" role="radio" data-c="${k}" aria-checked="${k===S.coach}" aria-label="${CHARS[k].name}"><div data-state="idle">${mascot(k)}</div></button>`).join("")}</div>
+      <div class="field"><label for="nameIn">Name</label><input id="nameIn" maxlength="14" autocomplete="off" spellcheck="false" value="${esc(S.name)}"></div>
+      <div class="spacer"></div>
+      <button class="btn" data-next type="button" id="keepBtn"></button>`;
+    const thumbs = el.querySelector("#thumbs"), nameIn = el.querySelector("#nameIn"), keep = el.querySelector("#keepBtn");
+    const sync = () => { keep.textContent = "Keep " + coachName(); keep.setAttribute("aria-disabled", String(!coachName())); };
+    const pick = k => {
+      if (!S.named) S.name = CHARS[k].name;
+      S.coach = k; nameIn.value = S.name;
+      thumbs.querySelectorAll(".thumb").forEach(t => t.setAttribute("aria-checked", t.dataset.c === k));
+      drawCoach(true); coachState("hello", 1800); sync();
+      D[V].coachChanged?.();
+    };
+    thumbs.addEventListener("click", e => { const b = e.target.closest(".thumb"); if (b) pick(b.dataset.c); });
+    thumbs.addEventListener("keydown", e => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return; e.preventDefault();
+      const i = (ORDER.indexOf(S.coach) + (e.key === "ArrowRight" ? 1 : ORDER.length - 1)) % ORDER.length;
+      pick(ORDER[i]); thumbs.querySelector(`[data-c="${ORDER[i]}"]`).focus();
+    });
+    nameIn.addEventListener("focus", () => coachState("listening"));
+    nameIn.addEventListener("blur", () => coachState("idle"));
+    nameIn.addEventListener("input", () => { S.name = nameIn.value; S.named = true; sync(); });
+    sync(); drawCoach(false); if (V === "drawn") host.style.opacity = "0"; coachPos("stage"); coachState("hello", 1800);
+    return el;
+  },
+  stage(){
+    const el = sceneEl("stage");
+    el.innerHTML = `
+      <div class="meta">About you</div>
+      <h2 class="title">Where are <em>you?</em></h2>
+      <div class="tiles" role="radiogroup" aria-label="Stage">${STAGES.map(([id,l,wide])=>`<button class="tile${wide?" wide":""}" type="button" role="radio" data-v="${id}" aria-checked="${S.stage===id}"><svg class="glyph" viewBox="0 0 46 40" aria-hidden="true"><path d="${GLYPH[id]}"/></svg><b>${l}</b></button>`).join("")}</div>
+      <div class="spacer"></div>
+      <button class="btn" data-next type="button">Continue</button>`;
+    el.querySelector(".tiles").addEventListener("click", e => {
+      const b = e.target.closest(".tile"); if (!b) return;
+      el.querySelectorAll(".tile").forEach(x => x.setAttribute("aria-checked", x === b));
+      S.stage = b.dataset.v; coachState(S.stage === "surg" ? "comfort" : "listening", 1300);
+      D[V].select?.(b, "stage"); gate(el);
+    });
+    coachPos("corner"); coachState("idle");
+    gate(el, () => !!S.stage);
+    return el;
+  },
+  goal(){
+    const el = sceneEl("goal");
+    el.innerHTML = `
+      <div class="meta">Up to two</div>
+      <h2 class="title">What <em>matters?</em></h2>
+      <div class="tiles" role="group" aria-label="Goals">${GOALS.map(([id,l,dr])=>`<button class="tile" type="button" role="checkbox" data-v="${id}" aria-checked="${S.goals.includes(id)}"><div class="draw" style="--src:url(${DRAW[dr]})" aria-hidden="true"></div><b>${l}</b></button>`).join("")}</div>
+      <p class="hint" id="hint"></p>
+      <div class="spacer"></div>
+      <button class="btn" data-next type="button">Continue</button>`;
+    el.querySelector(".tiles").addEventListener("click", e => {
+      const b = e.target.closest(".tile"); if (!b) return;
+      const v = b.dataset.v, on = !S.goals.includes(v);
+      if (on && S.goals.length >= 2) { el.querySelector("#hint").textContent = "two is plenty"; b.animate([{transform:"translateX(0)"},{transform:"translateX(-4px)"},{transform:"translateX(4px)"},{transform:"translateX(0)"}], {duration:220}); return; }
+      el.querySelector("#hint").textContent = "";
+      S.goals = on ? S.goals.concat(v) : S.goals.filter(x => x !== v);
+      b.setAttribute("aria-checked", on);
+      if (on) { coachState("proud", 1600); D[V].select?.(b, "goal"); } else D[V].unselect?.(b, "goal");
+      gate(el);
+    });
+    coachPos("corner"); coachState("idle");
+    gate(el, () => S.goals.length > 0);
+    return el;
+  },
+  week(){
+    const el = sceneEl("week");
+    el.innerHTML = `
+      <div class="meta">Your kit · your days</div>
+      <h2 class="title">Your <em>week.</em></h2>
+      <div class="rack" role="group" aria-label="Dumbbells you own">${KIT.map(kg=>{const s=0.75+kg/40;return `<button class="bell" type="button" role="checkbox" data-kg="${kg}" aria-checked="${S.kit.includes(kg)}" aria-label="${kg} kilogram pair"><svg width="${Math.round(40*s)}" height="${Math.round(22*s)}" viewBox="0 0 40 22"><rect class="plate" x="1" y="${8-kg/3}" width="8" height="${6+kg/1.5}" rx="2.5"/><rect class="bar" x="8" y="9" width="24" height="4" rx="2"/><rect class="plate" x="31" y="${8-kg/3}" width="8" height="${6+kg/1.5}" rx="2.5"/></svg><em>${kg}</em></button>`}).join("")}</div>
+      <div class="days" role="group" aria-label="Training days">${DAYS.map((d,i)=>`<button class="day" type="button" role="checkbox" data-d="${i}" aria-checked="${S.days.includes(i)}" aria-label="${d}">${d.slice(0,1)}</button>`).join("")}</div>
+      <p class="sum" id="sum"></p>
+      <div class="spacer"></div>
+      <button class="btn" data-next type="button">Make my plan</button>`;
+    const sum = () => { const n = S.days.length; el.querySelector("#sum").innerHTML = n ? `${n} × 20 min<small>${kitText()}</small>` : `<small>tap two to four days</small>`; };
+    el.querySelectorAll(".bell").forEach(b => b.addEventListener("click", () => {
+      const kg = +b.dataset.kg, on = !S.kit.includes(kg);
+      S.kit = on ? S.kit.concat(kg) : S.kit.filter(x => x !== kg);
+      b.setAttribute("aria-checked", on); if (on) coachState("lifting", 1800); sum();
+      if (V === "connect" && on) D.connect.select(b);
+    }));
+    el.querySelectorAll(".day").forEach(b => b.addEventListener("click", () => {
+      const d = +b.dataset.d, on = !S.days.includes(d);
+      if (on && S.days.length >= 4) { b.animate([{transform:"translateX(0)"},{transform:"translateX(-3px)"},{transform:"translateX(3px)"},{transform:"translateX(0)"}], {duration:200}); return; }
+      S.days = (on ? S.days.concat(d) : S.days.filter(x => x !== d)).sort();
+      b.setAttribute("aria-checked", on); sum(); gate(el);
+      if (on && V !== "drawn") D[V].select?.(b, "week");
+    }));
+    sum(); coachPos("corner"); coachState("idle");
+    gate(el, () => S.days.length >= 2);
+    return el;
+  },
+  reveal(){
+    const el = sceneEl("plan");
+    const g = GOALS.find(x => S.goals.includes(x[0])) || GOALS[0];
+    const first = DAYS[S.days[0] ?? 0];
+    el.innerHTML = `
+      <div class="meta">${new Date().toLocaleDateString("en-GB",{weekday:"long", day:"numeric", month:"long"}).toUpperCase()}</div>
+      <h2 class="title">Your <em>plan.</em></h2>
+      <div class="big"><div class="num">100<small>g</small></div><div class="lab">protein<br>a day</div></div>
+      ${V === "curve" ? `<div class="chartcard"><div class="wkfoot"><span>Strength · your baseline</span><span>12 weeks</span></div><svg aria-label="Strength rising over 12 weeks"></svg></div>` : ""}
+      <div class="wkcard"><div class="wk">${DAYS.map((d,i)=>`<div><span>${d.slice(0,1)}</span><i class="${S.days.includes(i)?"on":""}" style="animation-delay:${600+i*70}ms"></i></div>`).join("")}</div>
+        <div class="wkfoot"><span>${S.days.length} × 20 min</span><span>${esc(kitText())}</span></div></div>
+      ${V === "curve" ? "" : `<div class="duo"><div class="draw sketch" style="--src:url(${DRAW[g[2]]}); animation-delay:900ms"></div><p class="bubble">${esc(first)} first. Easy on rough mornings.</p></div>`}
+      <div class="spacer"></div>
+      <button class="btn" data-next type="button">Start</button>`;
+    coachPos("corner");
+    return el;
+  },
+  today(){
+    const el = sceneEl("today");
+    el.innerHTML = `
+      <div class="meta">Tomorrow, 7:30</div>
+      <h2 class="title">How was <em>the night?</em></h2>
+      <div style="height:220px; flex:none"></div>
+      <div class="faces" role="radiogroup" aria-label="Morning check-in">${[["Rough","M14 27 q6 -5 12 0"],["Restless","M14 26 h12"],["Broken","M14 26 q3 -2.5 6 0 q3 2.5 6 0"],["Okay","M14 25 q6 2.5 12 0"],["Well","M13 24 q7 6 14 0"]].map(([l,m])=>`<button type="button" role="radio" aria-checked="false" aria-label="${l}"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16"/><circle cx="15" cy="17" r="1.1" fill="currentColor"/><circle cx="25" cy="17" r="1.1" fill="currentColor"/><path d="${m}"/></svg></button>`).join("")}</div>
+      <div class="spacer"></div>`;
+    el.querySelectorAll(".faces button").forEach((b, i, all) => b.addEventListener("click", () => {
+      all.forEach(x => x.setAttribute("aria-checked", x === b));
+      coachState(i <= 2 ? "comfort" : "proud", 1800);
+      if (V === "pen" || V === "connect") { clearInk(); stroke(smooth(ringPts(rel(b), 4, 1.1)), {dur:500}); }
+      if (V === "drawn") { clearInk(); stroke(smooth(underPts(rel(b), -6)), {color:"var(--apricot)", w:10, dur:400, opacity:.9}); }
+    }));
+    coachPos("center"); coachState("hello", 2000);
+    return el;
+  }
+};
+function sceneEl(cls){ const el = document.createElement("section"); el.className = "scene " + cls; return el; }
+const gates = new WeakMap();
+function gate(el, test){ if (test) gates.set(el, test); const t = gates.get(el), b = el.querySelector("[data-next]"); if (b && t) b.setAttribute("aria-disabled", String(!t())); }
+
+/* ---------- navigation ---------- */
+let current = null, busy = false, token = 0;
+async function go(n, dir){
+  if (busy) return; busy = true;
+  const my = token;
+  const prev = current;
+  if (prev && dir >= 0) await D[V].leave?.(STEPS[S.step]);
+  else if (prev) clearInk();
+  if (my !== token) return;
+  S.step = n;
+  const name = STEPS[n], next = scenes[name]();
+  stage.appendChild(next); current = next;
+  $("back").classList.toggle("is-hidden", n === 0 || n >= 5);
+  $("skip").classList.toggle("is-hidden", n === 0 || n >= 5);
+  prog.classList.toggle("is-hidden", n === 0 || n >= 5 || (V !== "thread" && V !== "curve"));
+  next.querySelector("[data-next]")?.addEventListener("click", e => { if (e.currentTarget.getAttribute("aria-disabled") !== "true") go(S.step + 1, 1); });
+  const settle = () => {
+    if (name === "reveal") { next.classList.add("go"); coachState("proud", 1900); D[V].reveal?.(next); }
+    else D[V].enter?.(name, next, dir);
+    if (name === "stage" || name === "goal" || name === "week") restoreMarks(next, name);
+    busy = false;
+    const h = next.querySelector("h1,h2"); if (h) { h.tabIndex = -1; h.focus({preventScroll:true}); }
+  };
+  if (!prev || REDUCED) { prev?.remove(); requestAnimationFrame(settle); return; }
+  if (prev.classList.contains("welcome")) prev.querySelector("#cast")?.classList.add("leaving");
+  prev.classList.add("turning");
+  const fwd = dir >= 0, ease = "cubic-bezier(.22,1,.36,1)";
+  prev.style.zIndex = fwd ? 2 : 1; next.style.zIndex = fwd ? 1 : 2;
+  prev.animate(fwd ? [{transform:"rotateY(0)", opacity:1}, {transform:"rotateY(-62deg) translateX(-12%)", opacity:0}] : [{transform:"translateX(0)", opacity:1}, {transform:"translateX(14%)", opacity:0}], {duration:640, easing:ease, fill:"forwards"});
+  await next.animate(fwd ? [{transform:"translateX(10%)", opacity:0}, {transform:"translateX(0)", opacity:1}] : [{transform:"rotateY(-62deg) translateX(-12%)", opacity:0}, {transform:"rotateY(0)", opacity:1}], {duration:640, delay:fwd ? 80 : 0, easing:ease, fill:"backwards"}).finished.catch(()=>{});
+  if (my !== token) return;
+  prev.remove(); next.style.zIndex = "";
+  settle();
+}
+/* returning to a scene redraws the marks for choices already made */
+function restoreMarks(el, name){
+  el.querySelectorAll('[aria-checked="true"]').forEach(b => {
+    if (V === "pen" || V === "connect") stroke(smooth(ringPts(rel(b), 6, 1.06, -1.6)), {dur:1, cls:"sel"});
+    else if (V === "drawn" && b.matches(".tile")) stroke(smooth(underPts(rel(b.querySelector("b")), -3)), {color:"var(--apricot)", w:12, dur:1, cls:"pick", opacity:.9});
+  });
+}
+function back(){ if (S.step > 0 && S.step < 5) go(S.step - 1, -1); }
+
+function start(){
+  token++; busy = false;
+  S = fresh(); current?.remove(); current = null;
+  ink.innerHTML = ""; prog.innerHTML = "";
+  Object.values(D).forEach(d => { delete d.w; delete d.knotted; delete d.at; d.x = 26; delete d.pen; });
+  page.className = "page v-" + V;
+  host.style.opacity = "1"; comp.querySelector(".outline")?.remove();
+  drawCoach(false); coachPos("off");
+  try { localStorage.setItem("ss-lines-variant", V); } catch(e) {}
+  go(0, 1);
+}
+
+/* side list */
+const vlist = $("vlist");
+vlist.innerHTML = VARIANTS.map((v, i) => `<li><button class="vbtn" type="button" data-v="${v.id}" aria-pressed="${v.id===V}"><svg viewBox="0 0 44 28" aria-hidden="true"><path d="${v.icon}"/></svg><b><i>${String.fromCharCode(65+i)}</i>${v.name}</b><span>${v.desc}</span></button></li>`).join("");
+vlist.addEventListener("click", e => {
+  const b = e.target.closest(".vbtn"); if (!b) return;
+  V = b.dataset.v; vlist.querySelectorAll(".vbtn").forEach(x => x.setAttribute("aria-pressed", x === b));
+  start();
+});
+$("replay").addEventListener("click", start);
+$("back").addEventListener("click", back);
+$("skip").addEventListener("click", () => { if (!S.stage) S.stage = "unsure"; if (!S.goals.length) S.goals = ["strong"]; if (S.days.length < 2) S.days = [0,2,4]; go(5, 1); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { back(); return; }
+  if (e.key === "Enter" && current && e.target.tagName !== "BUTTON") {
+    const b = current.querySelector("[data-next]");
+    if (b && b.getAttribute("aria-disabled") !== "true") { e.preventDefault(); go(S.step + 1, 1); }
+  }
+});
+window.__ob = { get S(){ return S; }, get V(){ return V; }, setV(v){ V = v; start(); } };
+start();
+})();
+</script>

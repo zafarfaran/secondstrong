@@ -1,0 +1,873 @@
+<meta charset="utf-8">
+<title>Onboarding Feelings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Gochi+Hand&family=IBM+Plex+Mono:wght@500&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap">
+<style>
+/* Layout: a quiet desk. Left, five onboarding experiences in the Sketchbook look; right, one live phone running the chosen one. */
+:root{
+  --bg:#FBF8F4; --card:#F6F0E8; --almond:#EDE3D6; --ink:#3B322C; --ink2:#5D534B;
+  --taupe:#A8968A; --terra:#A85A3C; --apricot:#F0C9A8; --edge:rgba(59,50,44,.10); --shadow:rgba(59,50,44,.22);
+  --desk:#EFE8DE; --deskInk:#3B322C; --deskInk2:#6E6158;
+  --f-display:"Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --f-serif:"Newsreader", Georgia, serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --f-hand:"Gochi Hand", "Comic Sans MS", cursive;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --spring:linear(0, .009, .035 2.1%, .141, .281 6.7%, .723 12.9%, .938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.129 32.8%, 1.051 39.6%, 1.017 43.1%, .991, .977 51%, .974 53.8%, .975 57.1%, .997 69.8%, 1.003 76.9%, 1);
+  --spring-soft:linear(0, .02 1.5%, .1 4%, .38 10%, .72 18%, .92 26%, 1.02 34%, 1.05 40%, 1.04 48%, 1.01 60%, 1);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --desk:#1C1714; --deskInk:#F1E9DF; --deskInk2:#B8AA9D; color-scheme:dark }}
+:root[data-theme="dark"]{ --desk:#1C1714; --deskInk:#F1E9DF; --deskInk2:#B8AA9D; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--desk); color:var(--deskInk); font:400 16px/1.45 var(--f-display); margin:0}
+button,input{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--terra); outline-offset:3px}
+.wrap{max-width:1120px; margin:0 auto; padding-inline:clamp(16px,3vw,40px); padding-block:32px 48px; display:grid; grid-template-columns:minmax(0,1fr) 400px; gap:48px; align-items:start}
+@media (max-width:900px){ .wrap{grid-template-columns:minmax(0,1fr); gap:24px} }
+.side{position:sticky; top:32px; display:grid; gap:18px}
+@media (max-width:900px){ .side{position:static} }
+.dmeta{font:500 12px/1.2 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--deskInk2)}
+.side h1{font:800 clamp(30px,4vw,44px)/1.02 var(--f-display); letter-spacing:-.035em; margin:0; text-wrap:balance}
+.side h1 em{font-family:var(--f-serif); font-style:italic; font-weight:400}
+.side .lede{margin:0; color:var(--deskInk2); max-width:52ch}
+.vlist{display:grid; gap:8px; margin:6px 0 0; padding:0; list-style:none}
+.vbtn{appearance:none; width:100%; text-align:left; border:1.5px solid color-mix(in srgb,var(--deskInk) 14%,transparent); background:transparent; border-radius:16px; padding:12px 14px; cursor:pointer; display:grid; grid-template-columns:30px 1fr; gap:2px 12px; align-items:start; transition:border-color 160ms, background 160ms}
+.vbtn:hover{border-color:color-mix(in srgb,var(--deskInk) 35%,transparent)}
+.vbtn[aria-pressed="true"]{border-color:var(--deskInk); background:color-mix(in srgb,var(--deskInk) 6%,transparent)}
+.vbtn .ltr{grid-row:span 2; font:400 26px/1 var(--f-hand); color:var(--terra)}
+.vbtn b{font:800 16px/1.15 var(--f-display)}
+.vbtn span{font-size:13.5px; color:var(--deskInk2); line-height:1.35}
+.tip{font:500 11px/1.4 var(--f-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--deskInk2); margin:0}
+.phone-col{display:grid; justify-items:center; gap:12px}
+.phone{position:relative; width:min(100%,390px); height:800px; border-radius:46px; background:#2A231F; padding:10px; box-shadow:0 30px 60px -20px rgba(40,30,20,.45), 0 0 0 1px rgba(0,0,0,.2)}
+.page{position:relative; width:100%; height:100%; border-radius:37px; background:var(--bg); color:var(--ink); overflow:hidden; isolation:isolate}
+.page::before{content:""; position:absolute; inset:0; background:repeating-linear-gradient(transparent 0 31px, rgba(59,50,44,.04) 31px 32px); pointer-events:none}
+.replay{appearance:none; border:0; background:transparent; font:500 11px/1 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--deskInk2); cursor:pointer; padding:8px 10px; border-radius:8px}
+.root{position:absolute; inset:0}
+
+/* shared pieces */
+.meta{font:500 11.5px/1.2 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase}
+.title{font:800 34px/1.02 var(--f-display); letter-spacing:-.035em; margin:0; text-wrap:balance}
+.title em{font-family:var(--f-serif); font-style:italic; font-weight:400; letter-spacing:-.015em}
+.btn{appearance:none; border:0; height:54px; border-radius:99px; background:var(--ink); color:var(--bg); font:600 16.5px/1 var(--f-display); cursor:pointer; width:100%; transition:transform 160ms var(--ease), opacity 380ms; position:relative; z-index:3}
+.btn:active{transform:scale(.97)}
+.btn[aria-disabled="true"]{opacity:.3; cursor:default}
+.btn.small{height:44px; font-size:15px; width:auto; padding:0 20px}
+.coach{position:absolute; pointer-events:none}
+.coach .m{width:100%; height:100%; display:block}
+.coach .swap{animation:swap 460ms var(--spring) both}
+@keyframes swap{from{transform:scale(.82) translateY(10px)} to{transform:none}}
+.ink{position:absolute; left:0; top:0; pointer-events:none; overflow:visible; mix-blend-mode:multiply; z-index:4}
+.ink path{fill:none; stroke-linecap:round; stroke-linejoin:round}
+.fade{transition:opacity 360ms var(--ease); opacity:0!important}
+.glyph{width:40px; height:36px; overflow:visible}
+.glyph path{fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round}
+.draw{background:currentColor; -webkit-mask:var(--src) center / contain no-repeat; mask:var(--src) center / contain no-repeat}
+.sketch{animation:sketch 1000ms var(--ease) both}
+@keyframes sketch{from{clip-path:polygon(0 0,0 0,0 0)} to{clip-path:polygon(0 0,250% 0,0 250%)}}
+.thumbs{display:flex; gap:7px}
+.thumb{appearance:none; flex:1 1 0; min-width:0; aspect-ratio:1; border-radius:14px; border:1px solid var(--edge); background:var(--card); padding:2px; cursor:pointer; transition:transform 200ms var(--ease)}
+.thumb:active{transform:scale(.94)}
+.thumb .m{width:100%; height:100%; display:block}
+.thumb[aria-checked="true"]{border-color:var(--ink); box-shadow:inset 0 0 0 1px var(--ink)}
+.field{display:flex; align-items:baseline; gap:10px; border-bottom:1.5px solid var(--ink); padding:4px 2px 6px}
+.field label{font:500 11px/1 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase; flex:none}
+.field input{flex:1; min-width:0; border:0; background:transparent; font:800 24px/1.1 var(--f-display); letter-spacing:-.02em; padding:2px 0; outline:none}
+.chipx{appearance:none; border:1.5px solid color-mix(in srgb,var(--ink) 18%,transparent); background:var(--card); border-radius:16px; padding:10px 12px; cursor:pointer; display:flex; align-items:center; gap:8px; font:700 14px/1.1 var(--f-display); transition:transform 160ms var(--ease), border-color 200ms, background 200ms}
+.chipx:active{transform:scale(.95)}
+.chipx[aria-checked="true"]{border-color:var(--ink); background:var(--bg)}
+.chipx .glyph{width:28px; height:26px}
+.chipx .draw{width:34px; height:34px}
+.dayrow{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+.dayb{appearance:none; border:1.5px solid color-mix(in srgb,var(--ink) 16%,transparent); background:transparent; border-radius:14px; height:50px; cursor:pointer; font:600 14px/1 var(--f-display); transition:background 160ms, color 160ms, transform 160ms var(--ease)}
+.dayb:active{transform:scale(.93)}
+.dayb[aria-checked="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink); animation:stamp 380ms var(--spring)}
+@keyframes stamp{0%{transform:scale(.94)} 100%{transform:scale(1)}}
+.wk{display:grid; grid-template-columns:repeat(7,1fr); gap:5px; text-align:center}
+.wk span{font:500 10px/1 var(--f-mono); color:var(--ink2)}
+.wk i{display:block; height:28px; margin-top:6px; border-radius:10px; background:rgba(59,50,44,.07); transform:scale(.5); opacity:0; animation:pop 420ms var(--spring) forwards}
+.wk i.on{background:var(--ink)}
+@keyframes pop{to{transform:scale(1); opacity:1}}
+.plancard{background:var(--card); border:1px solid var(--edge); border-radius:20px; padding:14px 16px; display:grid; gap:12px}
+.plancard .num{font:800 54px/.9 var(--f-display); letter-spacing:-.05em}
+.plancard .num small{font-size:22px}
+.plancard .row{display:flex; align-items:end; justify-content:space-between; gap:10px}
+.plancard .lab{font:500 10.5px/1.3 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase}
+.plancard .draw{width:80px; height:80px; color:var(--ink)}
+.hand{font:400 21px/1.2 var(--f-hand); color:var(--terra)}
+
+/* ===== A · conversation ===== */
+.cv{display:flex; flex-direction:column; padding-top:34px}
+.cv-head{display:flex; gap:10px; align-items:center; padding:6px 18px 10px; border-bottom:1px solid var(--edge); position:relative; z-index:2; background:var(--bg)}
+.cv-av{position:relative; width:58px; height:58px; flex:none}
+.cv-av .coach{inset:-6px; width:auto; height:auto}
+.cv-head b{display:block; font:800 17px/1.1 var(--f-display)}
+.cv-head span{font:500 10.5px/1 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--ink2)}
+.cv-log{flex:1; overflow-y:auto; padding:18px 20px 12px; display:flex; flex-direction:column; gap:12px; scrollbar-width:none}
+.cv-log::-webkit-scrollbar{display:none}
+.line{font:400 22px/1.2 var(--f-hand); color:var(--terra); max-width:88%}
+.line.writing{animation:write var(--d,800ms) var(--st,steps(20)) both}
+@keyframes write{from{clip-path:inset(0 100% 0 0)} to{clip-path:inset(0 -10% 0 0)}}
+.me{align-self:flex-end; background:var(--almond); border-radius:18px 18px 6px 18px; padding:9px 14px; font:600 15px/1.25 var(--f-display); max-width:80%}
+.typing{display:flex; gap:4px; padding:6px 2px}
+.typing i{width:7px; height:7px; border-radius:50%; background:var(--terra); opacity:.4; animation:bounce 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s} .typing i:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,100%{transform:translateY(0); opacity:.35} 40%{transform:translateY(-4px); opacity:1}}
+.cv-tray{padding:14px 16px 20px; border-top:1px solid var(--edge); background:var(--bg); min-height:96px; display:grid; gap:10px; align-content:end; position:relative; z-index:2}
+.cv-tray .opts{display:flex; flex-wrap:wrap; gap:7px}
+.rise{animation:rise 380ms var(--ease) both}
+@keyframes rise{from{opacity:0; transform:translateY(14px)}}
+
+/* ===== B · toybox ===== */
+.tb-head{position:absolute; left:22px; right:110px; top:96px}
+.tb-head .title{transition:none}
+.stampin{animation:stampin 460ms var(--spring) both}
+@keyframes stampin{from{transform:scale(1.25) rotate(-2deg); opacity:0}}
+.toy{position:absolute; width:76px; height:76px; border-radius:50%; background:#FFFDF9; border:1.5px solid color-mix(in srgb,var(--ink) 14%,transparent); box-shadow:0 8px 16px -10px rgba(59,50,44,.45); display:grid; place-items:center; align-content:center; gap:2px; cursor:grab; touch-action:none; user-select:none; -webkit-user-select:none}
+.toy:active{cursor:grabbing}
+.toy b{font:700 10.5px/1 var(--f-display); text-align:center; max-width:66px}
+.toy .glyph{width:32px; height:28px}
+.toy .draw{width:44px; height:44px; color:var(--ink)}
+.toy.day{width:56px; height:56px; font:800 18px/1 var(--f-display)}
+.toy .float{display:contents}
+.toy.idle{animation:bob var(--bd,3.6s) ease-in-out var(--bdl,0s) infinite}
+@keyframes bob{0%,100%{translate:0 0} 50%{translate:0 -6px}}
+.toy.in{box-shadow:0 3px 6px -4px rgba(59,50,44,.45)}
+.bowl{position:absolute; overflow:visible}
+.bowl path{fill:none; stroke:var(--ink); stroke-width:2.6; stroke-linecap:round}
+.bowl.wobble{animation:wobble 500ms var(--ease)}
+@keyframes wobble{25%{rotate:-4deg} 60%{rotate:3deg} 85%{rotate:-1deg}}
+.floor{position:absolute; left:0; overflow:visible}
+.floor path{fill:none; stroke:var(--ink); stroke-width:2; stroke-linecap:round; opacity:.5}
+.tb-coach{position:absolute; left:0; top:0; transform-origin:0 0; transition:transform 760ms var(--spring-soft); pointer-events:auto; cursor:pointer}
+.tb-coach .m{width:100%; height:100%; display:block}
+.tb-foot{position:absolute; left:22px; right:22px; bottom:22px; display:grid; gap:10px}
+
+/* ===== C · one drawing ===== */
+.world{position:absolute; left:0; top:0; transform-origin:0 0}
+.region{position:absolute; padding:96px 22px 22px; display:flex; flex-direction:column; gap:16px}
+.region .lbl{position:absolute; left:22px; top:58px; font:400 18px/1 var(--f-hand); color:var(--taupe)}
+.tiles{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.tile{appearance:none; border:1.5px solid color-mix(in srgb,var(--ink) 14%,transparent); background:transparent; border-radius:20px; padding:12px 10px 10px; cursor:pointer; display:grid; justify-items:center; gap:6px; transition:transform 160ms var(--ease), border-color 300ms}
+.tile:active{transform:scale(.96)}
+.tile b{font:700 14px/1.1 var(--f-display); position:relative; z-index:1}
+.tile .glyph{width:44px; height:40px}
+.tile .draw{width:76px; height:76px; color:var(--ink)}
+.tile.wide{grid-column:1 / -1; grid-template-columns:auto auto; justify-content:center; align-items:center}
+.tile[aria-checked="true"]{border-color:var(--ink); animation:stamp 420ms var(--spring)}
+.cam-coach{position:absolute; width:180px; height:180px; transform-origin:0 0; transition:transform 760ms var(--spring-soft), opacity 300ms}
+.spacer{flex:1}
+
+/* ===== D · index cards ===== */
+.ic-card{position:absolute; left:18px; right:18px; top:132px; bottom:22px; background:#FFFDF9; border-radius:22px; border:1px solid var(--edge); box-shadow:0 18px 36px -24px rgba(59,50,44,.5); padding:26px 20px 20px; display:flex; flex-direction:column; gap:16px; touch-action:pan-y; user-select:none; -webkit-user-select:none; overflow:hidden}
+.ic-card::before{content:""; position:absolute; inset:0; background:repeating-linear-gradient(transparent 0 31px, rgba(168,90,60,.07) 31px 32px); pointer-events:none}
+.ic-card::after{content:""; position:absolute; top:0; bottom:0; left:46px; width:1.5px; background:rgba(168,90,60,.16); pointer-events:none}
+.ic-card > *{position:relative; z-index:1}
+.ic-card .hint{font:500 10.5px/1 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--taupe); text-align:center}
+.ic-coach{position:absolute; width:120px; height:120px; left:50%; top:30px; margin-left:-60px; z-index:5; transition:transform 500ms var(--spring)}
+
+/* ===== E · collage ===== */
+.cl-page{position:absolute; left:12px; right:12px; top:44px; height:404px; background:#FFFDF9; border-radius:24px; border:1px solid var(--edge); box-shadow:0 14px 30px -24px rgba(59,50,44,.45); overflow:hidden; transition:height 760ms var(--ease)}
+.cl-page::before{content:""; position:absolute; inset:0; background:repeating-linear-gradient(transparent 0 31px, rgba(59,50,44,.05) 31px 32px)}
+.cl-page > *{position:absolute}
+.cl-title{left:18px; top:12px; font:400 30px/1 var(--f-hand); color:var(--ink)}
+.slot{border:1.5px dashed color-mix(in srgb,var(--ink) 16%,transparent); border-radius:16px; transition:opacity 300ms}
+.sticker{background:#fff; border-radius:16px; padding:6px; box-shadow:0 8px 16px -8px rgba(59,50,44,.45); display:grid; place-items:center; gap:2px}
+.sticker::before{content:""; position:absolute; top:-9px; left:50%; width:46px; height:16px; margin-left:-23px; background:rgba(240,201,168,.75); transform:rotate(-4deg) scaleX(var(--tape,1)); transform-origin:left; transition:transform 260ms var(--ease) 180ms}
+.sticker b{font:700 11px/1 var(--f-display); text-align:center}
+.sticker .glyph{width:40px; height:36px}
+.sticker .draw{width:70px; height:70px; color:var(--ink)}
+.slap{animation:slap 420ms var(--spring) both}
+@keyframes slap{0%{scale:1.18} 100%{scale:1}}
+.peel{animation:peel 420ms var(--ease) forwards}
+@keyframes peel{to{transform:translate(30px,60px) rotate(24deg); opacity:0}}
+.cl-cal{display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font:400 22px/1 var(--f-hand); color:var(--ink)}
+.cl-tray{position:absolute; left:0; right:0; bottom:0; top:460px; padding:4px 22px 22px; display:flex; flex-direction:column; gap:12px; transition:transform 600ms var(--ease)}
+.cl-tray.gone{transform:translateY(110%)}
+.cl-tray .opts{display:flex; flex-wrap:wrap; gap:7px}
+.coach-in .m{width:100%; height:100%; display:block}
+
+__MASCOT_CSS__
+.m .look{translate:var(--lx,0px) var(--ly,0px); transition:transform .35s ease, translate .14s linear}
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{animation-duration:1ms!important; animation-delay:0ms!important; transition-duration:1ms!important}
+}
+</style>
+
+<div class="wrap">
+  <div class="side">
+    <div class="dmeta">Second Strong · onboarding · Sketchbook</div>
+    <h1>Five ways it could <em>feel.</em></h1>
+    <p class="lede">Same Sketchbook look, same drawn-to-life lines, same coach. What changes is how the onboarding behaves. Pick one and play it on the phone.</p>
+    <ul class="vlist" id="vlist"></ul>
+    <p class="tip">The phone restarts when you switch</p>
+  </div>
+  <div class="phone-col">
+    <div class="phone"><div class="page" id="page"></div></div>
+    <button class="replay" id="replay" type="button">Replay from the start</button>
+  </div>
+</div>
+
+<script>
+(function(){
+__MASCOT_JS__
+
+const DRAW = { squat:"__SQUAT__", plate:"__PLATE__", morning:"__MORNING__", wind:"__WIND__" };
+const GLYPH = {
+  peri:"M20 4 a14 14 0 1 1 0 28 a14 14 0 1 1 0 -28 M20 4 a9 14 0 0 0 0 28",
+  meno:"M20 4 a14 14 0 1 1 0 28 a14 14 0 1 1 0 -28 M20 4 V32",
+  post:"M7 26 a13 13 0 0 1 26 0 M2 26 H38 M20 6 v4 M9 11 l3 3 M31 11 l-3 3",
+  surg:"M20 4 a14 14 0 1 1 -10 4.2 M10 8.2 l-1 -5 M10 8.2 l5 -.8",
+  unsure:"M13 14 a7 7 0 1 1 9.5 6.5 c-2.2 1 -2.5 2.6 -2.5 5 M20 32 v.2"
+};
+const STAGES = [["peri","Perimenopause"],["meno","Menopause"],["post","After menopause"],["surg","Surgical"],["unsure","Not sure"]];
+const ACK = { peri:"Perimenopause. I'll plan around the harder days.", meno:"Menopause. Noted.", post:"After menopause. Strength matters even more now.", surg:"Thank you for telling me. We'll go gently.", unsure:"That's fine. We'll work it out together." };
+const GOALS = [["strong","Strength","squat"],["protein","Protein","plate"],["energy","Energy","morning"],["sleep","Sleep","wind"]];
+const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const NS = "http://www.w3.org/2000/svg";
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const page = document.getElementById("page");
+const esc = s => String(s).replace(/[<>&"]/g, ch => ({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"})[ch]);
+
+let S, epoch = 0;
+const fresh = () => ({ coach:"bramble", name:"Bramble", named:false, stage:null, goals:[], days:[] });
+const coachName = () => (S.name || "").trim() || CHARS[S.coach].name;
+const goalText = () => S.goals.map(g => GOALS.find(x => x[0] === g)[1].toLowerCase()).join(" and ");
+const dayText = () => S.days.map(d => DAYS[d]).join(", ");
+
+/* cancellable waits: switching experience bumps the epoch and stops old scripts */
+class Stop extends Error {}
+function wait(ms){ const e = epoch; return new Promise((res, rej) => setTimeout(() => e === epoch ? res() : rej(new Stop()), REDUCED ? Math.min(ms, 30) : ms)); }
+function alive(e){ if (e !== epoch) throw new Stop(); }
+function el(tag, cls, html){ const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; }
+function prect(n){ const p = page.getBoundingClientRect(), r = n.getBoundingClientRect(); return {x:r.left-p.left, y:r.top-p.top, w:r.width, h:r.height}; }
+function relTo(n, root){ const p = root.getBoundingClientRect(), r = n.getBoundingClientRect(), s = (root._scale || 1); return {x:(r.left-p.left)/s, y:(r.top-p.top)/s, w:r.width/s, h:r.height/s}; }
+
+/* ink */
+function inkLayer(root, w, h){ const s = document.createElementNS(NS, "svg"); s.setAttribute("class", "ink"); s.setAttribute("width", w); s.setAttribute("height", h); s.setAttribute("viewBox", `0 0 ${w} ${h}`); root.appendChild(s); return s; }
+function smooth(pts){
+  let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i-1] || pts[i], p1 = pts[i], p2 = pts[i+1], p3 = pts[i+2] || p2;
+    d += ` C${(p1[0]+(p2[0]-p0[0])/6).toFixed(1)} ${(p1[1]+(p2[1]-p0[1])/6).toFixed(1)} ${(p2[0]-(p3[0]-p1[0])/6).toFixed(1)} ${(p2[1]-(p3[1]-p1[1])/6).toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+  }
+  return d;
+}
+function ringPts(r, pad = 6, turns = 1.1, start = -2.4){
+  const cx = r.x + r.w/2, cy = r.y + r.h/2, rx = r.w/2 + pad, ry = r.h/2 + pad, pts = [];
+  for (let i = 0; i <= 24; i++) { const t = i/24, a = start + t*Math.PI*2*turns, k = 1 + Math.sin(t*9)*.02 + t*.03; pts.push([cx + Math.cos(a)*rx*k, cy + Math.sin(a)*ry*k]); }
+  return pts;
+}
+const underPts = (r, dy = -3) => { const y = r.y + r.h + dy; return [[r.x-4, y+2], [r.x+r.w*.35, y-1], [r.x+r.w*.7, y+2], [r.x+r.w+6, y-2]]; };
+function stroke(svg, d, o = {}){
+  const p = document.createElementNS(NS, "path");
+  p.setAttribute("d", d); p.setAttribute("fill", "none"); p.setAttribute("stroke-linecap", "round"); p.setAttribute("stroke-linejoin", "round"); p.setAttribute("stroke", o.color || "var(--terra)"); p.setAttribute("stroke-width", o.w || 2.4);
+  if (o.cls) p.setAttribute("class", o.cls); if (o.opacity) p.setAttribute("opacity", o.opacity);
+  svg.appendChild(p);
+  const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+  const a = p.animate([{strokeDashoffset:len},{strokeDashoffset:0}], {duration:REDUCED?1:(o.dur||700), delay:REDUCED?0:(o.delay||0), easing:"cubic-bezier(.45,0,.2,1)", fill:"forwards"});
+  p.done = a.finished.catch(() => {});
+  return p;
+}
+const highlight = (svg, r, o = {}) => stroke(svg, smooth(underPts(r, o.dy ?? -3)), {color:"var(--apricot)", w:o.w || 12, dur:o.dur || 420, cls:o.cls || "pick", opacity:.9, delay:o.delay});
+function dropMarks(svg, cls){ svg.querySelectorAll("." + cls).forEach(p => { p.classList.add("fade"); setTimeout(() => p.remove(), 380); }); }
+function drawGlyphs(root, delay = 120){
+  root.querySelectorAll(".glyph path").forEach((p, i) => {
+    const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+    p.animate([{strokeDashoffset:len},{strokeDashoffset:0}], {duration:REDUCED?1:800, delay:REDUCED?0:delay + i*90, easing:"cubic-bezier(.45,0,.2,1)", fill:"forwards"});
+  });
+  root.querySelectorAll(".drawme").forEach((d, i) => { d.classList.add("sketch"); d.style.animationDelay = (delay + i*140) + "ms"; });
+}
+const glyph = id => `<svg class="glyph" viewBox="0 0 40 36" aria-hidden="true"><path d="${GLYPH[id]}"/></svg>`;
+const drawing = (id, cls = "") => `<div class="draw drawme ${cls}" style="--src:url(${DRAW[id]})" aria-hidden="true"></div>`;
+
+/* coach */
+function makeCoach(parent, cls){
+  const w = el("div", "coach " + (cls || "")); w.dataset.state = "idle"; w.innerHTML = mascot(S.coach); parent.appendChild(w);
+  let t; return { el:w,
+    set(s, ms){ clearTimeout(t); w.dataset.state = s; if (ms) t = setTimeout(() => w.dataset.state = "idle", ms); },
+    swap(k){ w.innerHTML = mascot(k); w.firstElementChild.classList.add("swap"); } };
+}
+/* outline-then-fill (drawn to life) */
+function outlineCoach(coachEl){
+  const host = coachEl.querySelector(".m"); if (!host || REDUCED) return;
+  host.style.opacity = "0";
+  const c = CHARS[S.coach], svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("viewBox", "0 0 200 200"); Object.assign(svg.style, {position:"absolute", inset:"0", width:"100%", height:"100%", overflow:"visible"});
+  coachEl.appendChild(svg);
+  const parts = [c.body, ...(c.back || []).filter(p => p.f === "b").map(p => p.d)];
+  Promise.all(parts.map((d, i) => stroke(svg, d, {color:"var(--ink)", w:2.6, dur:800, delay:i*110}).done)).then(() => {
+    host.style.transition = "opacity 420ms"; host.style.opacity = "1"; svg.style.transition = "opacity 420ms"; svg.style.opacity = "0"; setTimeout(() => svg.remove(), 450);
+  });
+}
+page.addEventListener("pointermove", e => {
+  if (REDUCED) return;
+  page.querySelectorAll(".m").forEach(svg => {
+    const r = svg.getBoundingClientRect(); if (!r.width) return;
+    const dx = e.clientX - (r.left + r.width/2), dy = e.clientY - (r.top + r.height*.45), d = Math.hypot(dx, dy) || 1, k = Math.min(1, d/220);
+    svg.style.setProperty("--lx", (dx/d*3.2*k).toFixed(2) + "px"); svg.style.setProperty("--ly", (dy/d*2.6*k).toFixed(2) + "px");
+  });
+});
+/* fly a copy of a node from one rect to another */
+function fly(node, from, to, o = {}){
+  const c = node.cloneNode(true);
+  Object.assign(c.style, {position:"absolute", left:from.x+"px", top:from.y+"px", width:from.w+"px", height:from.h+"px", margin:"0", zIndex:40, pointerEvents:"none", transformOrigin:"center"});
+  page.appendChild(c);
+  const dx = to.x - from.x + (to.w - from.w)/2, dy = to.y - from.y + (to.h - from.h)/2, s = to.w / from.w, arc = o.arc ?? -40, rot = o.rot || 0;
+  return c.animate([{transform:"translate(0,0) scale(1) rotate(0)"}, {transform:`translate(${dx*.5}px,${dy*.5+arc}px) scale(${(1+s)/2}) rotate(${rot/2}deg)`}, {transform:`translate(${dx}px,${dy}px) scale(${s}) rotate(${rot}deg)`}],
+    {duration:REDUCED?1:(o.dur||620), easing:"cubic-bezier(.45,0,.2,1)", fill:"forwards"}).finished.catch(()=>{}).then(() => { if (!o.keep) c.remove(); return c; });
+}
+function once(target, sel){ return new Promise(res => { const h = e => { const t = e.target.closest(sel); if (t && t.getAttribute("aria-disabled") !== "true") { target.removeEventListener("click", h); res(t); } }; target.addEventListener("click", h); }); }
+const planCardHTML = (extra = "") => `<div class="plancard">
+  <div class="row"><div><div class="num">100<small>g</small></div><div class="lab">protein a day</div></div>${drawing((GOALS.find(g => S.goals.includes(g[0])) || GOALS[0])[2])}</div>
+  <div class="wk">${DAYS.map((d,i)=>`<div><span>${d[0]}</span><i class="${S.days.includes(i)?"on":""}" style="animation-delay:${300+i*70}ms"></i></div>`).join("")}</div>
+  <div class="lab" style="display:flex;justify-content:space-between"><span>${S.days.length} × 20 min</span><span>${esc(coachName())} · coach</span></div>${extra}</div>`;
+
+/* ======================= A · conversation ======================= */
+async function conversation(root, e){
+  root.classList.add("cv");
+  root.innerHTML = `<div class="cv-head"><div class="cv-av" id="av"></div><div><b id="cvName">${esc(coachName())}</b><span>your coach</span></div></div>
+    <div class="cv-log" id="log"></div><div class="cv-tray" id="tray"></div>`;
+  const log = root.querySelector("#log"), tray = root.querySelector("#tray"), coach = makeCoach(root.querySelector("#av"));
+  const scroll = () => log.scrollTo({top:log.scrollHeight, behavior:REDUCED ? "auto" : "smooth"});
+  async function say(text, state){
+    const t = el("div", "typing", "<i></i><i></i><i></i>"); log.appendChild(t); scroll(); coach.set("thinking");
+    await wait(520 + Math.min(500, text.length * 6)); t.remove();
+    coach.set(state || "idle", state ? 1600 : 0);
+    const d = el("div", "line writing"); d.textContent = text;
+    const dur = Math.min(1500, 260 + text.length * 22); d.style.setProperty("--d", dur + "ms"); d.style.setProperty("--st", `steps(${Math.max(8, Math.round(text.length / 2))})`);
+    log.appendChild(d); scroll(); await wait(dur + 120);
+  }
+  async function reply(from, text){
+    const b = el("div", "me"); b.textContent = text; b.style.opacity = "0"; log.appendChild(b); scroll(); await wait(260);
+    const src = el("div", "me"); src.textContent = text;
+    const fr = prect(from), to = prect(b); src.style.background = "var(--almond)";
+    tray.innerHTML = "";
+    await fly(src, {x:fr.x, y:fr.y, w:to.w, h:to.h}, to, {arc:-30, dur:520}); alive(e);
+    b.style.opacity = "1";
+  }
+  function show(html){ tray.innerHTML = html; tray.firstElementChild?.classList.add("rise"); [...tray.children].forEach((c, i) => { c.classList.add("rise"); c.style.animationDelay = i*60 + "ms"; }); }
+
+  coach.set("hello", 1800);
+  await say("Hello. I'll help you get stronger, one small week at a time.", "hello");
+  await say("First, who would you like to talk to?");
+  show(`<div class="thumbs" id="th">${ORDER.map(k=>`<button class="thumb" type="button" data-c="${k}" aria-checked="${k===S.coach}" aria-label="${CHARS[k].name}"><div data-state="idle">${mascot(k)}</div></button>`).join("")}</div><button class="btn" id="pick" type="button">This one</button>`);
+  tray.querySelector("#th").addEventListener("click", ev => {
+    const b = ev.target.closest(".thumb"); if (!b) return;
+    S.coach = b.dataset.c; if (!S.named) S.name = CHARS[S.coach].name;
+    tray.querySelectorAll(".thumb").forEach(t => t.setAttribute("aria-checked", t === b));
+    coach.swap(S.coach); coach.set("hello", 1400); root.querySelector("#cvName").textContent = coachName();
+  });
+  await once(tray, "#pick"); alive(e);
+  await reply(tray.querySelector("#pick"), `${CHARS[S.coach].name}, please.`);
+  await say(`Lovely. Keep the name ${CHARS[S.coach].name}, or give me a new one?`, "listening");
+  show(`<div class="field"><label for="nm">Name</label><input id="nm" maxlength="14" autocomplete="off" value="${esc(S.name)}"></div><button class="btn" id="ok" type="button">That's it</button>`);
+  const nm = tray.querySelector("#nm");
+  nm.addEventListener("focus", () => coach.set("listening")); nm.addEventListener("input", () => { S.name = nm.value; S.named = true; root.querySelector("#cvName").textContent = coachName(); });
+  await once(tray, "#ok"); alive(e);
+  await reply(nm, coachName());
+  await say(`${coachName()} it is. Where are you right now?`, "hello");
+  show(`<div class="opts">${STAGES.map(([id,l])=>`<button class="chipx" type="button" data-v="${id}">${glyph(id)}${l}</button>`).join("")}</div>`);
+  drawGlyphs(tray, 60);
+  const st = await once(tray, ".chipx"); alive(e); S.stage = st.dataset.v;
+  await reply(st, STAGES.find(x => x[0] === S.stage)[1]);
+  await say(ACK[S.stage], S.stage === "surg" ? "comfort" : "listening");
+  await say("What matters most? Up to two.");
+  show(`<div class="opts">${GOALS.map(([id,l,d])=>`<button class="chipx" type="button" data-v="${id}" aria-checked="false">${drawing(d)}${l}</button>`).join("")}</div><button class="btn" id="gdone" type="button" aria-disabled="true">That's it</button>`);
+  drawGlyphs(tray, 60);
+  tray.querySelector(".opts").addEventListener("click", ev => {
+    const b = ev.target.closest(".chipx"); if (!b) return;
+    const v = b.dataset.v, on = !S.goals.includes(v); if (on && S.goals.length >= 2) return;
+    S.goals = on ? S.goals.concat(v) : S.goals.filter(x => x !== v); b.setAttribute("aria-checked", on);
+    if (on) coach.set("proud", 1300); tray.querySelector("#gdone").setAttribute("aria-disabled", String(!S.goals.length));
+  });
+  await once(tray, "#gdone"); alive(e);
+  await reply(tray.querySelector("#gdone"), goalText()[0].toUpperCase() + goalText().slice(1));
+  await say("Good choices. Which days usually work?", "proud");
+  show(`<div class="dayrow">${DAYS.map((d,i)=>`<button class="dayb" type="button" data-d="${i}" aria-checked="false" aria-label="${d}">${d[0]}</button>`).join("")}</div><button class="btn" id="ddone" type="button" aria-disabled="true">Done</button>`);
+  tray.querySelector(".dayrow").addEventListener("click", ev => {
+    const b = ev.target.closest(".dayb"); if (!b) return;
+    const d = +b.dataset.d, on = !S.days.includes(d); if (on && S.days.length >= 4) return;
+    S.days = (on ? S.days.concat(d) : S.days.filter(x => x !== d)).sort(); b.setAttribute("aria-checked", on);
+    tray.querySelector("#ddone").setAttribute("aria-disabled", String(S.days.length < 2));
+  });
+  await once(tray, "#ddone"); alive(e);
+  await reply(tray.querySelector("#ddone"), dayText());
+  await say("Give me a second. Here's your week.", "thinking");
+  const card = el("div", "", planCardHTML()); card.firstElementChild.classList.add("rise"); log.appendChild(card); scroll(); drawGlyphs(card, 400);
+  coach.set("proud", 2000);
+  await wait(900);
+  await say(`${DAYS[S.days[0]]} first. I'll go easy on rough mornings.`);
+  show(`<button class="btn" id="go" type="button">Start my week</button>`);
+  await once(tray, "#go"); alive(e);
+  await reply(tray.querySelector("#go") || tray, "Let's start.");
+  await say("See you tomorrow morning.", "hello");
+}
+
+/* ======================= B · toybox ======================= */
+async function toybox(root, e){
+  const W = page.clientWidth, H = page.clientHeight, FLOOR = 560;
+  root.innerHTML = `<div class="tb-head" id="head"></div><div class="tb-foot" id="foot"></div>`;
+  const head = root.querySelector("#head"), foot = root.querySelector("#foot");
+  const floor = document.createElementNS(NS, "svg"); floor.setAttribute("class", "floor"); floor.setAttribute("width", W); floor.setAttribute("height", 20); floor.style.top = (FLOOR - 4) + "px"; root.appendChild(floor);
+  stroke(floor, `M18 6 C${W*.3} 3 ${W*.6} 9 ${W-18} 5`, {color:"var(--ink)", w:2, dur:700});
+  const title = (meta, html) => { head.innerHTML = `<div class="meta">${meta}</div><h2 class="title stampin">${html}</h2>`; };
+  const setFoot = (html) => { foot.innerHTML = html; foot.querySelectorAll(".btn").forEach(b => b.classList.add("rise")); };
+
+  /* welcome: the cast tumbles in and bounces on the floor */
+  title("Second Strong", "Strong, <em>for years.</em>");
+  head.querySelector(".title").style.fontSize = "48px";
+  const cast = ORDER.map((k, i) => {
+    const w = el("div", "tb-coach"); w.dataset.state = "idle"; w.innerHTML = mascot(k); w.dataset.c = k;
+    const x = 14 + i * ((W - 28 - 64) / 6); w.style.width = w.style.height = "64px";
+    w._home = [x, FLOOR - 58]; w.style.transform = `translate(${x}px, -120px)`;
+    root.appendChild(w);
+    w.animate([{transform:`translate(${x}px,-120px) rotate(${(i%2?-1:1)*20}deg)`, easing:"cubic-bezier(.5,0,1,.6)"},
+               {transform:`translate(${x}px,${FLOOR-58}px) scale(1.15,.82)`, offset:.55, easing:"cubic-bezier(0,.4,.5,1)"},
+               {transform:`translate(${x}px,${FLOOR-100}px) scale(.95,1.06)`, offset:.75, easing:"cubic-bezier(.5,0,1,.6)"},
+               {transform:`translate(${x}px,${FLOOR-58}px) scale(1.06,.94)`, offset:.9},
+               {transform:`translate(${x}px,${FLOOR-58}px)`}], {duration:REDUCED?1:1100, delay:REDUCED?0:200 + i*110, fill:"backwards"});
+    w.style.transform = `translate(${x}px, ${FLOOR-58}px)`;
+    w.addEventListener("click", () => { if (S._phase === "welcome") { w.dataset.state = "proud"; setTimeout(() => w.dataset.state = "idle", 1700); } });
+    return w;
+  });
+  S._phase = "welcome";
+  setFoot(`<button class="btn" id="go" type="button">Begin</button>`);
+  await once(foot, "#go"); alive(e);
+
+  /* pick: tap a coach, it jumps into the spotlight */
+  S._phase = "pick";
+  title("Your coach", "Tap <em>one.</em>");
+  setFoot(`<div class="field" id="nf" style="opacity:0"><label for="nm">Name</label><input id="nm" maxlength="14" autocomplete="off" value=""></div><button class="btn" id="keep" type="button" aria-disabled="true">Keep</button>`);
+  const nm = foot.querySelector("#nm"), keep = foot.querySelector("#keep");
+  let chosen = null;
+  const spotlight = w => {
+    cast.forEach(c => { if (c !== chosen) { c.style.transition = "transform 600ms var(--spring-soft)"; c.style.transform = `translate(${c._home[0]}px, ${c._home[1]}px)`; } });
+    chosen = w; S.coach = w.dataset.c; if (!S.named) S.name = CHARS[S.coach].name;
+    w.style.transition = "transform 760ms var(--spring-soft)";
+    w.style.transform = `translate(${W/2 - 80}px, 230px) scale(2.5)`;
+    w.dataset.state = "hello"; setTimeout(() => w.dataset.state = "idle", 1600);
+    nm.value = S.name; foot.querySelector("#nf").style.cssText = "opacity:1; transition:opacity 300ms";
+    keep.textContent = "Keep " + coachName(); keep.setAttribute("aria-disabled", "false");
+  };
+  cast.forEach(w => w.addEventListener("click", () => { if (S._phase === "pick") spotlight(w); }));
+  nm.addEventListener("input", () => { S.name = nm.value; S.named = true; keep.textContent = "Keep " + coachName(); });
+  await once(foot, "#keep"); alive(e);
+
+  /* the others fall away; the coach takes the corner */
+  S._phase = "q";
+  cast.forEach((c, i) => { if (c === chosen) return; c.style.transition = `transform 700ms cubic-bezier(.5,0,1,.5) ${i*40}ms`; c.style.transform = `translate(${c._home[0]}px, ${H + 80}px) rotate(${i%2?30:-30}deg)`; });
+  chosen.style.transition = "transform 760ms var(--spring-soft)";
+  chosen.style.transform = `translate(${W - 96}px, 88px) scale(1.2)`;
+  const coach = { set(s, ms){ chosen.dataset.state = s; if (ms) setTimeout(() => chosen.dataset.state = "idle", ms); } };
+  floor.classList.add("fade");
+
+  /* bowl */
+  const bw = 230, bx = (W - bw) / 2, by = 548;
+  const bowl = document.createElementNS(NS, "svg"); bowl.setAttribute("class", "bowl"); bowl.setAttribute("width", bw); bowl.setAttribute("height", 110); bowl.style.left = bx + "px"; bowl.style.top = by + "px"; bowl.style.transformOrigin = "50% 100%";
+  root.appendChild(bowl);
+  stroke(bowl, `M6 14 C10 104 ${bw-10} 104 ${bw-6} 14`, {color:"var(--ink)", w:2.6, dur:700});
+  stroke(bowl, `M2 14 C${bw*.3} 8 ${bw*.7} 20 ${bw-2} 12`, {color:"var(--ink)", w:2.2, dur:500, delay:500});
+  const slot = i => [bx + bw/2 - 38 + [-46, 46, -18, 22][i % 4] * (i < 2 ? 1 : .8), by + 24 - (i >= 2 ? 22 : 0)];
+  const inBowl = [];
+  const rearrange = () => inBowl.forEach((t, i) => { const [x, y] = slot(i); place(t, x, y, true); });
+  function place(t, x, y, animate){ if (animate) { t.style.transition = "left 380ms var(--spring-soft), top 380ms var(--spring-soft)"; } t.style.left = x + "px"; t.style.top = y + "px"; }
+  function arc(t, from, to, height = 140, dur = 620){
+    const k = []; for (let i = 0; i <= 10; i++) { const u = i/10; k.push({transform:`translate(${(from[0]-to[0])*(1-u)}px, ${(from[1]-to[1])*(1-u) - Math.sin(u*Math.PI)*height}px) rotate(${(1-u)*-30}deg)`}); }
+    t.style.transition = "none"; t.style.left = to[0] + "px"; t.style.top = to[1] + "px";
+    return t.animate(k, {duration:REDUCED?1:dur, easing:"cubic-bezier(.3,.1,.6,1)"}).finished.catch(()=>{}).then(() => t.animate([{transform:"scale(1.18,.82)"},{transform:"scale(.94,1.06)"},{transform:"scale(1)"}], {duration:REDUCED?1:360, easing:"ease-out"}).finished.catch(()=>{}));
+  }
+  async function question(meta, html, items, opts){
+    title(meta, html); inBowl.length = 0;
+    setFoot(`<button class="btn" id="next" type="button" aria-disabled="true">${opts.button || "Continue"}</button>`);
+    const next = foot.querySelector("#next");
+    const per = items.length > 5 ? 4 : 3, size = items.length > 5 ? 56 : 76;
+    const toys = items.map((it, i) => {
+      const t = el("div", "toy idle" + (items.length > 5 ? " day" : ""), it.html); t.dataset.v = it.v; t.tabIndex = 0; t.setAttribute("role", "button"); t.setAttribute("aria-label", it.label);
+      const row = Math.floor(i / per), col = i % per, inRow = Math.min(per, items.length - row * per);
+      const gx = (W - inRow * (size + 18) + 18) / 2 + col * (size + 18) + (row % 2 ? 8 : -8), gy = 236 + row * (size + 30) + (col % 2 ? 10 : 0);
+      t._home = [gx, gy]; t.style.left = gx + "px"; t.style.top = gy + "px";
+      t.style.setProperty("--bd", (3.2 + (i % 3) * .5) + "s"); t.style.setProperty("--bdl", (-i * .4) + "s");
+      root.appendChild(t);
+      t.animate([{transform:"scale(0)"}, {transform:"scale(1)"}], {duration:REDUCED?1:500, delay:REDUCED?0:i*70, easing:"cubic-bezier(.3,1.6,.5,1)", fill:"backwards"});
+      return t;
+    });
+    drawGlyphs(root, 200);
+    const valid = () => inBowl.length >= (opts.min || 1);
+    const sync = () => next.setAttribute("aria-disabled", String(!valid()));
+    async function toss(t, from){
+      if (inBowl.includes(t)) { inBowl.splice(inBowl.indexOf(t), 1); t.classList.remove("in"); arc(t, [parseFloat(t.style.left), parseFloat(t.style.top)], t._home, 90).then(() => t.classList.add("idle")); rearrange(); opts.change?.(inBowl); sync(); return; }
+      if (opts.max === 1 && inBowl.length) { const old = inBowl.pop(); old.classList.remove("in"); arc(old, [parseFloat(old.style.left), parseFloat(old.style.top)], old._home, 110).then(() => old.classList.add("idle")); }
+      t.classList.remove("idle");
+      if (inBowl.length >= opts.max) { /* bounce off the rim */
+        const rim = [bx + bw - 60, by - 30], home = from || t._home;
+        await arc(t, home, rim, 120, 480); bowl.classList.remove("wobble"); void bowl.getBoundingClientRect(); bowl.classList.add("wobble");
+        arc(t, rim, t._home, 70, 420).then(() => t.classList.add("idle")); coach.set("thinking", 900); return;
+      }
+      inBowl.push(t); t.classList.add("in");
+      const [x, y] = slot(inBowl.length - 1);
+      await arc(t, from || [parseFloat(t.style.left), parseFloat(t.style.top)], [x, y]);
+      bowl.classList.remove("wobble"); void bowl.getBoundingClientRect(); bowl.classList.add("wobble");
+      coach.set(opts.state || "proud", 1200); opts.change?.(inBowl); sync();
+    }
+    toys.forEach(t => {
+      let drag = null;
+      t.addEventListener("pointerdown", ev => { drag = {x:ev.clientX, y:ev.clientY, l:parseFloat(t.style.left), tp:parseFloat(t.style.top), moved:false}; t.setPointerCapture(ev.pointerId); t.classList.remove("idle"); });
+      t.addEventListener("pointermove", ev => { if (!drag) return; const dx = ev.clientX - drag.x, dy = ev.clientY - drag.y; if (Math.hypot(dx, dy) > 6) drag.moved = true; if (drag.moved) { t.style.transition = "none"; t.style.left = (drag.l + dx) + "px"; t.style.top = (drag.tp + dy) + "px"; t.style.zIndex = 10; } });
+      t.addEventListener("pointerup", ev => {
+        if (!drag) return; const d = drag; drag = null; t.style.zIndex = "";
+        if (!d.moved) { toss(t); return; }
+        const r = bowl.getBoundingClientRect();
+        const over = ev.clientX > r.left - 20 && ev.clientX < r.right + 20 && ev.clientY > r.top - 60;
+        const pos = [parseFloat(t.style.left), parseFloat(t.style.top)];
+        if (over && !inBowl.includes(t)) toss(t, pos);
+        else if (inBowl.includes(t) && !over) toss(t);
+        else { place(t, ...(inBowl.includes(t) ? slot(inBowl.indexOf(t)) : t._home), true); if (!inBowl.includes(t)) t.classList.add("idle"); }
+      });
+      t.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); toss(t); } });
+    });
+    await once(foot, "#next"); alive(e);
+    toys.forEach((t, i) => { if (!inBowl.includes(t)) t.animate([{transform:"scale(1)"},{transform:"scale(0)"}], {duration:REDUCED?1:300, delay:REDUCED?0:i*40, fill:"forwards"}).finished.then(() => t.remove()).catch(()=>{}); });
+    const kept = inBowl.slice();
+    kept.forEach((t, i) => t.animate([{transform:"translateY(0)"},{transform:"translateY(-18px)"},{transform:"translateY(40px) scale(.6)", opacity:0}], {duration:REDUCED?1:520, delay:REDUCED?0:i*60, fill:"forwards"}).finished.then(() => t.remove()).catch(()=>{}));
+    await wait(420);
+    return kept.map(t => t.dataset.v);
+  }
+  const st = await question("About you", "Where are <em>you?</em>", STAGES.map(([id,l]) => ({v:id, label:l, html:`${glyph(id)}<b>${l}</b>`})), {max:1, state:"listening"});
+  S.stage = st[0];
+  S.goals = await question("Toss in up to two", "What <em>matters?</em>", GOALS.map(([id,l,d]) => ({v:id, label:l, html:`${drawing(d)}<b>${l}</b>`})), {max:2});
+  S.days = (await question("Two to four", "Your <em>days.</em>", DAYS.map((d,i) => ({v:String(i), label:d, html:d[0]})), {max:4, min:2, state:"lifting", button:"Make my plan"})).map(Number).sort();
+
+  /* reveal: the bowl tips and the plan rises out of it */
+  title(new Date().toLocaleDateString("en-GB",{weekday:"long", day:"numeric", month:"long"}), "Your <em>plan.</em>");
+  foot.innerHTML = "";
+  bowl.style.transition = "transform 600ms var(--ease)"; bowl.style.transform = "rotate(-22deg) translateY(10px)";
+  await wait(300);
+  bowl.classList.add("fade");
+  const card = el("div", "", planCardHTML()); Object.assign(card.style, {position:"absolute", left:"22px", right:"22px", top:"220px"});
+  root.appendChild(card);
+  card.animate([{transform:"translateY(260px) scale(.6) rotate(-6deg)", opacity:0}, {transform:"translateY(0) scale(1) rotate(0)", opacity:1}], {duration:REDUCED?1:760, easing:"cubic-bezier(.3,1.35,.5,1)", fill:"backwards"});
+  drawGlyphs(card, 500);
+  coach.set("proud", 2000);
+  setFoot(`<p class="hand" style="text-align:center;margin:0">${DAYS[S.days[0]]} first. Easy on rough mornings.</p><button class="btn" type="button" id="start">Start my week</button>`);
+  await once(foot, "#start"); alive(e);
+  card.animate([{transform:"translateY(0)"},{transform:"translateY(-10px)"},{transform:"translateY(0)"}], {duration:400});
+  coach.set("hello", 2000);
+}
+
+/* ======================= C · one drawing ======================= */
+async function onedrawing(root, e){
+  const W = page.clientWidth, H = page.clientHeight;
+  const world = el("div", "world"); world.style.width = W*3 + "px"; world.style.height = H*2 + "px"; root.appendChild(world);
+  const ink = inkLayer(world, W*3, H*2);
+  const POS = [[0,0],[1,0],[2,0],[2,1],[1,1],[0,1]];
+  const LBL = ["", "your coach", "you", "what matters", "your days", "your plan"];
+  const regions = POS.map(([c, r], i) => { const g = el("section", "region"); Object.assign(g.style, {left:c*W+"px", top:r*H+"px", width:W+"px", height:H+"px"}); if (LBL[i]) g.appendChild(el("span", "lbl", LBL[i])); world.appendChild(g); return g; });
+  const cam = {i:0};
+  const T = (x, y, s) => `translate(${x}px, ${y}px) scale(${s})`;
+  const at = i => T(-POS[i][0]*W, -POS[i][1]*H, 1);
+  world.style.transform = at(0);
+  const centre = i => [POS[i][0]*W + W/2, POS[i][1]*H + H/2];
+  async function move(to){
+    const a = centre(cam.i), b = centre(to), mx = (a[0]+b[0])/2, my = (a[1]+b[1])/2, ms = .62;
+    /* the line travels with the camera */
+    const exit = [POS[cam.i][0]*W + W*(POS[to][0] > POS[cam.i][0] ? .96 : POS[to][0] < POS[cam.i][0] ? .04 : .5), POS[cam.i][1]*H + H*(POS[to][1] > POS[cam.i][1] ? .98 : .5)];
+    const entry = [POS[to][0]*W + W*(POS[to][0] > POS[cam.i][0] ? .04 : POS[to][0] < POS[cam.i][0] ? .96 : .5), POS[to][1]*H + H*(POS[to][1] > POS[cam.i][1] ? .06 : .5)];
+    stroke(ink, smooth([exit, [(exit[0]+entry[0])/2, (exit[1]+entry[1])/2 + (POS[to][1] === POS[cam.i][1] ? 40 : 0)], entry]), {color:"var(--terra)", w:2.6, dur:1000});
+    world._scale = 1;
+    await world.animate([{transform:at(cam.i)}, {transform:T(W/2 - mx*ms, H/2 - my*ms, ms), offset:.5}, {transform:at(to)}], {duration:REDUCED?1:1150, easing:"cubic-bezier(.65,0,.35,1)", fill:"forwards"}).finished.catch(()=>{});
+    world.style.transform = at(to); world.getAnimations().forEach(x => x.cancel());
+    cam.i = to; alive(e);
+  }
+  const mark = (n, region) => highlight(ink, relTo(n, world));
+  const ring = (n, cls) => stroke(ink, smooth(ringPts(relTo(n, world), 6, 1.06, -1.6)), {dur:420, cls});
+
+  /* 0 welcome */
+  regions[0].innerHTML += `<div class="meta">Second Strong</div><h1 class="title" style="font-size:52px;max-width:7ch">Strong, <em>for years.</em></h1>
+    <p class="hand" style="margin:0">a plan, drawn just for you</p><div class="spacer"></div><button class="btn" data-next type="button">Begin</button>`;
+  await wait(300); highlight(ink, relTo(regions[0].querySelector("em"), world), {dy:2, w:10, dur:600});
+  await once(regions[0], "[data-next]"); alive(e);
+  await move(1);
+
+  /* 1 coach */
+  const g1 = regions[1];
+  g1.innerHTML += `<div class="meta">Your coach</div><h2 class="title">Pick <em>one.</em></h2><div style="height:190px;flex:none;position:relative" id="stageC"></div>
+    <div class="thumbs" id="th">${ORDER.map(k=>`<button class="thumb" type="button" data-c="${k}" aria-checked="${k===S.coach}" aria-label="${CHARS[k].name}"><div data-state="idle">${mascot(k)}</div></button>`).join("")}</div>
+    <div class="field"><label for="nm">Name</label><input id="nm" maxlength="14" autocomplete="off" value="${esc(S.name)}"></div><div class="spacer"></div><button class="btn" data-next type="button" id="keep">Keep ${esc(coachName())}</button>`;
+  const big = makeCoach(g1.querySelector("#stageC")); Object.assign(big.el.style, {left:"50%", top:"0", width:"180px", height:"180px", marginLeft:"-90px"}); outlineCoach(big.el); big.set("hello", 1600);
+  g1.querySelector("#th").addEventListener("click", ev => { const b = ev.target.closest(".thumb"); if (!b) return; S.coach = b.dataset.c; if (!S.named) S.name = CHARS[S.coach].name; g1.querySelectorAll(".thumb").forEach(t => t.setAttribute("aria-checked", t === b)); big.swap(S.coach); outlineCoach(big.el); big.set("hello", 1400); g1.querySelector("#nm").value = S.name; g1.querySelector("#keep").textContent = "Keep " + coachName(); });
+  g1.querySelector("#nm").addEventListener("input", ev => { S.name = ev.target.value; S.named = true; g1.querySelector("#keep").textContent = "Keep " + coachName(); });
+  await once(g1, "[data-next]"); alive(e);
+  const corner = makeCoach(root); Object.assign(corner.el.style, {width:"84px", height:"84px", right:"14px", top:"46px", zIndex:6}); corner.el.animate([{opacity:0, transform:"scale(.6)"}, {opacity:1, transform:"scale(1)"}], {duration:500, delay:900, fill:"backwards"});
+  await move(2);
+
+  /* 2 stage */
+  const g2 = regions[2];
+  g2.innerHTML += `<div class="meta">About you</div><h2 class="title" style="max-width:calc(100% - 90px)">Where are <em>you?</em></h2>
+    <div class="tiles">${STAGES.map(([id,l],i)=>`<button class="tile${i===4?" wide":""}" type="button" data-v="${id}" aria-checked="false">${glyph(id)}<b>${l}</b></button>`).join("")}</div><div class="spacer"></div><button class="btn" data-next type="button" aria-disabled="true">Continue</button>`;
+  drawGlyphs(g2);
+  g2.querySelector(".tiles").addEventListener("click", ev => { const b = ev.target.closest(".tile"); if (!b) return; g2.querySelectorAll(".tile").forEach(t => t.setAttribute("aria-checked", t === b)); S.stage = b.dataset.v; dropMarks(ink, "s2"); highlight(ink, relTo(b.querySelector("b"), world), {cls:"s2"}); corner.set(S.stage === "surg" ? "comfort" : "listening", 1300); g2.querySelector("[data-next]").setAttribute("aria-disabled", "false"); });
+  await once(g2, "[data-next]"); alive(e);
+  await move(3);
+
+  /* 3 goals */
+  const g3 = regions[3];
+  g3.innerHTML += `<div class="meta">Up to two</div><h2 class="title">What <em>matters?</em></h2>
+    <div class="tiles">${GOALS.map(([id,l,d])=>`<button class="tile" type="button" data-v="${id}" aria-checked="false">${drawing(d)}<b>${l}</b></button>`).join("")}</div><div class="spacer"></div><button class="btn" data-next type="button" aria-disabled="true">Continue</button>`;
+  drawGlyphs(g3);
+  g3.querySelector(".tiles").addEventListener("click", ev => {
+    const b = ev.target.closest(".tile"); if (!b) return; const v = b.dataset.v, on = !S.goals.includes(v); if (on && S.goals.length >= 2) return;
+    S.goals = on ? S.goals.concat(v) : S.goals.filter(x => x !== v); b.setAttribute("aria-checked", on);
+    dropMarks(ink, "s3"); g3.querySelectorAll('.tile[aria-checked="true"] b').forEach(x => highlight(ink, relTo(x, world), {cls:"s3", dur:on ? 420 : 1}));
+    if (on) corner.set("proud", 1300); g3.querySelector("[data-next]").setAttribute("aria-disabled", String(!S.goals.length));
+  });
+  await once(g3, "[data-next]"); alive(e);
+  await move(4);
+
+  /* 4 days */
+  const g4 = regions[4];
+  g4.innerHTML += `<div class="meta">Two to four</div><h2 class="title">Your <em>days.</em></h2>
+    <div class="dayrow">${DAYS.map((d,i)=>`<button class="dayb" type="button" data-d="${i}" aria-checked="false" aria-label="${d}">${d[0]}</button>`).join("")}</div>
+    <p class="hand" style="text-align:center;margin:0" id="sum">tap the days that usually work</p><div class="spacer"></div><button class="btn" data-next type="button" aria-disabled="true">Make my plan</button>`;
+  g4.querySelector(".dayrow").addEventListener("click", ev => {
+    const b = ev.target.closest(".dayb"); if (!b) return; const d = +b.dataset.d, on = !S.days.includes(d); if (on && S.days.length >= 4) return;
+    S.days = (on ? S.days.concat(d) : S.days.filter(x => x !== d)).sort(); b.setAttribute("aria-checked", on);
+    g4.querySelector("#sum").textContent = S.days.length ? `${S.days.length} × 20 minutes` : "tap the days that usually work";
+    if (on) corner.set("lifting", 1200); g4.querySelector("[data-next]").setAttribute("aria-disabled", String(S.days.length < 2));
+  });
+  await once(g4, "[data-next]"); alive(e);
+
+  /* 5 reveal: zoom out over the whole drawing, then into the plan */
+  const g5 = regions[5];
+  g5.innerHTML += `<div class="meta">${new Date().toLocaleDateString("en-GB",{weekday:"long", day:"numeric", month:"long"})}</div><h2 class="title">Your <em>plan.</em></h2>${planCardHTML()}<p class="hand" style="margin:0">${DAYS[S.days[0]]} first. Easy on rough mornings.</p><div class="spacer"></div><button class="btn" data-next type="button">Start my week</button>`;
+  const fit = Math.min(W / (W*3), H / (H*2)) * .96;
+  const exit = [POS[4][0]*W + W*.04, POS[4][1]*H + H*.5], entry = [POS[5][0]*W + W*.96, POS[5][1]*H + H*.5];
+  stroke(ink, smooth([exit, [(exit[0]+entry[0])/2, exit[1] + 40], entry]), {color:"var(--terra)", w:2.6, dur:1400, delay:500});
+  corner.el.classList.add("fade");
+  await world.animate([{transform:at(4)}, {transform:T((W - W*3*fit)/2, (H - H*2*fit)/2, fit)}], {duration:REDUCED?1:1100, easing:"cubic-bezier(.65,0,.35,1)", fill:"forwards"}).finished.catch(()=>{});
+  alive(e); await wait(1500);
+  await world.animate([{transform:T((W - W*3*fit)/2, (H - H*2*fit)/2, fit)}, {transform:at(5)}], {duration:REDUCED?1:1100, easing:"cubic-bezier(.65,0,.35,1)", fill:"forwards"}).finished.catch(()=>{});
+  world.style.transform = at(5); world.getAnimations().forEach(x => x.cancel()); cam.i = 5; alive(e);
+  corner.el.classList.remove("fade"); corner.set("proud", 2000);
+  g5.querySelectorAll(".wk i").forEach(i => { i.style.animation = "none"; void i.offsetWidth; i.style.animation = ""; });
+  drawGlyphs(g5, 200);
+  highlight(ink, relTo(g5.querySelector(".num"), world), {dy:-12, w:16, dur:600, delay:300});
+  await once(g5, "[data-next]"); alive(e);
+  corner.set("hello", 2000);
+}
+
+/* ======================= D · index cards ======================= */
+async function indexcards(root, e){
+  const W = page.clientWidth;
+  const coach = makeCoach(root, "ic-coach");
+  const stack = el("div"); root.appendChild(stack);
+  const ink = inkLayer(root, W, page.clientHeight); ink.style.zIndex = 20;
+  const cards = [];
+  function deck(){ /* cards under the top one sit slightly askew */
+    cards.forEach((c, i) => { const depth = cards.length - 1 - i; c.style.zIndex = 10 + i; c.style.transition = "transform 500ms var(--spring-soft)"; c.style.transform = depth ? `translateY(${depth * 9}px) scale(${1 - depth * .035}) rotate(${(depth % 2 ? 1.6 : -1.4)}deg)` : "none"; c.style.pointerEvents = depth ? "none" : "auto"; });
+  }
+  const ghost = () => { const g = el("div", "ic-card"); stack.prepend(g); cards.unshift(g); };
+  ghost(); ghost();
+  function add(html){ const c = el("div", "ic-card", html); stack.appendChild(c); cards.push(c); deck();
+    c.animate([{transform:"translateY(60px) scale(.9)", opacity:0}, {transform:"none", opacity:1}], {duration:REDUCED?1:460, easing:"cubic-bezier(.3,1.3,.5,1)"}); drawGlyphs(c, 250); return c; }
+  /* flick to advance: drag the card, or press its button */
+  function flickable(c, canGo){
+    return new Promise(res => {
+      let d = null;
+      c.addEventListener("pointerdown", ev => { if (ev.target.closest("button, input")) return; d = {x:ev.clientX, y:ev.clientY}; c.setPointerCapture(ev.pointerId); c.style.transition = "none"; });
+      c.addEventListener("pointermove", ev => { if (!d) return; const dx = ev.clientX - d.x, dy = (ev.clientY - d.y) * .25; c.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx / 18}deg)`; });
+      c.addEventListener("pointerup", ev => {
+        if (!d) return; const dx = ev.clientX - d.x; d = null;
+        if (dx < -90 && canGo()) out(-1); else { c.style.transition = "transform 500ms var(--spring)"; c.style.transform = "none"; if (dx < -90) { coach.set("thinking", 900); c.animate([{translate:"0"},{translate:"-6px"},{translate:"6px"},{translate:"0"}], {duration:240}); } }
+      });
+      c.querySelector("[data-next]")?.addEventListener("click", ev => { if (ev.currentTarget.getAttribute("aria-disabled") !== "true") out(-1); });
+      function out(dir){
+        c.style.pointerEvents = "none";
+        c.animate([{transform:getComputedStyle(c).transform === "none" ? "none" : getComputedStyle(c).transform}, {transform:`translate(${dir * 140}%, -60px) rotate(${dir * 22}deg)`, opacity:.0}], {duration:REDUCED?1:520, easing:"cubic-bezier(.4,0,.6,1)", fill:"forwards"})
+          .finished.catch(()=>{}).then(() => { c.remove(); cards.splice(cards.indexOf(c), 1); res(); });
+        coach.el.animate([{transform:"translateY(0)"},{transform:"translateY(-16px)"},{transform:"translateY(0)"}], {duration:REDUCED?1:460, easing:"ease-out"});
+        ghost(); deck();
+      }
+    });
+  }
+  const hint = `<p class="hint">swipe left or tap the button</p>`;
+
+  let c = add(`<div class="meta">Second Strong</div><h1 class="title" style="font-size:46px;max-width:7ch;margin-top:110px">Strong, <em>for years.</em></h1><p class="hand" style="margin:0">a few cards, then your plan</p><div class="spacer"></div>${hint}<button class="btn" data-next type="button">Begin</button>`);
+  coach.set("hello", 1800);
+  setTimeout(() => { if (c.isConnected) highlight(ink, prect(c.querySelector("em")), {dy:2, w:10, dur:600, cls:"t"}); }, 560);
+  await flickable(c, () => true); alive(e); dropMarks(ink, "t");
+
+  c = add(`<div class="meta">Card 1 · your coach</div><h2 class="title">Who's <em>peeking?</em></h2><p class="hand" style="margin:-6px 0 0">tap one to swap me</p>
+    <div class="thumbs" id="th" style="margin-top:auto">${ORDER.map(k=>`<button class="thumb" type="button" data-c="${k}" aria-checked="${k===S.coach}" aria-label="${CHARS[k].name}"><div data-state="idle">${mascot(k)}</div></button>`).join("")}</div>
+    <div class="field"><label for="nm">Name</label><input id="nm" maxlength="14" autocomplete="off" value="${esc(S.name)}"></div>${hint}<button class="btn" data-next type="button" id="keep">Keep ${esc(coachName())}</button>`);
+  c.querySelector("#th").addEventListener("click", ev => { const b = ev.target.closest(".thumb"); if (!b) return; S.coach = b.dataset.c; if (!S.named) S.name = CHARS[S.coach].name; c.querySelectorAll(".thumb").forEach(t => t.setAttribute("aria-checked", t === b)); coach.swap(S.coach); outlineCoach(coach.el); coach.set("hello", 1400); c.querySelector("#nm").value = S.name; c.querySelector("#keep").textContent = "Keep " + coachName(); });
+  c.querySelector("#nm").addEventListener("input", ev => { S.name = ev.target.value; S.named = true; c.querySelector("#keep").textContent = "Keep " + coachName(); });
+  c.querySelector("#nm").addEventListener("focus", () => coach.set("listening"));
+  await flickable(c, () => !!coachName()); alive(e);
+
+  c = add(`<div class="meta">Card 2 · about you</div><h2 class="title">Where are <em>you?</em></h2><div class="tiles">${STAGES.map(([id,l],i)=>`<button class="tile${i===4?" wide":""}" type="button" data-v="${id}" aria-checked="false">${glyph(id)}<b>${l}</b></button>`).join("")}</div><div class="spacer"></div>${hint}<button class="btn" data-next type="button" aria-disabled="true">Next</button>`);
+  c.querySelector(".tiles").addEventListener("click", ev => { const b = ev.target.closest(".tile"); if (!b) return; c.querySelectorAll(".tile").forEach(t => t.setAttribute("aria-checked", t === b)); S.stage = b.dataset.v; dropMarks(ink, "p"); setTimeout(() => highlight(ink, prect(b.querySelector("b")), {cls:"p"}), 380); coach.set(S.stage === "surg" ? "comfort" : "listening", 1300); c.querySelector("[data-next]").setAttribute("aria-disabled", "false"); });
+  await flickable(c, () => !!S.stage); alive(e); dropMarks(ink, "p");
+
+  c = add(`<div class="meta">Card 3 · up to two</div><h2 class="title">What <em>matters?</em></h2><div class="tiles">${GOALS.map(([id,l,d])=>`<button class="tile" type="button" data-v="${id}" aria-checked="false">${drawing(d)}<b>${l}</b></button>`).join("")}</div><div class="spacer"></div>${hint}<button class="btn" data-next type="button" aria-disabled="true">Next</button>`);
+  c.querySelector(".tiles").addEventListener("click", ev => {
+    const b = ev.target.closest(".tile"); if (!b) return; const v = b.dataset.v, on = !S.goals.includes(v); if (on && S.goals.length >= 2) return;
+    S.goals = on ? S.goals.concat(v) : S.goals.filter(x => x !== v); b.setAttribute("aria-checked", on);
+    dropMarks(ink, "p"); setTimeout(() => c.querySelectorAll('.tile[aria-checked="true"] b').forEach(x => highlight(ink, prect(x), {cls:"p", dur:on ? 420 : 1})), 380);
+    if (on) coach.set("proud", 1300); c.querySelector("[data-next]").setAttribute("aria-disabled", String(!S.goals.length));
+  });
+  await flickable(c, () => S.goals.length > 0); alive(e); dropMarks(ink, "p");
+
+  c = add(`<div class="meta">Card 4 · two to four</div><h2 class="title">Your <em>days.</em></h2><div class="dayrow" style="margin-top:20px">${DAYS.map((d,i)=>`<button class="dayb" type="button" data-d="${i}" aria-checked="false" aria-label="${d}">${d[0]}</button>`).join("")}</div><p class="hand" id="sum" style="text-align:center;margin:0">tap the days that usually work</p><div class="spacer"></div>${hint}<button class="btn" data-next type="button" aria-disabled="true">Make my plan</button>`);
+  c.querySelector(".dayrow").addEventListener("click", ev => {
+    const b = ev.target.closest(".dayb"); if (!b) return; const d = +b.dataset.d, on = !S.days.includes(d); if (on && S.days.length >= 4) return;
+    S.days = (on ? S.days.concat(d) : S.days.filter(x => x !== d)).sort(); b.setAttribute("aria-checked", on);
+    c.querySelector("#sum").textContent = S.days.length ? `${S.days.length} × 20 minutes` : "tap the days that usually work";
+    if (on) coach.set("lifting", 1100); c.querySelector("[data-next]").setAttribute("aria-disabled", String(S.days.length < 2));
+  });
+  await flickable(c, () => S.days.length >= 2); alive(e);
+
+  /* reveal: the plan card flips over */
+  const p = el("div", "ic-card", `<div class="meta">${new Date().toLocaleDateString("en-GB",{weekday:"long", day:"numeric", month:"long"})}</div><h2 class="title">Your <em>plan.</em></h2>${planCardHTML()}<p class="hand" style="margin:0">${DAYS[S.days[0]]} first. Easy on rough mornings.</p><div class="spacer"></div><button class="btn" type="button" id="go">Start my week</button>`);
+  stack.appendChild(p); cards.push(p); deck();
+  p.animate([{transform:"perspective(900px) rotateY(90deg)"}, {transform:"perspective(900px) rotateY(0)"}], {duration:REDUCED?1:700, easing:"cubic-bezier(.3,1.25,.5,1)"});
+  drawGlyphs(p, 400); coach.set("proud", 2000);
+  setTimeout(() => highlight(ink, prect(p.querySelector(".num")), {dy:-12, w:16, dur:600, cls:"t"}), 1000);
+  await once(p, "#go"); alive(e);
+  coach.set("hello", 2000);
+}
+
+/* ======================= E · collage ======================= */
+async function collage(root, e){
+  const W = page.clientWidth;
+  root.innerHTML = `<div class="cl-page" id="pg"><div class="cl-title">My week</div></div><div class="cl-tray" id="tray"></div>`;
+  const pg = root.querySelector("#pg"), tray = root.querySelector("#tray");
+  const PW = W - 24;
+  const ink = inkLayer(pg, PW, 760);
+  const SL = { coach:[PW-118, 14, 104, 104], stage:[18, 70, 112, 112], g0:[144, 150, 100, 110], g1:[254, 162, 100, 110], cal:[16, 312, PW-32, 40] };
+  const slotEls = {};
+  for (const [k, [x, y, w, h]] of Object.entries(SL)) { if (k === "cal") continue; const s = el("div", "slot"); Object.assign(s.style, {left:x+"px", top:y+"px", width:w+"px", height:h+"px"}); pg.appendChild(s); slotEls[k] = s; }
+  const cal = el("div", "cl-cal", DAYS.map(d => `<span>${d[0]}</span>`).join("")); Object.assign(cal.style, {left:SL.cal[0]+"px", top:SL.cal[1]+"px", width:SL.cal[2]+"px"}); pg.appendChild(cal);
+  const nameTag = el("div", "hand"); Object.assign(nameTag.style, {left:(SL.coach[0]-4)+"px", top:(SL.coach[1]+SL.coach[3]+2)+"px", width:"112px", textAlign:"center", fontSize:"20px"}); pg.appendChild(nameTag);
+  const show = html => { tray.innerHTML = html; [...tray.children].forEach((c, i) => { c.classList.add("rise"); c.style.animationDelay = i*60 + "ms"; }); drawGlyphs(tray, 80); };
+  const stuck = {};
+  let coachSticker = null;
+  async function stick(key, from, html, rot){
+    const [x, y, w, h] = SL[key];
+    if (stuck[key]) { const old = stuck[key]; old.classList.add("peel"); setTimeout(() => old.remove(), 420); }
+    const s = el("div", "sticker", html); Object.assign(s.style, {left:x+"px", top:y+"px", width:w+"px", height:h+"px", transform:`rotate(${rot}deg)`, visibility:"hidden"});
+    s.style.setProperty("--tape", "0"); pg.appendChild(s); stuck[key] = s;
+    slotEls[key] && (slotEls[key].style.opacity = "0");
+    const fr = prect(from), to = prect(s);
+    await fly(s, {x:fr.x, y:fr.y, w:fr.w, h:fr.w * h / w}, to, {arc:-60, rot, dur:560}); alive(e);
+    s.style.visibility = "visible"; s.classList.add("slap"); requestAnimationFrame(() => s.style.setProperty("--tape", "1"));
+    return s;
+  }
+
+  /* welcome */
+  Object.values(slotEls).forEach(sl => sl.style.opacity = "0");
+  const hello = el("div", "", `<div style="font:800 46px/1 var(--f-display);letter-spacing:-.04em">Strong,<br><em style="font-family:var(--f-serif);font-weight:400">for years.</em></div>`);
+  Object.assign(hello.style, {left:"18px", top:"110px"}); pg.appendChild(hello);
+  show(`<div class="meta">Second Strong</div><p class="hand" style="margin:0">Let's make your first page together.</p><div class="spacer"></div><button class="btn" id="go" type="button">Begin</button>`);
+  highlight(ink, relTo(hello.querySelector("em"), pg), {dy:0, w:12, dur:600, delay:400, cls:"w"});
+  await once(tray, "#go"); alive(e);
+  hello.animate([{opacity:1}, {opacity:0, transform:"translateY(-10px)"}], {duration:300, fill:"forwards"}).finished.then(() => hello.remove()); dropMarks(ink, "w");
+  Object.values(slotEls).forEach((sl, i) => { sl.style.transition = `opacity 300ms ${200 + i*80}ms`; sl.style.opacity = "1"; });
+
+  /* coach */
+  show(`<div class="meta">Your coach</div><h2 class="title">Pick <em>one.</em></h2><div class="thumbs" id="th">${ORDER.map(k=>`<button class="thumb" type="button" data-c="${k}" aria-checked="false" aria-label="${CHARS[k].name}"><div data-state="idle">${mascot(k)}</div></button>`).join("")}</div>
+    <div class="field"><label for="nm">Name</label><input id="nm" maxlength="14" autocomplete="off" value=""></div><div class="spacer"></div><button class="btn" id="keep" type="button" aria-disabled="true">Keep</button>`);
+  const nm = tray.querySelector("#nm"), keep = tray.querySelector("#keep");
+  tray.querySelector("#th").addEventListener("click", async ev => {
+    const b = ev.target.closest(".thumb"); if (!b) return;
+    S.coach = b.dataset.c; if (!S.named) S.name = CHARS[S.coach].name;
+    tray.querySelectorAll(".thumb").forEach(t => t.setAttribute("aria-checked", t === b));
+    nm.value = S.name; keep.textContent = "Keep " + coachName(); keep.setAttribute("aria-disabled", "false"); nameTag.textContent = coachName();
+    coachSticker = await stick("coach", b, `<div class="coach-in" data-state="hello" style="width:100%;height:100%">${mascot(S.coach)}</div>`, 4);
+    setTimeout(() => { const ci = coachSticker?.querySelector(".coach-in"); if (ci) ci.dataset.state = "idle"; }, 1600);
+  });
+  nm.addEventListener("input", () => { S.name = nm.value; S.named = true; keep.textContent = "Keep " + coachName(); nameTag.textContent = coachName(); });
+  await once(tray, "#keep"); alive(e);
+  const cstate = (s, ms) => { const ci = coachSticker?.querySelector(".coach-in"); if (!ci) return; ci.dataset.state = s; if (ms) setTimeout(() => ci.dataset.state = "idle", ms); };
+
+  /* stage */
+  show(`<h2 class="title">Where are <em>you?</em></h2><div class="opts">${STAGES.map(([id,l])=>`<button class="chipx" type="button" data-v="${id}">${glyph(id)}${l}</button>`).join("")}</div><div class="spacer"></div><button class="btn" id="next" type="button" aria-disabled="true">Continue</button>`);
+  tray.querySelector(".opts").addEventListener("click", async ev => {
+    const b = ev.target.closest(".chipx"); if (!b) return; S.stage = b.dataset.v;
+    tray.querySelectorAll(".chipx").forEach(t => t.setAttribute("aria-checked", t === b)); tray.querySelector("#next").setAttribute("aria-disabled", "false");
+    cstate(S.stage === "surg" ? "comfort" : "listening", 1300);
+    await stick("stage", b.querySelector(".glyph"), `${glyph(S.stage)}<b>${STAGES.find(x => x[0] === S.stage)[1]}</b>`, -5);
+  });
+  await once(tray, "#next"); alive(e);
+
+  /* goals */
+  show(`<h2 class="title">What <em>matters?</em></h2><div class="opts">${GOALS.map(([id,l,d])=>`<button class="chipx" type="button" data-v="${id}" aria-checked="false">${drawing(d)}${l}</button>`).join("")}</div><p class="hand" style="margin:0;min-height:22px" id="hint"></p><button class="btn" id="next" type="button" aria-disabled="true">Continue</button>`);
+  tray.querySelector(".opts").addEventListener("click", async ev => {
+    const b = ev.target.closest(".chipx"); if (!b) return; const v = b.dataset.v, on = !S.goals.includes(v);
+    if (on && S.goals.length >= 2) { tray.querySelector("#hint").textContent = "two is plenty"; return; }
+    tray.querySelector("#hint").textContent = "";
+    S.goals = on ? S.goals.concat(v) : S.goals.filter(x => x !== v); b.setAttribute("aria-checked", on);
+    tray.querySelector("#next").setAttribute("aria-disabled", String(!S.goals.length));
+    if (on) { cstate("proud", 1300); const g = GOALS.find(x => x[0] === v); await stick("g" + (S.goals.length - 1), b.querySelector(".draw"), `<div class="draw" style="--src:url(${DRAW[g[2]]})"></div><b>${g[1]}</b>`, S.goals.length === 1 ? -4 : 6); }
+    else { ["g0","g1"].forEach(k => { if (stuck[k]) { stuck[k].classList.add("peel"); const o = stuck[k]; setTimeout(() => o.remove(), 420); delete stuck[k]; slotEls[k].style.opacity = "1"; } });
+      S.goals.forEach((gv, i) => { const g = GOALS.find(x => x[0] === gv); const s = el("div", "sticker slap", `<div class="draw" style="--src:url(${DRAW[g[2]]})"></div><b>${g[1]}</b>`); const [x,y,w,h] = SL["g"+i]; Object.assign(s.style, {left:x+"px", top:y+"px", width:w+"px", height:h+"px", transform:`rotate(${i ? 6 : -4}deg)`}); pg.appendChild(s); stuck["g"+i] = s; slotEls["g"+i].style.opacity = "0"; }); }
+  });
+  await once(tray, "#next"); alive(e);
+
+  /* days: circled on the page calendar */
+  show(`<h2 class="title">Your <em>days.</em></h2><div class="dayrow">${DAYS.map((d,i)=>`<button class="dayb" type="button" data-d="${i}" aria-checked="false" aria-label="${d}">${d[0]}</button>`).join("")}</div><div class="spacer"></div><button class="btn" id="next" type="button" aria-disabled="true">Finish my page</button>`);
+  const circles = {};
+  tray.querySelector(".dayrow").addEventListener("click", ev => {
+    const b = ev.target.closest(".dayb"); if (!b) return; const d = +b.dataset.d, on = !S.days.includes(d); if (on && S.days.length >= 4) return;
+    S.days = (on ? S.days.concat(d) : S.days.filter(x => x !== d)).sort(); b.setAttribute("aria-checked", on);
+    if (on) { circles[d] = stroke(ink, smooth(ringPts(relTo(cal.children[d], pg), 7, 1.1, -1.8)), {dur:460}); cstate("lifting", 1100); }
+    else { circles[d]?.classList.add("fade"); }
+    tray.querySelector("#next").setAttribute("aria-disabled", String(S.days.length < 2));
+  });
+  await once(tray, "#next"); alive(e);
+
+  /* reveal: the tray drops away and the page becomes the plan */
+  tray.classList.add("gone");
+  await wait(250);
+  pg.style.height = (page.clientHeight - 60) + "px";
+  Object.values(slotEls).forEach(s => s.style.opacity = "0");
+  const big = el("div", "", `<div style="font:800 46px/.9 var(--f-display);letter-spacing:-.05em">100<small style="font-size:20px">g</small></div><div class="meta" style="margin-top:4px">protein a day</div>`);
+  Object.assign(big.style, {left:"142px", top:"66px", maxWidth:"92px"}); pg.appendChild(big);
+  big.animate([{transform:"scale(1.3) rotate(-4deg)", opacity:0}, {transform:"none", opacity:1}], {duration:REDUCED?1:480, delay:REDUCED?0:500, easing:"cubic-bezier(.3,1.5,.5,1)", fill:"backwards"});
+  await wait(700);
+  highlight(ink, relTo(big.firstElementChild, pg), {dy:-12, w:16, dur:600});
+  const note = el("div", "hand line writing", `${DAYS[S.days[0]]} first. Easy on rough mornings. — ${esc(coachName())}`);
+  note.style.setProperty("--d", "1200ms"); note.style.setProperty("--st", "steps(24)");
+  Object.assign(note.style, {left:"18px", top:"372px", right:"18px"}); pg.appendChild(note);
+  cstate("proud", 2000);
+  const go = el("button", "btn", "Start my week"); go.type = "button"; Object.assign(go.style, {position:"absolute", left:"22px", right:"22px", bottom:"22px", width:"auto"}); root.appendChild(go); go.classList.add("rise");
+  await new Promise(r => go.addEventListener("click", r, {once:true})); alive(e);
+  cstate("hello", 2000);
+}
+
+/* ---------- switcher ---------- */
+const EXPS = [
+  {id:"conversation", name:"Conversation", desc:"You talk it through with your coach. Its lines are handwritten, and your answers fly up from a tray as replies.", run:conversation},
+  {id:"toybox", name:"Toybox", desc:"Playful physics. The cast tumbles in and bounces; you drag or flick paper tokens into a hand-drawn bowl, and a third goal bounces off the rim.", run:toybox},
+  {id:"onedrawing", name:"One drawing", desc:"One big sketchbook spread. A camera glides between areas while an ink line follows; the reveal zooms out over the whole page.", run:onedrawing},
+  {id:"cards", name:"Index cards", desc:"A stack of paper cards with your coach peeking over the top. Swipe or flick each card away to move on.", run:indexcards},
+  {id:"collage", name:"Collage", desc:"You build your plan page as you answer: picks slap on as taped stickers, days get circled, and the page becomes your plan.", run:collage}
+];
+let X = "toybox";
+try { X = localStorage.getItem("ss-feel") || "toybox"; } catch(err) {}
+function start(){
+  epoch++; const e = epoch;
+  S = fresh();
+  page.innerHTML = ""; const root = el("div", "root"); page.appendChild(root);
+  try { localStorage.setItem("ss-feel", X); } catch(err) {}
+  EXPS.find(x => x.id === X).run(root, e).catch(err => { if (!(err instanceof Stop)) console.error(err); });
+}
+const vlist = document.getElementById("vlist");
+vlist.innerHTML = EXPS.map((x, i) => `<li><button class="vbtn" type="button" data-x="${x.id}" aria-pressed="${x.id===X}"><span class="ltr">${String.fromCharCode(65+i)}</span><b>${x.name}</b><span>${x.desc}</span></button></li>`).join("");
+vlist.addEventListener("click", ev => { const b = ev.target.closest(".vbtn"); if (!b) return; X = b.dataset.x; vlist.querySelectorAll(".vbtn").forEach(v => v.setAttribute("aria-pressed", v === b)); start(); });
+document.getElementById("replay").addEventListener("click", start);
+window.__ob = { get S(){ return S; }, setX(x){ X = x; start(); } };
+start();
+})();
+</script>

@@ -1,0 +1,713 @@
+<meta charset="utf-8">
+<title>Second Strong Onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Gochi+Hand&family=IBM+Plex+Mono:wght@500&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap">
+<style>
+/* Layout: one phone-sized notebook page, centred on a quiet desk. Scenes turn like pages; the coach and the margin notes persist across them. */
+:root{
+  --bg:#FBF8F4; --card:#F6F0E8; --almond:#EDE3D6; --ink:#3B322C; --ink2:#5D534B;
+  --taupe:#A8968A; --terra:#A85A3C; --apricot:#F0C9A8; --edge:rgba(59,50,44,.10);
+  --desk:#EAE2D7; --shadow:rgba(59,50,44,.22);
+  --f-display:"Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --f-serif:"Newsreader", Georgia, serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --f-hand:"Gochi Hand", "Comic Sans MS", cursive;
+  /* motion language */
+  --t-fb:160ms; --t-ui:380ms; --t-scene:680ms;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --spring:linear(0, .009, .035 2.1%, .141, .281 6.7%, .723 12.9%, .938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.129 32.8%, 1.051 39.6%, 1.017 43.1%, .991, .977 51%, .974 53.8%, .975 57.1%, .997 69.8%, 1.003 76.9%, 1);
+  --spring-soft:linear(0, .02 1.5%, .1 4%, .38 10%, .72 18%, .92 26%, 1.02 34%, 1.05 40%, 1.04 48%, 1.01 60%, 1);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --desk:#1A1512; color-scheme:light }}
+:root[data-theme="dark"]{ --desk:#1A1512 }
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--desk); color:var(--ink); font:400 16px/1.45 var(--f-display); display:grid; place-items:center; padding-inline:16px; padding-block:24px}
+button{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--terra); outline-offset:3px}
+
+.desk{display:grid; gap:14px; justify-items:center; width:100%}
+.caption{font:500 11px/1.3 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:color-mix(in srgb,var(--ink2) 70%, var(--desk)); text-align:center}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .caption{color:#A8968A}}
+:root[data-theme="dark"] .caption{color:#A8968A}
+
+.phone{position:relative; width:min(100%,400px); height:min(820px, calc(100vh - 80px)); min-height:640px; border-radius:46px; background:#2A231F; padding:10px; box-shadow:0 30px 60px -20px rgba(40,30,20,.45), 0 0 0 1px rgba(0,0,0,.2)}
+@media (max-width:480px){ body{padding:0; display:block} .desk{gap:0} .caption{display:none} .phone{width:100%; height:100vh; height:100dvh; min-height:0; border-radius:0; padding:0; box-shadow:none} .page{border-radius:0!important} }
+.page{position:relative; width:100%; height:100%; border-radius:37px; background:var(--bg); overflow:hidden; perspective:1400px; isolation:isolate}
+/* faint notebook rule */
+.page::before{content:""; position:absolute; inset:0; background:repeating-linear-gradient(transparent 0 31px, rgba(59,50,44,.045) 31px 32px); pointer-events:none; z-index:0}
+
+/* top bar */
+.top{position:absolute; inset:0 0 auto 0; z-index:5; display:grid; grid-template-columns:44px 1fr 56px; align-items:center; gap:6px; padding:16px 16px 0}
+.icon-btn{appearance:none; border:0; background:transparent; width:40px; height:40px; border-radius:50%; display:grid; place-items:center; cursor:pointer; transition:background var(--t-fb), transform var(--t-fb), opacity var(--t-ui)}
+.icon-btn:hover{background:rgba(59,50,44,.06)} .icon-btn:active{transform:scale(.92)}
+.icon-btn svg{width:20px; height:20px; fill:none; stroke:var(--ink); stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+.skip{appearance:none; border:0; background:transparent; font:600 14px/1 var(--f-display); color:var(--ink2); cursor:pointer; padding:10px 4px; border-radius:10px; transition:opacity var(--t-ui), color var(--t-fb)}
+.skip:hover{color:var(--ink)}
+.is-hidden{opacity:0; pointer-events:none}
+.pencil{height:14px; width:100%}
+.pencil path{fill:none; stroke-linecap:round}
+.pencil .track{stroke:rgba(59,50,44,.12); stroke-width:2}
+.pencil .done{stroke:var(--ink); stroke-width:2.6; transition:stroke-dashoffset 700ms var(--ease)}
+
+/* margin notes */
+.notes{position:absolute; left:22px; right:104px; top:62px; z-index:4; min-height:22px; display:flex; align-items:baseline; gap:8px; transition:opacity var(--t-ui)}
+.notes .run{display:flex; align-items:baseline; gap:2px 8px; min-width:0; overflow:hidden; white-space:nowrap; scroll-behavior:smooth; -webkit-mask:linear-gradient(90deg,transparent 0,#000 28px); mask:linear-gradient(90deg,transparent 0,#000 28px)}
+.notes .run.flush{-webkit-mask:none; mask:none}
+.notes.full{right:22px}
+.notes.full .run{flex-wrap:wrap; white-space:normal; overflow:visible; -webkit-mask:none; mask:none}
+.notes .lbl{font:500 10.5px/1 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase; margin-right:2px}
+.note{font:400 18px/1.15 var(--f-hand); color:var(--terra); white-space:nowrap; display:inline-block}
+.note.writing{animation:write 640ms steps(12) both}
+@keyframes write{from{clip-path:inset(0 100% 0 0)} to{clip-path:inset(0 0 0 0)}}
+.note + .note::before{content:"·"; margin-right:8px; color:var(--taupe)}
+
+/* companion */
+.companion{position:absolute; left:0; top:0; width:180px; height:180px; z-index:6; transform-origin:0 0; transition:transform 760ms var(--spring-soft); pointer-events:none}
+.companion .m{width:100%; height:100%; display:block}
+.companion .swap{animation:swap 460ms var(--spring) both}
+@keyframes swap{from{transform:scale(.82) translateY(10px)} to{transform:none}}
+.companion.pos-off{transform:translate(110px, 900px) scale(.7)}
+.companion.pos-stage{transform:translate(var(--cx-stage), 150px) scale(1)}
+.companion.pos-corner{transform:translate(calc(var(--pw) - 96px), 52px) scale(.44)}
+.companion.pos-center{transform:translate(var(--cx-stage), 200px) scale(1.05)}
+.companion .say{position:absolute; left:132px; top:2px; font:400 21px/1 var(--f-hand); color:var(--terra); white-space:nowrap; transform:rotate(-5deg); opacity:0; transition:opacity var(--t-ui)}
+.companion.pos-stage .say.on, .companion.pos-center .say.on{opacity:1}
+
+/* scenes */
+.stage{position:absolute; inset:0; z-index:2}
+.scene{position:absolute; inset:0; padding:100px 22px 22px; display:flex; flex-direction:column; gap:14px; transform-origin:0 50%; backface-visibility:hidden; background:transparent}
+.scene.turning{background:var(--bg); box-shadow:-30px 0 60px -30px rgba(59,50,44,.35)}
+.meta{font:500 11.5px/1.2 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase}
+.title{font:800 30px/1.02 var(--f-display); letter-spacing:-.035em; margin:0; text-wrap:balance; max-width:13ch}
+.title em{font-family:var(--f-serif); font-style:italic; font-weight:400; letter-spacing:-.015em}
+.sub{margin:0; color:var(--ink2); font-size:15.5px; max-width:30ch}
+.with-coach .title,.with-coach .sub{max-width:calc(100% - 80px)}
+.spacer{flex:1}
+
+.btn{appearance:none; border:0; height:54px; border-radius:99px; background:var(--ink); color:var(--bg); font:600 16.5px/1 var(--f-display); cursor:pointer; width:100%; transition:transform var(--t-fb) var(--ease), opacity var(--t-ui), background var(--t-fb); position:relative; z-index:3}
+.btn:hover{background:#2E2621}
+.btn:active{transform:scale(.97)}
+.btn[aria-disabled="true"]{opacity:.32; cursor:default}
+.btn[aria-disabled="true"]:active{transform:none}
+.hint{font:400 17px/1 var(--f-hand); color:var(--terra); text-align:center; min-height:18px; margin:-4px 0 0}
+
+/* welcome */
+.welcome{padding-top:120px}
+.welcome .title{font-size:40px; max-width:9ch}
+.underline{display:block; width:190px; height:16px; margin-top:-2px}
+.underline path{fill:none; stroke:var(--terra); stroke-width:3; stroke-linecap:round; stroke-dasharray:240; stroke-dashoffset:240; animation:drawline 900ms 500ms var(--ease) forwards}
+@keyframes drawline{to{stroke-dashoffset:0}}
+.cast{position:absolute; left:-8px; right:-8px; bottom:96px; height:96px; display:flex; justify-content:center; pointer-events:auto}
+.cast .peek{width:74px; height:74px; margin:0 -9px; flex:none; position:relative; transform:translateY(120px); animation:peek 700ms var(--spring) forwards; cursor:pointer; appearance:none; border:0; background:transparent; padding:0; border-radius:50%}
+.cast .peek .m{width:100%; height:100%}
+.cast .peek:nth-child(even){margin-top:14px}
+@keyframes peek{to{transform:translateY(0)}}
+.cast.leaving .peek{animation:drop 420ms var(--ease) forwards}
+@keyframes drop{from{transform:translateY(0)} to{transform:translateY(160px)}}
+.welcome .btn-wrap{margin-top:auto}
+.magnet{transition:transform 260ms var(--ease)}
+
+/* coach pick */
+.pick-gap{height:176px; flex:none}
+.thumbs{display:flex; gap:8px; justify-content:space-between}
+.thumb{appearance:none; flex:1 1 0; min-width:0; aspect-ratio:1; border-radius:14px; border:1px solid var(--edge); background:var(--card); padding:2px; cursor:pointer; transition:transform 200ms var(--ease), border-color var(--t-fb), box-shadow var(--t-fb); transform:perspective(300px) rotateX(var(--rx,0)) rotateY(var(--ry,0))}
+.thumb .m{width:100%; height:100%; display:block}
+.thumb[aria-checked="true"]{border-color:var(--ink); box-shadow:inset 0 0 0 1px var(--ink)}
+.trait{margin:0; text-align:center; font-size:15px; color:var(--ink2); min-height:22px}
+.trait b{color:var(--ink); font-weight:800}
+.field{display:flex; align-items:baseline; gap:10px; border-bottom:1.5px solid var(--ink); padding:4px 2px 6px}
+.field label{font:500 11px/1 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase; flex:none}
+.field input{flex:1; min-width:0; border:0; background:transparent; color:var(--ink); font:800 24px/1.1 var(--f-display); letter-spacing:-.02em; padding:2px 0; outline:none}
+
+/* option cards */
+.opts{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.opt{appearance:none; text-align:left; border:1.5px solid color-mix(in srgb,var(--ink) 16%,transparent); background:var(--card); border-radius:16px; padding:12px 12px 13px; cursor:pointer; display:grid; gap:3px; position:relative; transition:transform var(--t-fb) var(--ease), background var(--t-ui) var(--ease), color var(--t-ui), border-color var(--t-ui)}
+.opt:hover{border-color:color-mix(in srgb,var(--ink) 40%,transparent)}
+.opt:active{transform:scale(.97)}
+.opt b{font:800 15.5px/1.15 var(--f-display); letter-spacing:-.01em}
+.opt span{font-size:12.5px; line-height:1.3; color:var(--ink2); transition:color var(--t-ui)}
+.opt[aria-checked="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink); animation:stamp 420ms var(--spring)}
+.opt[aria-checked="true"] span{color:color-mix(in srgb,var(--bg) 75%,transparent)}
+.opt.wide{grid-column:1 / -1}
+@keyframes stamp{0%{transform:scale(.95)} 100%{transform:scale(1)}}
+.chips{display:flex; flex-wrap:wrap; gap:7px}
+.chip{appearance:none; border:1.5px solid color-mix(in srgb,var(--ink) 20%,transparent); background:transparent; border-radius:99px; padding:9px 13px; font:600 14px/1 var(--f-display); cursor:pointer; transition:background var(--t-fb), color var(--t-fb), border-color var(--t-fb), transform var(--t-fb) var(--ease)}
+.chip:active{transform:scale(.95)}
+.chip[aria-checked="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink); animation:stamp 380ms var(--spring)}
+.reveal-in{animation:rise var(--t-ui) var(--ease) both}
+@keyframes rise{from{opacity:0; transform:translateY(8px)}}
+.qlabel{font:500 11px/1.2 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase; margin:2px 0 -4px}
+
+/* goal sketches */
+.canvas{position:relative; height:150px; border-radius:18px; background:var(--card); border:1px solid var(--edge); overflow:hidden; flex:none; display:flex; align-items:center; justify-content:center; gap:4px}
+.canvas .empty{font:400 19px/1.2 var(--f-hand); color:var(--taupe); text-align:center; padding:0 30px}
+.draw{width:130px; height:130px; background:var(--ink); -webkit-mask:var(--src) center / contain no-repeat; mask:var(--src) center / contain no-repeat; flex:none}
+.draw.sketch{animation:sketch 1100ms var(--ease) both}
+@keyframes sketch{from{clip-path:polygon(0 0,0 0,0 0)} to{clip-path:polygon(0 0,250% 0,0 250%)}}
+.draw.out{animation:fadeout 260ms var(--ease) forwards}
+@keyframes fadeout{to{opacity:0; transform:scale(.94)}}
+.goals .opt{grid-template-columns:auto 1fr; align-items:center; column-gap:10px}
+.goals .opt i{grid-row:span 2; width:34px; height:34px; background:currentColor; -webkit-mask:var(--src) center / contain no-repeat; mask:var(--src) center / contain no-repeat}
+
+/* week */
+.rack{display:flex; gap:6px; align-items:flex-end; justify-content:space-between; padding:12px 12px 10px; background:var(--card); border:1px solid var(--edge); border-radius:18px}
+.bell{appearance:none; border:0; background:transparent; cursor:pointer; display:grid; justify-items:center; gap:5px; padding:4px 2px; flex:1; border-radius:12px; transition:transform var(--t-fb) var(--ease)}
+.bell:active{transform:scale(.92)}
+.bell svg{display:block; transition:transform 420ms var(--spring)}
+.bell .plate{fill:color-mix(in srgb,var(--ink) 18%,transparent); transition:fill var(--t-ui)}
+.bell .bar{fill:color-mix(in srgb,var(--ink) 28%,transparent); transition:fill var(--t-ui)}
+.bell[aria-checked="true"] .plate{fill:var(--ink)}
+.bell[aria-checked="true"] .bar{fill:#6E6158}
+.bell[aria-checked="true"] svg{transform:translateY(-4px)}
+.bell em{font:500 11px/1 var(--f-mono); font-style:normal; color:var(--ink2)}
+.bell[aria-checked="true"] em{color:var(--ink)}
+.days{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+.day{appearance:none; border:1.5px solid color-mix(in srgb,var(--ink) 18%,transparent); background:transparent; border-radius:14px; height:52px; display:grid; place-items:center; cursor:pointer; font:600 13px/1 var(--f-display); position:relative; transition:background var(--t-fb), color var(--t-fb), border-color var(--t-fb), transform var(--t-fb) var(--ease)}
+.day:active{transform:scale(.93)}
+.day[aria-checked="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink); animation:stamp 380ms var(--spring)}
+.weeksum{font-size:14.5px; color:var(--ink2); min-height:21px; margin:0}
+.weeksum b{color:var(--ink)}
+
+/* reveal + today */
+.plan{gap:10px; padding-top:96px}
+.card{background:var(--card); border:1px solid var(--edge); border-radius:18px; padding:12px 14px 13px; display:grid; gap:7px}
+.card .k{font:500 10.5px/1 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase; display:flex; justify-content:space-between; gap:8px}
+.card .v{font:800 19px/1.1 var(--f-display); letter-spacing:-.02em}
+.card .v small{font:400 14px/1 var(--f-display); color:var(--ink2); letter-spacing:0}
+.slot{font:400 17px/1 var(--f-hand); color:var(--terra)}
+.pbar{height:12px; width:100%}
+.pbar path{fill:none; stroke-linecap:round}
+.pbar .track{stroke:rgba(59,50,44,.12); stroke-width:6}
+.pbar .fill{stroke:var(--apricot); stroke-width:8; stroke-dasharray:320; stroke-dashoffset:320}
+.plan.go .pbar .fill{transition:stroke-dashoffset 1100ms 300ms var(--ease); stroke-dashoffset:0}
+.wk{display:grid; grid-template-columns:repeat(7,1fr); gap:4px; text-align:center}
+.wk span{font:500 10px/1 var(--f-mono); color:var(--ink2)}
+.wk i{display:block; height:26px; margin-top:5px; border-radius:9px; background:rgba(59,50,44,.06); transform:scale(.6); opacity:0}
+.wk i.on{background:var(--ink)}
+.plan.go .wk i{animation:pop 420ms var(--spring) forwards}
+@keyframes pop{to{transform:scale(1); opacity:1}}
+.letter{font-size:14.5px; line-height:1.42}
+.letter .w{display:inline; opacity:0}
+.plan.go .letter .w{animation:wipe 520ms var(--ease) forwards}
+@keyframes wipe{from{opacity:0; filter:blur(3px)} to{opacity:1; filter:none}}
+.row2{display:grid; grid-template-columns:1fr 92px; gap:10px}
+.mini-draw{width:100%; height:100%; min-height:86px; background:var(--card); border:1px solid var(--edge); border-radius:18px; display:grid; place-items:center}
+.mini-draw .draw{width:74px; height:74px}
+.writing-plan{position:absolute; left:0; right:0; top:420px; text-align:center; font:400 22px/1 var(--f-hand); color:var(--terra); opacity:0; transition:opacity var(--t-ui)}
+.writing-plan.on{opacity:1}
+.fly{position:absolute; z-index:20; font:400 18px/1.15 var(--f-hand); color:var(--terra); white-space:nowrap; pointer-events:none; will-change:transform}
+
+.today{padding-bottom:0}
+.faces{display:flex; justify-content:space-between; padding:2px 4px}
+.faces button{appearance:none; border:0; background:transparent; width:44px; height:44px; border-radius:50%; cursor:pointer; display:grid; place-items:center; transition:transform var(--t-fb) var(--ease)}
+.faces button:active{transform:scale(.9)}
+.faces svg{width:34px; height:34px; fill:none; stroke:var(--taupe); stroke-width:1.8; stroke-linecap:round}
+.faces button[aria-checked="true"] svg{stroke:var(--ink)}
+.faces button[aria-checked="true"]{box-shadow:0 0 0 1.8px var(--terra)}
+.tabs{margin:auto -22px 0; border-top:1px solid var(--edge); display:grid; grid-template-columns:repeat(4,1fr); padding:8px 6px 18px; background:var(--bg)}
+.tabs span{display:grid; justify-items:center; gap:4px; font:500 10px/1 var(--f-mono); letter-spacing:.04em; color:var(--taupe); position:relative}
+.tabs svg{width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+.tabs .on{color:var(--ink)}
+.tabs .on::after{content:""; position:absolute; bottom:-7px; width:16px; height:2.5px; border-radius:2px; background:var(--terra)}
+.restart{appearance:none; border:0; background:transparent; font:500 11px/1 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--ink2); cursor:pointer; padding:8px; border-radius:8px}
+.restart:hover{color:var(--ink)}
+
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0)}
+
+__MASCOT_CSS__
+.m .look{translate:var(--lx,0px) var(--ly,0px); transition:transform .35s ease, translate .14s linear}
+.mini-draw{gap:2px; align-content:center; padding:6px}
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{animation-duration:1ms!important; animation-delay:0ms!important; transition-duration:1ms!important}
+  .companion{transition:none}
+}
+</style>
+
+<div class="desk">
+  <div class="phone" id="phone">
+    <div class="page" id="page">
+      <div class="top">
+        <button class="icon-btn is-hidden" id="back" type="button" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5 L8 12 L15 19"/></svg></button>
+        <svg class="pencil" id="pencil" viewBox="0 0 220 14" preserveAspectRatio="none" aria-hidden="true">
+          <path class="track" d="M2 8 C40 5 80 10 120 7 C160 4 190 9 218 6"/>
+          <path class="done" id="pencilDone" d="M2 8 C40 5 80 10 120 7 C160 4 190 9 218 6"/>
+        </svg>
+        <button class="skip is-hidden" id="skip" type="button">Skip</button>
+      </div>
+      <div class="notes is-hidden" id="notes" aria-live="polite"><span class="lbl">Notes</span><span class="run" id="noteRun"></span></div>
+      <div class="stage" id="stage"></div>
+      <div class="companion pos-off" id="companion" data-state="idle" aria-hidden="true"><div class="host" id="coachHost"></div><span class="say" id="say"></span></div>
+      <div class="writing-plan" id="writingPlan">writing your plan…</div>
+    </div>
+  </div>
+  <p class="caption">Second Strong · onboarding prototype · Esc goes back, Enter continues</p>
+</div>
+
+<script>
+(function(){
+__MASCOT_JS__
+
+const DRAW = { squat:"__SQUAT__", plate:"__PLATE__", sitstand:"__SITSTAND__", morning:"__MORNING__", wind:"__WIND__" };
+const STAGES = [
+  {id:"peri", b:"Perimenopause", s:"Cycles changing, new symptoms", note:"perimenopause", line:"Perimenopause noted."},
+  {id:"meno", b:"Menopause", s:"Around a year without a period", note:"menopause", line:"Menopause noted."},
+  {id:"post", b:"Post-menopause", s:"A while past it now", note:"post-menopause", line:"Post-menopause noted."},
+  {id:"surg", b:"Surgical or medical", s:"After surgery or treatment", note:"surgical menopause", line:"Surgical or medical menopause noted."},
+  {id:"unsure", b:"Not sure yet", s:"That's fine. We'll learn together", note:"stage unsure", line:"We'll work out your stage together.", wide:true}
+];
+const SYMPTOMS = [["sleep","Sleep"],["energy","Energy"],["joints","Joints"],["flushes","Hot flushes"],["mood","Mood"],["focus","Brain fog"]];
+const GOALS = [
+  {id:"strong", b:"Get stronger", s:"Lift a little more each week", draw:"squat", note:"get stronger"},
+  {id:"protein", b:"Eat enough protein", s:"Close the gap, no dieting", draw:"plate", note:"enough protein"},
+  {id:"years", b:"Stay strong for years", s:"Bone, balance, getting up easily", draw:"sitstand", note:"strong for years"},
+  {id:"energy", b:"More energy", s:"Steadier days", draw:"morning", note:"more energy"},
+  {id:"sleep", b:"Sleep better", s:"Calmer evenings", draw:"wind", note:"better sleep"}
+];
+const KIT = [2,4,6,8,10,12];
+const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const OPENERS = { pebble:"Noted.", fern:"Thank you for telling me all that.", wren:"Right, here's the plan.", bramble:"Good. A practical start.", luna:"Gently does it.", otto:"Lovely. Let's keep this easy.", tilly:"We'll build this slowly." };
+const STEPS = ["welcome","coach","stage","goal","week","reveal","today"];
+const KEY = "ss-onboarding-v1";
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const fresh = () => ({ step:0, coach:"pebble", name:"Pebble", named:false, stage:null, symptoms:[], goals:[], kit:[], gym:false, days:[] });
+let S = fresh();
+try { const saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && typeof saved.step === "number") S = Object.assign(fresh(), saved); } catch(e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} };
+
+const $ = id => document.getElementById(id);
+const page = $("page"), stage = $("stage"), comp = $("companion"), host = $("coachHost");
+const esc = s => String(s).replace(/[<>&"]/g, ch => ({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"})[ch]);
+const coachName = () => (S.name || "").trim() || CHARS[S.coach].name;
+
+/* geometry for companion positions */
+function measure(){
+  const w = page.clientWidth;
+  page.style.setProperty("--pw", w + "px");
+  page.style.setProperty("--cx-stage", Math.round((w - 180) / 2) + "px");
+}
+new ResizeObserver(measure).observe(page); measure();
+
+/* companion */
+let stateTimer;
+function drawCoach(swap){
+  host.innerHTML = mascot(S.coach);
+  if (swap) { host.firstElementChild.classList.add("swap"); }
+}
+function coachState(s, ms){
+  clearTimeout(stateTimer);
+  comp.dataset.state = s;
+  if (ms) stateTimer = setTimeout(() => comp.dataset.state = "idle", ms);
+}
+function coachPos(p){ comp.className = "companion pos-" + p; }
+function say(t){ const el = $("say"); el.textContent = t || ""; el.classList.toggle("on", !!t); }
+
+/* pointer: eyes follow, cards tilt, magnetic button */
+page.addEventListener("pointermove", e => {
+  if (REDUCED) return;
+  page.querySelectorAll(".m").forEach(svg => {
+    const r = svg.getBoundingClientRect(); if (!r.width) return;
+    const dx = e.clientX - (r.left + r.width/2), dy = e.clientY - (r.top + r.height*0.45);
+    const d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 220);
+    svg.style.setProperty("--lx", (dx/d*3.2*k).toFixed(2) + "px");
+    svg.style.setProperty("--ly", (dy/d*2.6*k).toFixed(2) + "px");
+  });
+  const mag = page.querySelector(".magnet");
+  if (mag) {
+    const r = mag.getBoundingClientRect(), cx = r.left + r.width/2, cy = r.top + r.height/2;
+    const dx = e.clientX - cx, dy = e.clientY - cy, near = Math.abs(dy) < 70 && Math.abs(dx) < r.width/2 + 30;
+    mag.style.transform = near ? `translate(${dx*0.06}px, ${dy*0.18}px)` : "";
+  }
+});
+page.addEventListener("pointerleave", () => {
+  page.querySelectorAll(".m").forEach(svg => { svg.style.setProperty("--lx","0px"); svg.style.setProperty("--ly","0px"); });
+  const mag = page.querySelector(".magnet"); if (mag) mag.style.transform = "";
+});
+function tilt(el){
+  el.addEventListener("pointermove", e => {
+    if (REDUCED) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--rx", ((0.5 - (e.clientY - r.top)/r.height) * 14).toFixed(1) + "deg");
+    el.style.setProperty("--ry", (((e.clientX - r.left)/r.width - 0.5) * 14).toFixed(1) + "deg");
+  });
+  el.addEventListener("pointerleave", () => { el.style.setProperty("--rx","0deg"); el.style.setProperty("--ry","0deg"); });
+}
+
+/* notes */
+function noteList(){
+  const n = [];
+  if (S.stage) n.push({k:"stage", t:STAGES.find(x => x.id === S.stage).note});
+  if (S.symptoms.length) n.push({k:"symptoms", t:S.symptoms.map(k => SYMPTOMS.find(x => x[0]===k)[1].toLowerCase()).join(" & ")});
+  if (S.goals.length) n.push({k:"goals", t:S.goals.map(k => GOALS.find(g => g.id===k).note).join(" + ")});
+  if (S.step >= 4 && (S.kit.length || S.gym || S.days.length)) n.push({k:"kit", t:kitText(true)});
+  if (S.days.length) n.push({k:"days", t:S.days.map(d => DAYS[d]).join(" ")});
+  return n;
+}
+function kitText(short){
+  if (S.gym) return short ? "gym" : "gym kit";
+  if (!S.kit.length) return short ? "bodyweight" : "bodyweight and a chair";
+  return S.kit.slice().sort((a,b)=>a-b).join(" & ") + "kg";
+}
+let shownNotes = [];
+function renderNotes(){
+  const step = S.step, box = $("notes"), list = noteList();
+  const run = $("noteRun");
+  box.classList.toggle("is-hidden", step < 2 || step > 5);
+  box.classList.toggle("full", step === 5);
+  box.querySelectorAll(".note").forEach(n => n.remove());
+  list.forEach(({k, t}) => {
+    const s = document.createElement("span"); s.className = "note"; s.textContent = t; s.dataset.k = k;
+    if (!shownNotes.includes(t)) s.classList.add("writing");
+    run.appendChild(s);
+  });
+  shownNotes = list.map(n => n.t);
+  requestAnimationFrame(() => { run.scrollLeft = run.scrollWidth; run.classList.toggle("flush", run.scrollLeft < 2); });
+}
+
+/* chrome */
+function chrome(step){
+  $("back").classList.toggle("is-hidden", step === 0 || step >= 6);
+  $("skip").classList.toggle("is-hidden", step === 0 || step >= 5);
+  $("pencil").classList.toggle("is-hidden", step === 0 || step >= 6);
+  const p = $("pencilDone"), len = p.getTotalLength();
+  p.style.strokeDasharray = len;
+  p.style.strokeDashoffset = len * (1 - Math.min(1, step / 5));
+}
+
+/* ---------- scenes ---------- */
+const scenes = {
+  welcome(){
+    const el = sceneEl("welcome");
+    el.innerHTML = `
+      <div class="meta">Second Strong</div>
+      <h1 class="title">Let's set up your <em>first week.</em></h1>
+      <svg class="underline" viewBox="0 0 190 16" aria-hidden="true"><path d="M4 10 C50 4 110 13 186 6"/></svg>
+      <p class="sub">Two minutes. A coach of your own, a plan, and protein that fits your day.</p>
+      <div class="cast" id="cast">${ORDER.map((k,i)=>`<button class="peek" type="button" data-c="${k}" style="animation-delay:${200+i*55}ms" aria-label="${CHARS[k].name}"><div data-state="idle">${mascot(k)}</div></button>`).join("")}</div>
+      <div class="btn-wrap"><button class="btn magnet" data-next type="button">Begin</button></div>`;
+    el.querySelector("#cast").addEventListener("click", e => {
+      const b = e.target.closest(".peek"); if (!b) return;
+      const w = b.firstElementChild; w.dataset.state = "proud"; setTimeout(() => w.dataset.state = "idle", 1700);
+    });
+    coachPos("off"); say("");
+    return el;
+  },
+  coach(){
+    const el = sceneEl("coach");
+    el.innerHTML = `
+      <div class="meta">1 · Your coach</div>
+      <h2 class="title">Pick your <em>coach.</em></h2>
+      <div class="pick-gap"></div>
+      <p class="trait" id="trait"></p>
+      <div class="thumbs" role="radiogroup" aria-label="Coach" id="thumbs">${ORDER.map(k=>`<button class="thumb" type="button" role="radio" data-c="${k}" aria-checked="${k===S.coach}" aria-label="${CHARS[k].name}" tabindex="${k===S.coach?0:-1}"><div data-state="idle">${mascot(k)}</div></button>`).join("")}</div>
+      <div class="field"><label for="nameIn">Name</label><input id="nameIn" maxlength="14" autocomplete="off" spellcheck="false" value="${esc(S.name)}"></div>
+      <div class="spacer"></div>
+      <button class="btn" data-next type="button" id="keepBtn"></button>`;
+    const thumbs = el.querySelector("#thumbs"), nameIn = el.querySelector("#nameIn");
+    thumbs.querySelectorAll(".thumb").forEach(tilt);
+    const sync = () => {
+      el.querySelector("#trait").innerHTML = `<b>${CHARS[S.coach].name}.</b> ${CHARS[S.coach].trait}`;
+      el.querySelector("#keepBtn").textContent = "Keep " + coachName();
+      el.querySelector("#keepBtn").setAttribute("aria-disabled", String(!coachName()));
+    };
+    const pickCoach = k => {
+      if (!S.named) S.name = CHARS[k].name;
+      S.coach = k; nameIn.value = S.name; save();
+      thumbs.querySelectorAll(".thumb").forEach(t => { const on = t.dataset.c === k; t.setAttribute("aria-checked", on); t.tabIndex = on ? 0 : -1; });
+      drawCoach(true); coachState("hello", 1800); say("hi"); setTimeout(() => say(""), 1600); sync();
+    };
+    thumbs.addEventListener("click", e => { const b = e.target.closest(".thumb"); if (b) pickCoach(b.dataset.c); });
+    thumbs.addEventListener("keydown", e => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      e.preventDefault();
+      const i = (ORDER.indexOf(S.coach) + (e.key === "ArrowRight" ? 1 : ORDER.length - 1)) % ORDER.length;
+      pickCoach(ORDER[i]); thumbs.querySelector(`[data-c="${ORDER[i]}"]`).focus();
+    });
+    nameIn.addEventListener("focus", () => coachState("listening"));
+    nameIn.addEventListener("blur", () => coachState("idle"));
+    nameIn.addEventListener("input", () => { S.name = nameIn.value; S.named = true; save(); sync(); say(nameIn.value.trim() ? "that's me" : ""); });
+    sync();
+    drawCoach(false); coachPos("stage"); coachState("hello", 1800);
+    return el;
+  },
+  stage(){
+    const el = sceneEl("stage with-coach");
+    el.innerHTML = `
+      <div class="meta">2 · About you</div>
+      <h2 class="title">Where are you <em>right now?</em></h2>
+      <p class="sub">${esc(coachName())} uses this to adjust training on harder days.</p>
+      <div class="opts" role="radiogroup" aria-label="Stage" id="stageOpts">${STAGES.map(o=>`<button class="opt${o.wide?" wide":""}" type="button" role="radio" data-v="${o.id}" aria-checked="${S.stage===o.id}"><b>${o.b}</b><span>${o.s}</span></button>`).join("")}</div>
+      <div id="sympWrap" ${S.stage ? "" : "hidden"}>
+        <p class="qlabel">Anything been harder lately?</p>
+        <div class="chips" role="group" aria-label="Symptoms" style="margin-top:10px">${SYMPTOMS.map(([k,l])=>`<button class="chip" type="button" role="checkbox" data-v="${k}" aria-checked="${S.symptoms.includes(k)}">${l}</button>`).join("")}</div>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn" data-next type="button">Continue</button>`;
+    radio(el.querySelector("#stageOpts"), v => {
+      S.stage = v; save(); coachState("listening", 1200);
+      const w = el.querySelector("#sympWrap"); if (w.hidden) { w.hidden = false; w.classList.add("reveal-in"); }
+      gate(el); renderNotes();
+    });
+    el.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => {
+      const v = c.dataset.v, on = !S.symptoms.includes(v);
+      S.symptoms = on ? S.symptoms.concat(v) : S.symptoms.filter(x => x !== v); save();
+      c.setAttribute("aria-checked", on); renderNotes();
+      if (on) coachState(v === "sleep" || v === "flushes" || v === "mood" ? "comfort" : "listening", 1500);
+    }));
+    coachPos("corner"); coachState("idle");
+    gate(el, () => !!S.stage);
+    return el;
+  },
+  goal(){
+    const el = sceneEl("goal with-coach");
+    el.innerHTML = `
+      <div class="meta">3 · What matters</div>
+      <h2 class="title">What would make the <em>biggest difference?</em></h2>
+      <div class="canvas" id="canvas"><span class="empty">pick up to two</span></div>
+      <div class="opts goals" role="group" aria-label="Goals" id="goalOpts">${GOALS.map((g,i)=>`<button class="opt${i===4?" wide":""}" type="button" role="checkbox" data-v="${g.id}" aria-checked="${S.goals.includes(g.id)}"><i style="--src:url(${DRAW[g.draw]})" aria-hidden="true"></i><b>${g.b}</b><span>${g.s}</span></button>`).join("")}</div>
+      <p class="hint" id="goalHint"></p>
+      <button class="btn" data-next type="button">Continue</button>`;
+    const canvas = el.querySelector("#canvas");
+    const paint = (fresh) => {
+      const empty = canvas.querySelector(".empty");
+      if (empty && S.goals.length) empty.remove();
+      canvas.querySelectorAll(".draw").forEach(d => { if (!S.goals.includes(d.dataset.g)) { d.classList.add("out"); setTimeout(() => d.remove(), 260); } });
+      S.goals.forEach(id => {
+        if (canvas.querySelector(`[data-g="${id}"]`)) return;
+        const d = document.createElement("div"); d.className = "draw" + (fresh ? " sketch" : ""); d.dataset.g = id;
+        d.style.setProperty("--src", `url(${DRAW[GOALS.find(g=>g.id===id).draw]})`);
+        canvas.appendChild(d);
+      });
+      if (!S.goals.length && !canvas.querySelector(".empty")) setTimeout(() => { if (!S.goals.length && !canvas.querySelector(".empty")) canvas.innerHTML = `<span class="empty">pick up to two</span>`; }, 270);
+    };
+    el.querySelector("#goalOpts").addEventListener("click", e => {
+      const b = e.target.closest(".opt"); if (!b) return;
+      const v = b.dataset.v, on = !S.goals.includes(v), hint = el.querySelector("#goalHint");
+      if (on && S.goals.length >= 2) { hint.textContent = "two is plenty for now"; b.animate([{transform:"translateX(0)"},{transform:"translateX(-4px)"},{transform:"translateX(4px)"},{transform:"translateX(0)"}], {duration:220}); return; }
+      hint.textContent = "";
+      S.goals = on ? S.goals.concat(v) : S.goals.filter(x => x !== v); save();
+      b.setAttribute("aria-checked", on);
+      if (on) coachState("proud", 1700);
+      paint(true); gate(el); renderNotes();
+    });
+    paint(false);
+    coachPos("corner"); coachState("idle");
+    gate(el, () => S.goals.length > 0);
+    return el;
+  },
+  week(){
+    const el = sceneEl("week with-coach");
+    el.innerHTML = `
+      <div class="meta">4 · Your week</div>
+      <h2 class="title">What do you have, and <em>when?</em></h2>
+      <p class="qlabel">Dumbbells you own</p>
+      <div class="rack" role="group" aria-label="Dumbbells">${KIT.map(kg=>{const s=0.75+kg/40;return `<button class="bell" type="button" role="checkbox" data-kg="${kg}" aria-checked="${S.kit.includes(kg)}" aria-label="${kg} kilogram pair"><svg width="${Math.round(40*s)}" height="${Math.round(22*s)}" viewBox="0 0 40 22"><rect class="plate" x="1" y="${8-kg/3}" width="8" height="${6+kg/1.5}" rx="2.5"/><rect class="bar" x="8" y="9" width="24" height="4" rx="2"/><rect class="plate" x="31" y="${8-kg/3}" width="8" height="${6+kg/1.5}" rx="2.5"/></svg><em>${kg}kg</em></button>`}).join("")}</div>
+      <div class="chips" role="group" aria-label="Other kit"><button class="chip" type="button" role="checkbox" id="noneChip" aria-checked="${!S.kit.length && !S.gym}">None yet</button><button class="chip" type="button" role="checkbox" id="gymChip" aria-checked="${S.gym}">I go to a gym</button></div>
+      <p class="qlabel">Days to train · two to four</p>
+      <div class="days" role="group" aria-label="Training days">${DAYS.map((d,i)=>`<button class="day" type="button" role="checkbox" data-d="${i}" aria-checked="${S.days.includes(i)}">${d.slice(0,2)}</button>`).join("")}</div>
+      <p class="weeksum" id="weeksum"></p>
+      <div class="spacer"></div>
+      <button class="btn" data-next type="button">Write my plan</button>`;
+    const sum = () => {
+      const n = S.days.length;
+      el.querySelector("#weeksum").innerHTML = n ? `<b>${n} session${n>1?"s":""}</b> of about 20 minutes, with ${kitText(false)}.` : "Pick the days that usually work.";
+      el.querySelector("#noneChip").setAttribute("aria-checked", !S.kit.length && !S.gym);
+      el.querySelector("#gymChip").setAttribute("aria-checked", S.gym);
+      el.querySelectorAll(".bell").forEach(b => b.setAttribute("aria-checked", S.kit.includes(+b.dataset.kg)));
+    };
+    el.querySelectorAll(".bell").forEach(b => b.addEventListener("click", () => {
+      const kg = +b.dataset.kg, on = !S.kit.includes(kg);
+      S.kit = on ? S.kit.concat(kg) : S.kit.filter(x => x !== kg); if (on) S.gym = false; save();
+      if (on) coachState("lifting", 1800); sum(); renderNotes();
+    }));
+    el.querySelector("#noneChip").addEventListener("click", () => { S.kit = []; S.gym = false; save(); sum(); renderNotes(); });
+    el.querySelector("#gymChip").addEventListener("click", () => { S.gym = !S.gym; if (S.gym) { S.kit = []; coachState("lifting", 1800); } save(); sum(); renderNotes(); });
+    el.querySelectorAll(".day").forEach(b => b.addEventListener("click", () => {
+      const d = +b.dataset.d, on = !S.days.includes(d);
+      if (on && S.days.length >= 4) { b.animate([{transform:"translateX(0)"},{transform:"translateX(-3px)"},{transform:"translateX(3px)"},{transform:"translateX(0)"}], {duration:200}); return; }
+      S.days = (on ? S.days.concat(d) : S.days.filter(x => x !== d)).sort(); save();
+      b.setAttribute("aria-checked", on); sum(); gate(el); renderNotes();
+    }));
+    sum();
+    coachPos("corner"); coachState("idle");
+    gate(el, () => S.days.length >= 2);
+    return el;
+  },
+  reveal(){
+    const el = sceneEl("plan with-coach");
+    const g = GOALS.filter(x => S.goals.includes(x.id));
+    const st = STAGES.find(x => x.id === S.stage) || STAGES[4];
+    const target = 100;
+    const first = DAYS[S.days[0] ?? 0];
+    const session = S.goals.includes("sleep") && !S.goals.includes("strong") ? "Full body, gentle" : "Lower body";
+    const sym = S.symptoms.length ? ` I'll keep an eye on ${S.symptoms.slice(0,2).map(k => SYMPTOMS.find(x=>x[0]===k)[1].toLowerCase()).join(" and ")}.` : "";
+    const letter = `${OPENERS[S.coach]} ${st.line}${sym} Your first session is ${first}: ${session.toLowerCase()}, 20 minutes, with ${kitText(false)}. On rough mornings I'll lighten the session, never the protein.`;
+    const words = letter.split(" "), groups = [];
+    for (let i = 0; i < words.length; i += 3) groups.push(words.slice(i, i+3).join(" "));
+    el.innerHTML = `
+      <div class="meta">${new Date().toLocaleDateString("en-GB",{weekday:"long", day:"numeric", month:"long"}).toUpperCase()}</div>
+      <h2 class="title">Your first week, <em>with ${esc(coachName())}.</em></h2>
+      <div class="card"><div class="k"><span>Protein a day</span><span>Estimate</span></div>
+        <div class="v">About ${target}g <small>· starting point, tuned after week one</small></div>
+        <svg class="pbar" viewBox="0 0 320 12" preserveAspectRatio="none" aria-hidden="true"><path class="track" d="M4 6 C80 4 160 8 316 5"/><path class="fill" d="M4 6 C80 4 160 8 316 5"/></svg></div>
+      <div class="row2">
+        <div class="card"><div class="k"><span>Strength</span><span class="slot" data-k="kit days">${esc(kitText(true))}</span></div>
+          <div class="wk">${DAYS.map((d,i)=>`<div><span>${d.slice(0,1)}</span><i class="${S.days.includes(i)?"on":""}" style="animation-delay:${700+i*70}ms"></i></div>`).join("")}</div></div>
+        <div class="mini-draw"><div class="draw" style="--src:url(${DRAW[(g[0]||GOALS[0]).draw]})"></div><span class="slot" data-k="goals" style="font-size:14px;text-align:center;line-height:1">${esc((g[0]||GOALS[0]).note)}</span></div>
+      </div>
+      <div class="card"><div class="k"><span>${esc(coachName())} · Coach</span><span class="slot" data-k="stage symptoms">${esc(st.note)}</span></div>
+        <p class="letter" style="margin:0">${groups.map((t,i)=>`<span class="w" style="animation-delay:${1300+i*110}ms">${esc(t)} </span>`).join("")}</p></div>
+      <div class="spacer"></div>
+      <button class="btn" data-next type="button">Open Today</button>`;
+    coachPos("corner");
+    return el;
+  },
+  today(){
+    const el = sceneEl("today with-coach");
+    const target = 100;
+    el.innerHTML = `
+      <div class="meta">${new Date().toLocaleDateString("en-GB",{weekday:"long", day:"numeric", month:"long"}).toUpperCase()}</div>
+      <h2 class="title">How was <em>the night?</em></h2>
+      <div class="faces" role="radiogroup" aria-label="Morning check-in">${[["Rough","M12 22 q5 -4 10 0"],["Restless","M12 21 h10"],["Broken","M12 21 q2.5 -2 5 0 q2.5 2 5 0"],["Okay","M12 20 q5 2 10 0"],["Well","M11 19 q6 5 12 0"]].map(([l,m])=>`<button type="button" role="radio" aria-checked="false" aria-label="${l}"><svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="14"/><circle cx="12.5" cy="14" r="1" fill="currentColor"/><circle cx="21.5" cy="14" r="1" fill="currentColor"/><path d="${m}"/></svg></button>`).join("")}</div>
+      <div class="card"><div class="k"><span>Protein</span><span>0 of ${target}g</span></div>
+        <svg class="pbar" viewBox="0 0 320 12" preserveAspectRatio="none" aria-hidden="true"><path class="track" d="M4 6 C80 4 160 8 316 5"/></svg>
+        <div style="font-size:14px;color:var(--ink2)">Eggs or Greek yoghurt gets you 20g before nine.</div></div>
+      <div class="card"><div class="k"><span>Today</span><span>${S.days.includes((new Date().getDay()+6)%7) ? "Training day" : "Rest day"}</span></div>
+        <div class="v">${S.days.includes((new Date().getDay()+6)%7) ? `Lower body <small>· 20 min · ${esc(kitText(true))}</small>` : `A short walk <small>· rest counts too</small>`}</div></div>
+      <button class="restart" type="button" id="restart">Replay onboarding</button>
+      <nav class="tabs" aria-label="Tabs">
+        <span class="on"><svg viewBox="0 0 26 26"><circle cx="13" cy="13" r="8"/><path d="M13 9 v4 l3 2"/></svg>Today</span>
+        <span><svg viewBox="0 0 26 26"><circle cx="13" cy="14" r="8"/><path d="M8 14 h10"/></svg>Food</span>
+        <span><svg viewBox="0 0 26 26"><path d="M4 6 h18 v11 h-9 l-5 4 v-4 h-4 z"/></svg>Coach</span>
+        <span><svg viewBox="0 0 26 26"><path d="M4 20 C9 18 12 12 15 12 S20 7 22 5"/></svg>Progress</span>
+      </nav>`;
+    el.querySelectorAll(".faces button").forEach((b, i, all) => b.addEventListener("click", () => {
+      all.forEach(x => x.setAttribute("aria-checked", x === b));
+      coachState(i <= 2 ? "comfort" : "proud", 1800);
+    }));
+    el.querySelector("#restart").addEventListener("click", () => { S = fresh(); save(); shownNotes = []; go(0, -1); });
+    coachPos("corner"); coachState("hello", 2200);
+    return el;
+  }
+};
+
+function sceneEl(cls){ const el = document.createElement("section"); el.className = "scene " + cls; return el; }
+function radio(group, onPick){
+  group.addEventListener("click", e => {
+    const b = e.target.closest("[role=radio]"); if (!b) return;
+    group.querySelectorAll("[role=radio]").forEach(x => x.setAttribute("aria-checked", x === b));
+    onPick(b.dataset.v);
+  });
+}
+const gates = new WeakMap();
+function gate(el, test){
+  if (test) gates.set(el, test);
+  const t = gates.get(el), btn = el.querySelector("[data-next]");
+  if (btn && t) btn.setAttribute("aria-disabled", String(!t()));
+}
+
+/* ---------- navigation ---------- */
+let current = null, busy = false;
+function go(n, dir){
+  if (busy && current) return;
+  const name = STEPS[n], next = scenes[name]();
+  next.setAttribute("aria-label", name);
+  const prev = current;
+  S.step = n; save();
+  stage.appendChild(next);
+  current = next;
+  chrome(n); renderNotes();
+  next.querySelector("[data-next]")?.addEventListener("click", e => {
+    if (e.currentTarget.getAttribute("aria-disabled") === "true") return;
+    advance();
+  });
+  if (!prev || REDUCED) { prev?.remove(); focusScene(next); if (name === "reveal") runReveal(next, true); return; }
+  busy = true;
+  const fwd = dir >= 0, D = 680;
+  const ease = "cubic-bezier(.22,1,.36,1)";
+  if (name === "reveal") {
+    prev.animate([{opacity:1},{opacity:0}], {duration:300, easing:ease, fill:"forwards"});
+    next.style.opacity = "0";
+    setTimeout(() => { prev.remove(); runReveal(next, false); busy = false; }, 320);
+    return;
+  }
+  if (prev.classList.contains("welcome")) prev.querySelector("#cast")?.classList.add("leaving");
+  prev.classList.add("turning");
+  prev.style.zIndex = fwd ? 2 : 1; next.style.zIndex = fwd ? 1 : 2;
+  const out = fwd
+    ? [{transform:"rotateY(0deg)", opacity:1}, {transform:"rotateY(-62deg) translateX(-12%)", opacity:0}]
+    : [{transform:"translateX(0)", opacity:1}, {transform:"translateX(14%)", opacity:0}];
+  const inn = fwd
+    ? [{transform:"translateX(10%)", opacity:0}, {transform:"translateX(0)", opacity:1}]
+    : [{transform:"rotateY(-62deg) translateX(-12%)", opacity:0}, {transform:"rotateY(0deg)", opacity:1}];
+  prev.animate(out, {duration:D, easing:ease, fill:"forwards"});
+  next.animate(inn, {duration:D, delay:fwd ? 90 : 0, easing:ease, fill:"backwards"}).finished.then(() => {
+    prev.remove(); next.style.zIndex = ""; busy = false; focusScene(next);
+  });
+}
+function focusScene(el){ const h = el.querySelector("h1,h2"); if (h) { h.tabIndex = -1; h.focus({preventScroll:true}); } }
+function advance(){ if (S.step < STEPS.length - 1) go(S.step + 1, 1); }
+function back(){ if (S.step > 0 && S.step < 6) go(S.step - 1, -1); }
+
+/* the reveal: coach thinks, notes fly into the plan, the plan settles */
+function runReveal(el, instant){
+  const notes = [...$("notes").querySelectorAll(".note")];
+  if (instant) { el.style.opacity = "1"; el.classList.add("go"); coachState("proud", 1800); return; }
+  coachPos("center"); coachState("thinking"); $("writingPlan").classList.add("on");
+  const rects = notes.map(n => n.getBoundingClientRect());
+  const texts = notes.map(n => n.textContent), keys = notes.map(n => n.dataset.k);
+  const pr = page.getBoundingClientRect();
+  let skipped = false;
+  const finish = () => {
+    if (skipped) return; skipped = true;
+    $("writingPlan").classList.remove("on");
+    el.style.transition = "opacity 380ms cubic-bezier(.22,1,.36,1)"; el.style.opacity = "1";
+    el.classList.add("go");
+    coachPos("corner"); coachState("proud", 1900);
+    $("notes").classList.add("is-hidden");
+    /* fly each note to a slot in the plan */
+    texts.forEach((t, i) => {
+      const slot = [...el.querySelectorAll(".slot")].find(s => s.dataset.k.split(" ").includes(keys[i])); if (!slot) return;
+      const from = rects[i], to = slot.getBoundingClientRect();
+      const f = document.createElement("span"); f.className = "fly"; f.textContent = t;
+      f.style.left = (from.left - pr.left) + "px"; f.style.top = (from.top - pr.top) + "px";
+      page.appendChild(f);
+      slot.style.opacity = "0";
+      f.animate([{transform:"translate(0,0) rotate(0deg)", opacity:1},
+                 {transform:`translate(${(to.left - from.left)*0.5}px, ${(to.top - from.top)*0.5 - 30}px) rotate(-4deg)`, opacity:1, offset:.5},
+                 {transform:`translate(${to.left - from.left}px, ${to.top - from.top}px)`, opacity:0}],
+        {duration:820, delay:i*90, easing:"cubic-bezier(.5,0,.2,1)", fill:"forwards"})
+       .finished.then(() => { f.remove(); slot.style.transition = "opacity 300ms"; slot.style.opacity = "1"; });
+    });
+  };
+  setTimeout(finish, 1150);
+  page.addEventListener("pointerdown", finish, {once:true});
+}
+
+/* keyboard */
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { back(); return; }
+  if (e.key === "Enter" && current) {
+    const t = e.target, tag = t.tagName;
+    if (tag === "BUTTON") return;
+    const btn = current.querySelector("[data-next]");
+    if (btn && btn.getAttribute("aria-disabled") !== "true") { e.preventDefault(); advance(); }
+  }
+});
+$("back").addEventListener("click", back);
+$("skip").addEventListener("click", () => {
+  if (!S.stage) S.stage = "unsure";
+  if (!S.goals.length) S.goals = ["strong"];
+  if (S.days.length < 2) S.days = [0,2,4];
+  save(); go(5, 1);
+});
+
+drawCoach(false);
+const start = Math.min(S.step || 0, 6);
+if (start >= 2) { coachPos("corner"); }
+go(start, 1);
+})();
+</script>

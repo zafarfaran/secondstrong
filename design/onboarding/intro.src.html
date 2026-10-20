@@ -1,0 +1,442 @@
+<meta charset="utf-8">
+<title>Second Strong Intro Animations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Gochi+Hand&family=IBM+Plex+Mono:wght@500&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap">
+<style>
+/* Layout: a desk of phones. Row one, five cast-peek intros (first open or returning); row two, moments between screens. */
+:root{
+  --bg:#FBF8F4; --card:#F6F0E8; --almond:#EDE3D6; --ink:#3B322C; --ink2:#5D534B;
+  --taupe:#A8968A; --terra:#A85A3C; --apricot:#F0C9A8; --edge:rgba(59,50,44,.10); --shadow:rgba(59,50,44,.22);
+  --desk:#EFE8DE; --deskInk:#3B322C; --deskInk2:#6E6158;
+  --f-display:"Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --f-serif:"Newsreader", Georgia, serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --f-hand:"Gochi Hand", "Comic Sans MS", cursive;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --spring:linear(0, .009, .035 2.1%, .141, .281 6.7%, .723 12.9%, .938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.129 32.8%, 1.051 39.6%, 1.017 43.1%, .991, .977 51%, .974 53.8%, .975 57.1%, .997 69.8%, 1.003 76.9%, 1);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --desk:#1C1714; --deskInk:#F1E9DF; --deskInk2:#B8AA9D; color-scheme:dark }}
+:root[data-theme="dark"]{ --desk:#1C1714; --deskInk:#F1E9DF; --deskInk2:#B8AA9D; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--desk); color:var(--deskInk); font:400 16px/1.45 var(--f-display); margin:0}
+button{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--terra); outline-offset:3px}
+.wrap{max-width:1180px; margin:0 auto; padding-inline:clamp(16px,3vw,40px); padding-block:36px 56px}
+.dmeta{font:500 12px/1.2 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--deskInk2)}
+h1{font:800 clamp(30px,4.2vw,46px)/1.02 var(--f-display); letter-spacing:-.035em; margin:.3em 0 .3em; text-wrap:balance}
+h1 em, h2 em{font-family:var(--f-serif); font-style:italic; font-weight:400}
+h2{font:800 clamp(22px,2.6vw,30px)/1.05 var(--f-display); letter-spacing:-.03em; margin:0}
+.lede{margin:0; color:var(--deskInk2); max-width:64ch}
+.sec{margin-top:40px; border-top:1px solid color-mix(in srgb,var(--deskInk) 12%,transparent); padding-top:26px}
+.sechead{display:flex; flex-wrap:wrap; gap:12px 20px; align-items:end; justify-content:space-between}
+.sechead p{margin:6px 0 0; color:var(--deskInk2); max-width:58ch; font-size:15px}
+.seg{display:inline-flex; border:1.5px solid color-mix(in srgb,var(--deskInk) 18%,transparent); border-radius:99px; padding:3px}
+.seg button{appearance:none; border:0; background:transparent; border-radius:99px; padding:7px 14px; font:600 13.5px/1 var(--f-display); cursor:pointer; color:var(--deskInk2)}
+.seg button[aria-pressed="true"]{background:var(--deskInk); color:var(--desk)}
+.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,196px),1fr)); gap:32px 20px; margin-top:24px}
+#trans{grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.ld{display:grid; gap:12px; justify-items:center}
+.frame{width:min(100%,260px); aspect-ratio:260/540; border-radius:38px; background:#2A231F; padding:8px; box-shadow:0 22px 44px -22px rgba(40,30,20,.45)}
+.scr{position:relative; width:100%; height:100%; border-radius:31px; background:var(--bg); color:var(--ink); overflow:hidden; isolation:isolate; touch-action:none}
+.scr::before{content:""; position:absolute; inset:0; background:repeating-linear-gradient(transparent 0 25px, rgba(59,50,44,.04) 25px 26px); pointer-events:none}
+.cap{width:min(100%,260px); display:grid; gap:4px}
+.cap .top{display:flex; justify-content:space-between; align-items:baseline; gap:10px}
+.cap b{font:800 16px/1.15 var(--f-display)}
+.cap span{font-size:13.5px; color:var(--deskInk2); line-height:1.4}
+.cap em{font-style:normal; font:500 10px/1.3 var(--f-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--terra)}
+.replay{appearance:none; border:1.5px solid color-mix(in srgb,var(--deskInk) 18%,transparent); background:transparent; border-radius:99px; padding:5px 10px; font:500 10px/1 var(--f-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--deskInk2); cursor:pointer; white-space:nowrap}
+.replay:hover{color:var(--deskInk); border-color:var(--deskInk)}
+
+/* screen pieces */
+.abs{position:absolute}
+.ink{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; z-index:4}
+.ink path{fill:none; stroke-linecap:round; stroke-linejoin:round}
+.wm{font:800 27px/1 var(--f-display); letter-spacing:-.04em; white-space:nowrap}
+.meta{font:500 9.5px/1.2 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase}
+.hand{font:400 19px/1.15 var(--f-hand); color:var(--terra)}
+.big-hand{font:400 38px/1 var(--f-hand); color:var(--ink)}
+.coach{position:absolute; transform-origin:50% 100%}
+.coach .m{width:100%; height:100%; display:block}
+.card{position:absolute; left:16px; right:16px; background:var(--card); border:1px solid var(--edge); border-radius:16px; padding:11px 13px; font:800 13.5px/1.15 var(--f-display)}
+.card small{display:block; font:500 9.5px/1.3 var(--f-mono); letter-spacing:.06em; color:var(--ink2); text-transform:uppercase; margin-bottom:5px}
+.tabs{position:absolute; left:0; right:0; bottom:0; height:62px; border-top:1px solid var(--edge); background:var(--bg); display:grid; grid-template-columns:repeat(4,1fr); padding:8px 4px 18px; z-index:6}
+.tabs span{display:grid; justify-items:center; gap:3px; font:500 9px/1 var(--f-mono); letter-spacing:.04em; color:var(--taupe); position:relative}
+.tabs svg{width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+.tabs .on{color:var(--ink)}
+.tabs i{position:absolute; bottom:-6px; height:2.5px; width:14px; border-radius:2px; background:var(--terra); left:50%; margin-left:-7px}
+.fadein{animation:fadein 420ms var(--ease) both}
+@keyframes fadein{from{opacity:0; transform:translateY(6px)}}
+.writein{animation:write var(--d,700ms) var(--st,steps(12)) both}
+@keyframes write{from{clip-path:inset(0 100% 0 0)} to{clip-path:inset(0 -6% 0 0)}}
+.sway{animation:sway 2.6s ease-in-out infinite; transform-origin:50% 0}
+@keyframes sway{0%,100%{rotate:-3deg} 50%{rotate:3deg}}
+
+__MASCOT_CSS__
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{animation-duration:1ms!important; animation-delay:0ms!important; transition-duration:1ms!important; animation-iteration-count:1!important}
+}
+</style>
+
+<div class="wrap">
+  <div class="dmeta">Second Strong · intro and in-app motion</div>
+  <h1>The cast, <em>saying hello.</em></h1>
+  <p class="lede">The still launch screen hands over to a short intro every time the app opens. The first time, the whole cast greets you and leads into onboarding. After that, your own coach comes forward. Underneath: the moments between screens.</p>
+
+  <section class="sec">
+    <div class="sechead"><div><h2>Five <em>intros</em></h2><p>About two seconds each, and skippable with a tap. Switch to see how each one ends on a first open or a returning one.</p></div>
+      <div class="seg" role="group" aria-label="Which open"><button type="button" data-mode="first" aria-pressed="false">First open</button><button type="button" data-mode="back" aria-pressed="true">Returning</button></div></div>
+    <div class="grid" id="intros"></div>
+  </section>
+
+  <section class="sec">
+    <div class="sechead"><div><h2>Between <em>screens</em></h2><p>The same characters carry you from one screen to the next. Pull to refresh is live: drag down on that phone.</p></div></div>
+    <div class="grid" id="trans"></div>
+  </section>
+</div>
+
+<script>
+(function(){
+__MASCOT_JS__
+
+const NS = "http://www.w3.org/2000/svg";
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+class Stop extends Error {}
+const MINE = "bramble";
+let MODE = "back";
+const today = new Date().toLocaleDateString("en-GB", {weekday:"long", day:"numeric", month:"long"});
+const F = n => n.toFixed(1);
+const esc = s => String(s).replace(/[<>&"]/g, ch => ({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"})[ch]);
+function make(tag, cls, html, style){ const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; if (style) Object.assign(n.style, style); return n; }
+function smooth(pts){
+  let d = `M${F(pts[0][0])} ${F(pts[0][1])}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i-1] || pts[i], p1 = pts[i], p2 = pts[i+1], p3 = pts[i+2] || p2;
+    d += ` C${F(p1[0]+(p2[0]-p0[0])/6)} ${F(p1[1]+(p2[1]-p0[1])/6)} ${F(p2[0]-(p3[0]-p1[0])/6)} ${F(p2[1]-(p3[1]-p1[1])/6)} ${F(p2[0])} ${F(p2[1])}`;
+  }
+  return d;
+}
+const pill = (x, y, w, h) => { const r = 14; return `M${F(x + r)} ${F(y)} L${F(x + w - r)} ${F(y)} Q${F(x + w)} ${F(y)} ${F(x + w)} ${F(y + r)} L${F(x + w)} ${F(y + h - r)} Q${F(x + w)} ${F(y + h)} ${F(x + w - r)} ${F(y + h)} L${F(x + r)} ${F(y + h)} Q${F(x)} ${F(y + h)} ${F(x)} ${F(y + h - r)} L${F(x)} ${F(y + r)} Q${F(x)} ${F(y)} ${F(x + r)} ${F(y)}`; };
+const TABS = `<span><svg viewBox="0 0 26 26"><circle cx="13" cy="13" r="8"/><path d="M13 9 v4 l3 2"/></svg>Today</span><span><svg viewBox="0 0 26 26"><circle cx="13" cy="14" r="8"/><path d="M8 14 h10"/></svg>Food</span><span><svg viewBox="0 0 26 26"><path d="M4 6 h18 v11 h-9 l-5 4 v-4 h-4 z"/></svg>Coach</span><span><svg viewBox="0 0 26 26"><path d="M4 20 C9 18 12 12 15 12 S20 7 22 5"/></svg>Progress</span>`;
+
+/* every phone runs its own cancellable loop */
+function stage(scr, fn, gap = 1100){
+  let token = 0;
+  const run = async () => {
+    const my = ++token;
+    const wait = ms => new Promise((res, rej) => setTimeout(() => my === token ? res() : rej(new Stop()), REDUCED ? 0 : ms));
+    while (my === token) {
+      scr.innerHTML = "";
+      const svg = document.createElementNS(NS, "svg"); svg.setAttribute("class", "ink"); scr.appendChild(svg);
+      const W = scr.clientWidth, H = scr.clientHeight; svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+      const pen = (d, o = {}) => {
+        const p = document.createElementNS(NS, "path"); p.setAttribute("d", d); p.setAttribute("stroke", o.color || "var(--terra)"); p.setAttribute("stroke-width", o.w || 2.4);
+        (o.into || svg).appendChild(p);
+        const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+        p.done = p.animate([{strokeDashoffset:len}, {strokeDashoffset:0}], {duration:REDUCED ? 1 : (o.dur || 700), delay:REDUCED ? 0 : (o.delay || 0), easing:"cubic-bezier(.4,.05,.35,1)", fill:"forwards"}).finished.catch(() => {}).then(() => { if (my !== token) throw new Stop(); });
+        return p;
+      };
+      const A = (el, kf, o) => el.animate(kf, {fill:"forwards", easing:"cubic-bezier(.65,0,.35,1)", ...o, duration:REDUCED ? 1 : (o?.duration ?? 500), delay:REDUCED ? 0 : (o?.delay ?? 0)}).finished.catch(() => {}).then(() => { if (my !== token) throw new Stop(); });
+      const coach = (k, size, style) => { const c = make("div", "coach", mascot(k), {width:size + "px", height:size + "px", ...style}); c.dataset.state = "idle"; scr.appendChild(c); return c; };
+      try { await fn({scr, svg, W, H, pen, wait, A, coach}); await wait(gap); }
+      /* (fire-and-forget animations from a stopped run reject quietly) */
+      catch (err) { if (!(err instanceof Stop)) console.error(err); return; }
+    }
+  };
+  run();
+  return () => { token++; run(); };
+}
+const say = (c, s, ms = 1500) => { c.dataset.state = s; if (ms) setTimeout(() => { if (c.dataset.state === s) c.dataset.state = "idle"; }, ms); };
+
+/* shared endings */
+function wordmark(scr, W, y, pen){
+  const w = make("div", "wm abs", "Second Strong", {left:"0", right:"0", top:(y - 27) + "px", textAlign:"center", clipPath:"inset(0 100% 0 0)"}); scr.appendChild(w);
+  w.animate([{clipPath:"inset(0 100% 0 0)"}, {clipPath:"inset(0 0 0 0)"}], {duration:REDUCED ? 1 : 800, delay:REDUCED ? 0 : 120, easing:"cubic-bezier(.4,.05,.35,1)", fill:"forwards"});
+  pen(smooth([[W * .14, y + 14], [W * .5, y + 11], [W * .86, y + 14]]), {dur:900});
+  return w;
+}
+async function endReturning({scr, svg, W, H, pen, wait, A}, mine, others, word){
+  /* the rest step back; your coach comes forward and says morning, then tucks into the corner over Today */
+  others.forEach((c, i) => A(c, [{transform:getComputedStyle(c).transform}, {transform:"translateY(160px) scale(.8)", opacity:0}], {duration:420, delay:i * 35, easing:"cubic-bezier(.5,0,1,.6)"}));
+  word && A(word, [{opacity:1}, {opacity:0, transform:"translateY(-10px)"}], {duration:280});
+  svg.querySelectorAll("path").forEach(p => A(p, [{opacity:1}, {opacity:0}], {duration:280}));
+  /* move to an exact place on screen: measure where it is, jump there, animate from the old spot */
+  const flip = (el, x, y, size, dur, easing) => {
+    const r = el.getBoundingClientRect(), sr = scr.getBoundingClientRect();
+    el.getAnimations().forEach(a => a.cancel());
+    Object.assign(el.style, {left:x + "px", top:y + "px", width:size + "px", height:size + "px", transform:"none", transformOrigin:"0 0", opacity:"1"});
+    return A(el, [{transform:`translate(${r.left - sr.left - x}px, ${r.top - sr.top - y}px) scale(${r.width / size})`}, {transform:"none"}], {duration:dur, easing});
+  };
+  if (mine.parentElement !== scr) scr.appendChild(mine);
+  say(mine, "hello", 1600);
+  await flip(mine, W/2 - 64, H * .42, 128, 720, "cubic-bezier(.3,1.3,.5,1)");
+  const hi = make("div", "big-hand abs writein", "Morning.", {left:"0", right:"0", top:(H * .24) + "px", textAlign:"center"}); hi.style.setProperty("--d", "650ms"); hi.style.setProperty("--st", "steps(10)"); scr.appendChild(hi);
+  await wait(680);
+  pen(smooth([[W/2 - 62, H * .24 + 45], [W/2, H * .24 + 42], [W/2 + 64, H * .24 + 45]]), {dur:380});
+  await wait(900);
+  A(hi, [{opacity:1}, {opacity:0, transform:"translateY(-8px)"}], {duration:260});
+  svg.querySelectorAll("path").forEach(p => A(p, [{opacity:1}, {opacity:0}], {duration:260}));
+  await flip(mine, W - 66, 46, 52, 620, "cubic-bezier(.65,0,.35,1)");
+  scr.appendChild(make("div", "abs fadein", `<div class="meta">${esc(today)}</div><div style="font:800 21px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:5px">How was <em style="font-family:var(--f-serif);font-weight:400">the night?</em></div>`, {left:"18px", top:"58px", right:"80px"}));
+  [[132, "Protein", "0 of 100g today"], [212, "Today", "Lower body · 20 min"]].forEach(([y, k, v], i) => scr.appendChild(make("div", "card fadein", `<small>${k}</small>${v}`, {top:y + "px", animationDelay:(150 + i * 120) + "ms"})));
+  await wait(1500);
+}
+async function endFirst({scr, svg, W, H, pen, wait}, cast, word){
+  /* first open: everyone waves, then the question that starts onboarding */
+  cast.forEach((c, i) => setTimeout(() => say(c, "hello", 1800), i * 80));
+  await wait(500);
+  word && word.animate([{opacity:1}, {opacity:0}], {duration:260, fill:"forwards"});
+  svg.querySelectorAll("path").forEach(p => p.animate([{opacity:1}, {opacity:0}], {duration:260, fill:"forwards"}));
+  const q = make("div", "abs fadein", `<div class="big-hand" style="font-size:34px"><span style="display:inline-block">Hello.</span></div><div style="font:800 19px/1.15 var(--f-display);letter-spacing:-.02em;margin-top:8px">Who would you like<br>in your corner?</div>`, {left:"0", right:"0", top:(H * .2) + "px", textAlign:"center"});
+  scr.appendChild(q);
+  await wait(500);
+  const t = q.firstElementChild.firstElementChild.getBoundingClientRect(), sr = scr.getBoundingClientRect();
+  pen(smooth([[t.left - sr.left - 4, t.bottom - sr.top + 2], [t.left - sr.left + t.width/2, t.bottom - sr.top], [t.right - sr.left + 6, t.bottom - sr.top + 2]]), {dur:380});
+  await wait(1800);
+}
+const ending = (ctx, cast, word) => MODE === "back" ? endReturning(ctx, cast[ORDER.indexOf(MINE)], cast.filter((_, i) => i !== ORDER.indexOf(MINE)), word) : endFirst(ctx, cast, word);
+
+/* ---------- intros ---------- */
+async function stadium(ctx){
+  const {scr, W, H, pen, wait, A, coach} = ctx, size = 58, step = (W - size - 8) / 6;
+  const cast = ORDER.map((k, i) => coach(k, size, {left:(4 + i * step) + "px", top:(H - size * .62) + "px"}));
+  await Promise.all(cast.map((c, i) => A(c, [{transform:"translateY(80px)"}, {transform:"translateY(0)"}], {duration:600, delay:120 + i * 70, easing:"cubic-bezier(.3,1.35,.5,1)"})));
+  const word = wordmark(scr, W, H * .38, pen);
+  for (let round = 0; round < 2; round++) {
+    await Promise.all(cast.map((c, i) => A(c, [{transform:"translateY(0)"}, {transform:"translateY(-26px) scale(1.04,.98)", offset:.45}, {transform:"translateY(0) scale(1.06,.94)", offset:.8}, {transform:"translateY(0)"}], {duration:560, delay:i * 85, easing:"ease-in-out"})));
+  }
+  cast.forEach(c => c.getAnimations().forEach(a => a.cancel()));
+  await ending(ctx, cast, word);
+}
+async function curtain(ctx){
+  const {scr, svg, W, H, pen, wait, A, coach} = ctx, size = 60, floor = H * .64, step = (W - size - 10) / 6;
+  /* coaches live in a box that ends at the stage line, so they rise from behind it */
+  const box = make("div", "abs", "", {left:"0", right:"0", top:"0", height:floor + "px", overflow:"hidden"}); scr.appendChild(box);
+  pen(smooth([[-6, floor + 1], [W * .5, floor - 1], [W + 6, floor + 1]]), {dur:700});
+  await wait(500);
+  const cast = ORDER.map((k, i) => { const c = make("div", "coach", mascot(k), {width:size + "px", height:size + "px", left:(5 + i * step) + "px", top:(floor - size + 6) + "px", transform:"translateY(80px)"}); c.dataset.state = "idle"; box.appendChild(c); return c; });
+  for (let i = 0; i < cast.length; i++) { A(cast[i], [{transform:"translateY(80px)"}, {transform:"translateY(-10px)", offset:.7}, {transform:"translateY(0)"}], {duration:520, easing:"cubic-bezier(.3,1.2,.5,1)"}); setTimeout(() => say(cast[i], "hello", 700), 300); await wait(150); }
+  await wait(300);
+  const word = wordmark(scr, W, H * .3, pen);
+  await wait(900);
+  /* hand the coaches up to the screen so they can step out of the box */
+  cast.forEach(c => { const r = c.getBoundingClientRect(), sr = scr.getBoundingClientRect(); c.getAnimations().forEach(a => a.cancel()); Object.assign(c.style, {left:(r.left - sr.left) + "px", top:(r.top - sr.top) + "px", transform:"none"}); scr.appendChild(c); });
+  box.remove();
+  await ending(ctx, cast, word);
+}
+async function wire(ctx){
+  const {scr, W, H, pen, wait, A, coach} = ctx, size = 54, y = H * .5, step = (W - size - 16) / 6;
+  pen(smooth([[-6, y - 18], [W * .25, y + 2], [W * .5, y + 8], [W * .75, y + 2], [W + 6, y - 18]]), {dur:800, w:2});
+  await wait(500);
+  const sagAt = x => { const t = x / W; return y - 18 + 26 * Math.sin(Math.PI * t); };
+  const cast = ORDER.map((k, i) => { const x = 8 + i * step; return coach(k, size, {left:x + "px", top:(sagAt(x + size/2) - size + 8) + "px", opacity:"0"}); });
+  for (const [i, c] of cast.entries()) {
+    c.style.opacity = "1";
+    A(c, [{transform:"translateY(-260px)"}, {transform:"translateY(0) scale(1.12,.86)", offset:.75}, {transform:"translateY(-6px)", offset:.88}, {transform:"translateY(0)"}], {duration:640, easing:"cubic-bezier(.5,0,.6,1)"})
+      .then(() => { c.getAnimations().forEach(a => a.cancel()); c.firstElementChild.classList.add("sway"); c.firstElementChild.style.animationDelay = (-i * .3) + "s"; });
+    await wait(120);
+  }
+  await wait(600);
+  const word = wordmark(scr, W, H * .26, pen);
+  await wait(1000);
+  cast.forEach(c => c.firstElementChild.classList.remove("sway"));
+  await ending(ctx, cast, word);
+}
+async function popup(ctx){
+  const {scr, W, H, pen, wait, A, coach} = ctx, size = 58, base = H * .66, step = (W - size - 24) / 6;
+  scr.style.perspective = "700px";
+  const stageCard = make("div", "abs", "", {left:"10px", right:"10px", top:base + "px", height:"60px", background:"var(--card)", border:"1px solid var(--edge)", borderRadius:"14px", transformOrigin:"50% 0", transform:"rotateX(88deg)"}); scr.appendChild(stageCard);
+  await A(stageCard, [{transform:"rotateX(88deg)"}, {transform:"rotateX(62deg)"}], {duration:520, easing:"cubic-bezier(.3,1.3,.5,1)"});
+  const cast = ORDER.map((k, i) => coach(k, size, {left:(12 + i * step) + "px", top:(base - size + 14) + "px", transform:"rotateX(-90deg)"}));
+  for (const c of cast) { A(c, [{transform:"rotateX(-90deg)"}, {transform:"rotateX(12deg)", offset:.7}, {transform:"rotateX(0)"}], {duration:520, easing:"cubic-bezier(.3,1.3,.5,1)"}); await wait(110); }
+  await wait(300);
+  const tab = make("div", "abs", `<div class="wm" style="font-size:21px">Second Strong</div>`, {left:"50%", top:(H * .3 - 34) + "px", transform:"translateX(-50%) rotateX(-90deg)", transformOrigin:"50% 100%", background:"#FFFDF9", padding:"10px 16px", borderRadius:"12px", boxShadow:"0 10px 20px -12px rgba(59,50,44,.5)"}); scr.appendChild(tab);
+  await A(tab, [{transform:"translateX(-50%) rotateX(-90deg)"}, {transform:"translateX(-50%) rotateX(0)"}], {duration:600, easing:"cubic-bezier(.3,1.3,.5,1)"});
+  await wait(900);
+  if (MODE === "back") { /* the others fold flat, yours stays standing */
+    cast.forEach((c, i) => { if (ORDER[i] !== MINE) A(c, [{transform:"rotateX(0)"}, {transform:"rotateX(-90deg)"}], {duration:380, delay:i * 40}); });
+    A(stageCard, [{transform:"rotateX(62deg)"}, {transform:"rotateX(90deg)"}], {duration:420, delay:300});
+    await wait(500);
+  }
+  await ending(ctx, cast, tab);
+}
+async function peekaboo(ctx){
+  const {scr, W, H, pen, wait, A, coach} = ctx, s = 70;
+  /* each coach peeks in from an edge and looks at the middle */
+  const spots = [
+    {x:-s * .4, y:H * .16, r:90}, {x:W - s * .6, y:H * .1, r:-90}, {x:W * .3, y:-s * .45, r:180}, {x:-s * .4, y:H * .58, r:90},
+    {x:W - s * .6, y:H * .5, r:-90}, {x:W * .16, y:H - s * .55, r:0}, {x:W * .6, y:H - s * .55, r:0}];
+  const away = sp => sp.r === 90 ? "translateX(-60px)" : sp.r === -90 ? "translateX(60px)" : sp.r === 180 ? "translateY(-60px)" : "translateY(60px)";
+  const cast = ORDER.map((k, i) => { const sp = spots[i]; const c = coach(k, s, {left:sp.x + "px", top:sp.y + "px", transform:`${away(sp)} rotate(${sp.r}deg)`, transformOrigin:"50% 50%"}); c._sp = sp; return c; });
+  for (const c of cast) { A(c, [{transform:`${away(c._sp)} rotate(${c._sp.r}deg)`}, {transform:`translate(0,0) rotate(${c._sp.r}deg)`}], {duration:520, easing:"cubic-bezier(.3,1.3,.5,1)"}); await wait(110); }
+  const word = wordmark(scr, W, H * .4, pen);
+  await wait(1300);
+  if (MODE === "back") {
+    cast.forEach((c, i) => { if (ORDER[i] !== MINE) A(c, [{transform:`translate(0,0) rotate(${c._sp.r}deg)`}, {transform:`${away(c._sp)} rotate(${c._sp.r}deg)`}], {duration:360, delay:i * 30, easing:"cubic-bezier(.5,0,1,.6)"}); });
+    await wait(400);
+    const mine = cast[ORDER.indexOf(MINE)];
+    mine.getAnimations().forEach(a => a.cancel()); mine.style.transform = "none"; mine.style.transformOrigin = "50% 100%";
+    await ending(ctx, cast, word);
+  } else {
+    cast.forEach(c => { c.getAnimations().forEach(a => a.cancel()); c.style.transform = `rotate(${c._sp.r}deg)`; });
+    await endFirst(ctx, cast, word);
+  }
+}
+
+/* ---------- between screens ---------- */
+async function wipe({scr, W, H, pen, wait, A, coach}){
+  const tabs = make("div", "tabs", TABS); scr.appendChild(tabs);
+  const mark = make("i"); tabs.children[0].classList.add("on"); tabs.children[0].appendChild(mark);
+  const todayP = make("div", "abs", `<div class="meta">${esc(today)}</div><div style="font:800 22px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:5px">Today</div>`, {left:"18px", top:"52px"});
+  scr.appendChild(todayP);
+  const cardsT = [[110, "Protein", "64 of 100g"], [186, "Strength", "Lower body · done"]].map(([y, k, v]) => { const c = make("div", "card", `<small>${k}</small>${v}`, {top:y + "px"}); scr.appendChild(c); return c; });
+  const next = make("div", "abs", `<div class="meta">Bramble · coach</div><div style="font:800 22px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:5px">Coach</div>
+    <div style="margin-top:22px;background:var(--almond);border-radius:16px 16px 5px 16px;padding:8px 12px;font:600 13px/1.25 var(--f-display);margin-left:auto;width:fit-content">Knees ache after squats.</div>
+    <div style="margin-top:14px;background:var(--card);border:1px solid var(--edge);border-radius:16px;padding:11px 13px;font:400 13px/1.4 var(--f-display)">Swap squats for box sit-to-stands this week. Same effort, kinder on the knees.</div>`,
+    {left:"0", top:"0", right:"0", bottom:"62px", padding:"52px 18px 0", background:"var(--bg)", clipPath:"inset(0 100% 0 0)", zIndex:5});
+  scr.appendChild(next);
+  await wait(900);
+  /* tap Coach: your coach hops across and the new screen opens behind it */
+  tabs.children[0].classList.remove("on"); tabs.children[2].classList.add("on"); tabs.children[2].appendChild(mark);
+  const c = coach(MINE, 64, {left:"-70px", top:(H - 62 - 58) + "px", zIndex:7}); say(c, "hello", 1600);
+  const dur = 900, steps = 3;
+  A(next, [{clipPath:"inset(0 100% 0 0)"}, {clipPath:"inset(0 0 0 0)"}], {duration:dur, easing:"cubic-bezier(.45,0,.3,1)"});
+  const hop = []; for (let i = 0; i <= steps * 2; i++) { const t = i / (steps * 2); hop.push({transform:`translate(${(W + 80) * t}px, ${i % 2 ? -24 : 0}px)`}); }
+  await A(c, hop, {duration:dur, easing:"cubic-bezier(.45,0,.3,1)"});
+  await wait(1500);
+}
+async function peekLoader({scr, W, H, pen, wait, A, coach}){
+  const head = make("div", "abs", `<div class="meta">Progress</div><div style="font:800 22px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:5px">Your <em style="font-family:var(--f-serif);font-weight:400">strength</em></div>`, {left:"18px", top:"52px"});
+  scr.appendChild(head);
+  pen(smooth([[18, 112], [W * .5, 110], [W - 18, 112]]), {color:"rgba(59,50,44,.12)", w:1, dur:1});
+  /* your coach peeks up from the bottom edge and looks around until the content lands */
+  const c = coach(MINE, 96, {left:(W/2 - 48) + "px", top:(H - 58) + "px"});
+  await A(c, [{transform:"translateY(80px)"}, {transform:"translateY(0)"}], {duration:600, easing:"cubic-bezier(.3,1.35,.5,1)"});
+  const dots = make("div", "hand abs", "", {left:"0", right:"0", top:(H - 96) + "px", textAlign:"center", fontSize:"26px"}); scr.appendChild(dots);
+  const look = c.querySelectorAll(".look");
+  for (let i = 0; i < 4; i++) {
+    dots.textContent = ".".repeat((i % 3) + 1);
+    look.forEach(l => { l.style.transition = "translate 280ms ease"; l.style.translate = i % 2 ? "4px -1px" : "-4px -1px"; });
+    await wait(420);
+  }
+  look.forEach(l => l.style.translate = "0 0"); dots.textContent = "";
+  /* data arrives: the chart is drawn, the coach ducks back down */
+  say(c, "proud", 900);
+  pen(smooth([[24, 300], [W * .25, 288], [W * .45, 262], [W * .7, 236], [W - 24, 210]]), {dur:1000, w:2.6});
+  [["Goblet squat", "up 4kg on week one", 136]].forEach(([k, v, y]) => scr.appendChild(make("div", "card fadein", `<small>${k}</small>${v}`, {top:y + "px"})));
+  await wait(500);
+  await A(c, [{transform:"translateY(0)"}, {transform:"translateY(100px)"}], {duration:420, easing:"cubic-bezier(.5,0,1,.6)"});
+  await wait(1200);
+}
+function pullRefresh(scr){
+  /* live: drag down to lower the coach on a pen thread; release to refresh */
+  let state = null;
+  const build = () => {
+    scr.innerHTML = "";
+    const svg = document.createElementNS(NS, "svg"); svg.setAttribute("class", "ink"); scr.appendChild(svg);
+    const W = scr.clientWidth, H = scr.clientHeight; svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const thread = document.createElementNS(NS, "path"); thread.setAttribute("stroke", "var(--terra)"); thread.setAttribute("stroke-width", "2"); svg.appendChild(thread);
+    const list = make("div", "abs", "", {left:"0", right:"0", top:"0", bottom:"0", transition:"transform 420ms var(--ease)"}); scr.appendChild(list);
+    list.innerHTML = `<div class="abs" style="left:18px;top:52px"><div class="meta">Food</div><div style="font:800 22px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:5px">Today's <em style="font-family:var(--f-serif);font-weight:400">meals</em></div></div>`;
+    const rows = [["Breakfast", "Yoghurt and berries · 22g"], ["Lunch", "Salmon, rice, greens · 34g"], ["Snack", "Cheese and oatcakes · 12g"]];
+    rows.forEach(([k, v], i) => list.appendChild(make("div", "card", `<small>${k}</small>${v}`, {top:(112 + i * 72) + "px"})));
+    const c = make("div", "coach", mascot(MINE), {width:"62px", height:"62px", left:(W/2 - 31) + "px", top:"-70px", transformOrigin:"50% 0"}); c.dataset.state = "idle"; scr.appendChild(c);
+    const hint = make("div", "hand abs", "pull down", {left:"0", right:"0", bottom:"18px", textAlign:"center", fontSize:"17px", opacity:".8"}); scr.appendChild(hint);
+    state = {W, H, thread, list, c, hint, pull:0};
+    set(0);
+  };
+  const set = p => {
+    const {W, thread, list, c} = state; state.pull = p;
+    const y = Math.min(150, p);
+    thread.setAttribute("d", `M${W/2} 0 L${W/2} ${Math.max(0, y - 52)}`);
+    c.style.transform = `translateY(${y}px) rotate(${Math.sin(y / 18) * 4}deg)`;
+    list.style.transform = `translateY(${y * .55}px)`;
+    if (y > 110 && c.dataset.state !== "listening") c.dataset.state = "listening";
+  };
+  const release = async () => {
+    const {c, list} = state; const p = state.pull;
+    if (p < 110) { list.style.transition = c.style.transition = "transform 420ms var(--ease)"; set(0); setTimeout(() => { list.style.transition = ""; c.style.transition = ""; }, 430); return; }
+    c.dataset.state = "proud";
+    c.animate([{transform:c.style.transform}, {transform:`translateY(${Math.min(150, p) + 14}px)`}, {transform:`translateY(${Math.min(150, p)}px)`}], {duration:500, easing:"ease-out"});
+    await new Promise(r => setTimeout(r, 900));
+    state.list.querySelectorAll(".card").forEach((cd, i) => cd.animate([{opacity:.3}, {opacity:1}], {duration:400, delay:i * 90}));
+    c.style.transition = state.list.style.transition = "transform 520ms cubic-bezier(.65,0,.35,1)";
+    set(0); c.dataset.state = "idle";
+    setTimeout(() => { c.style.transition = ""; state.list.style.transition = ""; }, 540);
+  };
+  let drag = null, demo = true;
+  scr.addEventListener("pointerdown", e => { demo = false; drag = e.clientY; scr.setPointerCapture(e.pointerId); state.c.style.transition = state.list.style.transition = "none"; state.hint.style.opacity = "0"; });
+  scr.addEventListener("pointermove", e => { if (drag == null) return; set(Math.max(0, (e.clientY - drag) * .9)); });
+  scr.addEventListener("pointerup", () => { if (drag == null) return; drag = null; release(); });
+  build();
+  /* until someone tries it, it demonstrates itself */
+  (async function loop(){
+    while (demo) {
+      await new Promise(r => setTimeout(r, 1400)); if (!demo) return;
+      for (let p = 0; p <= 140; p += 7) { if (!demo) return; state.c.style.transition = state.list.style.transition = "none"; set(p); await new Promise(r => setTimeout(r, 22)); }
+      if (!demo) return; await release(); await new Promise(r => setTimeout(r, 1600));
+    }
+  })();
+  return () => { demo = false; build(); };
+}
+async function cardToSession({scr, W, H, pen, wait, A, coach}){
+  scr.appendChild(make("div", "abs", `<div class="meta">${esc(today)}</div><div style="font:800 22px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:5px">Today</div>`, {left:"18px", top:"52px"}));
+  scr.appendChild(make("div", "card", `<small>Protein</small>64 of 100g`, {top:"110px"}));
+  const card = make("div", "card", `<small>Strength · 18:00</small>Lower body · 20 min`, {top:"186px", zIndex:5}); scr.appendChild(card);
+  await wait(900);
+  /* tap: the card becomes the session, and the coach joins in */
+  card.animate([{transform:"scale(1)"}, {transform:"scale(.97)"}, {transform:"scale(1)"}], {duration:200});
+  await wait(200);
+  const r = card.getBoundingClientRect(), sr = scr.getBoundingClientRect();
+  const full = make("div", "abs", "", {left:(r.left - sr.left) + "px", top:(r.top - sr.top) + "px", width:r.width + "px", height:r.height + "px", background:"var(--card)", border:"1px solid var(--edge)", borderRadius:"16px", zIndex:6}); scr.appendChild(full);
+  card.style.opacity = "0";
+  await A(full, [{left:full.style.left, top:full.style.top, width:full.style.width, height:full.style.height, borderRadius:"16px"}, {left:"0px", top:"0px", width:W + "px", height:H + "px", borderRadius:"31px"}], {duration:620});
+  const sess = make("div", "abs fadein", `<div class="meta">Lower body · 1 of 4</div><div style="font:800 24px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:6px">Goblet <em style="font-family:var(--f-serif);font-weight:400">squat</em></div><div style="font:500 11px/1 var(--f-mono);color:var(--ink2);margin-top:8px">10kg · 3 × 10</div>`, {left:"18px", top:"56px", zIndex:7}); scr.appendChild(sess);
+  const c = coach(MINE, 120, {left:(W/2 - 60) + "px", top:(H * .36) + "px", zIndex:7}); c.dataset.state = "lifting";
+  A(c, [{transform:"translateY(260px)"}, {transform:"translateY(0)"}], {duration:620, easing:"cubic-bezier(.3,1.3,.5,1)"});
+  await wait(400);
+  const cx = W/2, cy = H * .78, R = 34;
+  const ringBg = document.createElementNS(NS, "circle"); Object.entries({cx, cy, r:R, fill:"none", stroke:"rgba(59,50,44,.12)", "stroke-width":4}).forEach(([k, v]) => ringBg.setAttribute(k, v)); scr.querySelector(".ink").appendChild(ringBg);
+  scr.querySelector(".ink").style.zIndex = 8;
+  pen(`M${cx} ${cy - R} A${R} ${R} 0 1 1 ${cx - .1} ${cy - R}`, {dur:1800, w:4, ease:"linear"});
+  scr.appendChild(make("div", "abs fadein", "Set 1", {left:"0", right:"0", top:(cy - 9) + "px", textAlign:"center", font:"800 15px/1 var(--f-display)", zIndex:9}));
+  await wait(2200);
+}
+
+const INTROS = [
+  {name:"Stadium wave", tag:"Playful", desc:"The cast peeks up from the bottom edge and a wave ripples along them twice while the wordmark writes in.", run:stadium},
+  {name:"Curtain call", tag:"Theatrical", desc:"The pen draws a stage line and the coaches pop up behind it one at a time, each with a little hello.", run:curtain},
+  {name:"Birds on a wire", tag:"Charming", desc:"The pen draws a sagging wire, the coaches drop onto it one by one with a bounce and sway gently.", run:wire},
+  {name:"Pop-up book", tag:"Crafted", desc:"A paper stage folds up and the coaches unfold like pop-up cut-outs, then the wordmark pops up as a tab.", run:popup},
+  {name:"Peek-a-boo", tag:"Curious", desc:"The coaches peek in from every edge of the screen and watch the middle while the wordmark writes.", run:peekaboo}
+];
+const TRANS = [
+  {name:"Coach wipe", tag:"Changing tab", desc:"Tap a tab and your coach hops across the bottom, opening the new screen behind it.", run:wipe},
+  {name:"Peek loader", tag:"Screen loading", desc:"Your coach peeks up from the bottom and looks around until the data lands, then ducks away as the chart is drawn.", run:peekLoader},
+  {name:"Pull to refresh", tag:"Live · drag down", desc:"Pull down and your coach lowers on a pen thread. Pull far enough and it listens; let go and it refreshes.", live:pullRefresh},
+  {name:"Card to session", tag:"Starting a workout", desc:"Tap today's session: the card grows into the workout screen and the coach joins you, lifting, as the set timer starts.", run:cardToSession}
+];
+function add(container, item){
+  const art = make("article", "ld", `<div class="frame"><div class="scr" aria-label="${esc(item.name)} animation"></div></div>
+    <div class="cap"><div class="top"><b>${esc(item.name)}</b><button class="replay" type="button">Replay</button></div><em>${esc(item.tag)}</em><span>${esc(item.desc)}</span></div>`);
+  container.appendChild(art);
+  const scr = art.querySelector(".scr");
+  let restart = () => {};
+  art.querySelector(".replay").addEventListener("click", () => restart());
+  /* start once the whole grid is laid out, so the phone measures its final size */
+  pending.push(() => { restart = item.live ? item.live(scr) : stage(scr, item.run); });
+  return () => restart();
+}
+const pending = [];
+const introRestarts = INTROS.map(i => add(document.getElementById("intros"), i));
+TRANS.forEach(t => add(document.getElementById("trans"), t));
+requestAnimationFrame(() => pending.forEach(f => f()));
+document.querySelector(".seg").addEventListener("click", ev => {
+  const b = ev.target.closest("button"); if (!b) return;
+  MODE = b.dataset.mode; document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  introRestarts.forEach(r => r());
+});
+window.addEventListener("unhandledrejection", e => { if (e.reason instanceof Stop) e.preventDefault(); });
+window.__intro = { mode(m){ document.querySelector(`.seg [data-mode="${m}"]`).click(); } };
+})();
+</script>

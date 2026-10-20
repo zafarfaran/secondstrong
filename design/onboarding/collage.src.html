@@ -1,0 +1,529 @@
+<meta charset="utf-8">
+<title>Collage Onboarding</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Gochi+Hand&family=IBM+Plex+Mono:wght@500&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap">
+<style>
+/* Layout: a quiet desk. Left, five onboarding experiences in the Sketchbook look; right, one live phone running the chosen one. */
+:root{
+  --bg:#FBF8F4; --card:#F6F0E8; --almond:#EDE3D6; --ink:#3B322C; --ink2:#5D534B;
+  --taupe:#A8968A; --terra:#A85A3C; --apricot:#F0C9A8; --edge:rgba(59,50,44,.10); --shadow:rgba(59,50,44,.22);
+  --desk:#EFE8DE; --deskInk:#3B322C; --deskInk2:#6E6158;
+  --f-display:"Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --f-serif:"Newsreader", Georgia, serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --f-hand:"Gochi Hand", "Comic Sans MS", cursive;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --spring:linear(0, .009, .035 2.1%, .141, .281 6.7%, .723 12.9%, .938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.129 32.8%, 1.051 39.6%, 1.017 43.1%, .991, .977 51%, .974 53.8%, .975 57.1%, .997 69.8%, 1.003 76.9%, 1);
+  --spring-soft:linear(0, .02 1.5%, .1 4%, .38 10%, .72 18%, .92 26%, 1.02 34%, 1.05 40%, 1.04 48%, 1.01 60%, 1);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --desk:#1C1714; --deskInk:#F1E9DF; --deskInk2:#B8AA9D; color-scheme:dark }}
+:root[data-theme="dark"]{ --desk:#1C1714; --deskInk:#F1E9DF; --deskInk2:#B8AA9D; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--desk); color:var(--deskInk); font:400 16px/1.45 var(--f-display); margin:0}
+button,input{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--terra); outline-offset:3px}
+.wrap{max-width:1120px; margin:0 auto; padding-inline:clamp(16px,3vw,40px); padding-block:32px 48px; display:grid; grid-template-columns:minmax(0,1fr) 400px; gap:48px; align-items:start}
+@media (max-width:900px){ .wrap{grid-template-columns:minmax(0,1fr); gap:24px} }
+.side{position:sticky; top:32px; display:grid; gap:18px}
+@media (max-width:900px){ .side{position:static} }
+.dmeta{font:500 12px/1.2 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--deskInk2)}
+.side h1{font:800 clamp(30px,4vw,44px)/1.02 var(--f-display); letter-spacing:-.035em; margin:0; text-wrap:balance}
+.side h1 em{font-family:var(--f-serif); font-style:italic; font-weight:400}
+.side .lede{margin:0; color:var(--deskInk2); max-width:52ch}
+.vlist{display:grid; gap:8px; margin:6px 0 0; padding:0; list-style:none}
+.vbtn{appearance:none; width:100%; text-align:left; border:1.5px solid color-mix(in srgb,var(--deskInk) 14%,transparent); background:transparent; border-radius:16px; padding:12px 14px; cursor:pointer; display:grid; grid-template-columns:30px 1fr; gap:2px 12px; align-items:start; transition:border-color 160ms, background 160ms}
+.vbtn:hover{border-color:color-mix(in srgb,var(--deskInk) 35%,transparent)}
+.vbtn[aria-pressed="true"]{border-color:var(--deskInk); background:color-mix(in srgb,var(--deskInk) 6%,transparent)}
+.vbtn .ltr{grid-row:span 2; font:400 26px/1 var(--f-hand); color:var(--terra)}
+.vbtn b{font:800 16px/1.15 var(--f-display)}
+.vbtn span{font-size:13.5px; color:var(--deskInk2); line-height:1.35}
+.tip{font:500 11px/1.4 var(--f-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--deskInk2); margin:0}
+.phone-col{display:grid; justify-items:center; gap:12px}
+.phone{position:relative; width:min(100%,390px); height:800px; border-radius:46px; background:#2A231F; padding:10px; box-shadow:0 30px 60px -20px rgba(40,30,20,.45), 0 0 0 1px rgba(0,0,0,.2)}
+.page{position:relative; width:100%; height:100%; border-radius:37px; background:var(--bg); color:var(--ink); overflow:hidden; isolation:isolate}
+.page::before{content:""; position:absolute; inset:0; background:repeating-linear-gradient(transparent 0 31px, rgba(59,50,44,.04) 31px 32px); pointer-events:none}
+.replay{appearance:none; border:0; background:transparent; font:500 11px/1 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--deskInk2); cursor:pointer; padding:8px 10px; border-radius:8px}
+.root{position:absolute; inset:0}
+
+/* shared pieces */
+.meta{font:500 11.5px/1.2 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase}
+.title{font:800 34px/1.02 var(--f-display); letter-spacing:-.035em; margin:0; text-wrap:balance}
+.title em{font-family:var(--f-serif); font-style:italic; font-weight:400; letter-spacing:-.015em}
+.btn{appearance:none; border:0; height:54px; border-radius:99px; background:var(--ink); color:var(--bg); font:600 16.5px/1 var(--f-display); cursor:pointer; width:100%; transition:transform 160ms var(--ease), opacity 380ms; position:relative; z-index:3}
+.btn:active{transform:scale(.97)}
+.btn[aria-disabled="true"]{opacity:.3; cursor:default}
+.btn.small{height:44px; font-size:15px; width:auto; padding:0 20px}
+.coach{position:absolute; pointer-events:none}
+.coach .m{width:100%; height:100%; display:block}
+.coach .swap{animation:swap 460ms var(--spring) both}
+@keyframes swap{from{transform:scale(.82) translateY(10px)} to{transform:none}}
+.ink{position:absolute; left:0; top:0; pointer-events:none; overflow:visible; mix-blend-mode:multiply; z-index:4}
+.ink path{fill:none; stroke-linecap:round; stroke-linejoin:round}
+.fade{transition:opacity 360ms var(--ease); opacity:0!important}
+.glyph{width:40px; height:36px; overflow:visible}
+.glyph path{fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round}
+.draw{background:currentColor; -webkit-mask:var(--src) center / contain no-repeat; mask:var(--src) center / contain no-repeat}
+.sketch{animation:sketch 1000ms var(--ease) both}
+@keyframes sketch{from{clip-path:polygon(0 0,0 0,0 0)} to{clip-path:polygon(0 0,250% 0,0 250%)}}
+.thumbs{display:flex; gap:7px}
+.thumb{appearance:none; flex:1 1 0; min-width:0; aspect-ratio:1; border-radius:14px; border:1px solid var(--edge); background:var(--card); padding:2px; cursor:pointer; transition:transform 200ms var(--ease)}
+.thumb:active{transform:scale(.94)}
+.thumb .m{width:100%; height:100%; display:block}
+.thumb[aria-checked="true"]{border-color:var(--ink); box-shadow:inset 0 0 0 1px var(--ink)}
+.field{display:flex; align-items:baseline; gap:10px; border-bottom:1.5px solid var(--ink); padding:4px 2px 6px}
+.field label{font:500 11px/1 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase; flex:none}
+.field input{flex:1; min-width:0; border:0; background:transparent; font:800 24px/1.1 var(--f-display); letter-spacing:-.02em; padding:2px 0; outline:none}
+.chipx{appearance:none; border:1.5px solid color-mix(in srgb,var(--ink) 18%,transparent); background:var(--card); border-radius:16px; padding:10px 12px; cursor:pointer; display:flex; align-items:center; gap:8px; font:700 14px/1.1 var(--f-display); transition:transform 160ms var(--ease), border-color 200ms, background 200ms}
+.chipx:active{transform:scale(.95)}
+.chipx[aria-checked="true"]{border-color:var(--ink); background:var(--bg)}
+.chipx .glyph{width:28px; height:26px}
+.chipx .draw{width:34px; height:34px}
+.dayrow{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+.dayb{appearance:none; border:1.5px solid color-mix(in srgb,var(--ink) 16%,transparent); background:transparent; border-radius:14px; height:50px; cursor:pointer; font:600 14px/1 var(--f-display); transition:background 160ms, color 160ms, transform 160ms var(--ease)}
+.dayb:active{transform:scale(.93)}
+.dayb[aria-checked="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink); animation:stamp 380ms var(--spring)}
+@keyframes stamp{0%{transform:scale(.94)} 100%{transform:scale(1)}}
+.wk{display:grid; grid-template-columns:repeat(7,1fr); gap:5px; text-align:center}
+.wk span{font:500 10px/1 var(--f-mono); color:var(--ink2)}
+.wk i{display:block; height:28px; margin-top:6px; border-radius:10px; background:rgba(59,50,44,.07); transform:scale(.5); opacity:0; animation:pop 420ms var(--spring) forwards}
+.wk i.on{background:var(--ink)}
+@keyframes pop{to{transform:scale(1); opacity:1}}
+.plancard{background:var(--card); border:1px solid var(--edge); border-radius:20px; padding:14px 16px; display:grid; gap:12px}
+.plancard .num{font:800 54px/.9 var(--f-display); letter-spacing:-.05em}
+.plancard .num small{font-size:22px}
+.plancard .row{display:flex; align-items:end; justify-content:space-between; gap:10px}
+.plancard .lab{font:500 10.5px/1.3 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase}
+.plancard .draw{width:80px; height:80px; color:var(--ink)}
+.hand{font:400 21px/1.2 var(--f-hand); color:var(--terra)}
+
+/* ===== A · conversation ===== */
+.cv{display:flex; flex-direction:column; padding-top:34px}
+.cv-head{display:flex; gap:10px; align-items:center; padding:6px 18px 10px; border-bottom:1px solid var(--edge); position:relative; z-index:2; background:var(--bg)}
+.cv-av{position:relative; width:58px; height:58px; flex:none}
+.cv-av .coach{inset:-6px; width:auto; height:auto}
+.cv-head b{display:block; font:800 17px/1.1 var(--f-display)}
+.cv-head span{font:500 10.5px/1 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--ink2)}
+.cv-log{flex:1; overflow-y:auto; padding:18px 20px 12px; display:flex; flex-direction:column; gap:12px; scrollbar-width:none}
+.cv-log::-webkit-scrollbar{display:none}
+.line{font:400 22px/1.2 var(--f-hand); color:var(--terra); max-width:88%}
+.line.writing{animation:write var(--d,800ms) var(--st,steps(20)) both}
+@keyframes write{from{clip-path:inset(0 100% 0 0)} to{clip-path:inset(0 -10% 0 0)}}
+.me{align-self:flex-end; background:var(--almond); border-radius:18px 18px 6px 18px; padding:9px 14px; font:600 15px/1.25 var(--f-display); max-width:80%}
+.typing{display:flex; gap:4px; padding:6px 2px}
+.typing i{width:7px; height:7px; border-radius:50%; background:var(--terra); opacity:.4; animation:bounce 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s} .typing i:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,100%{transform:translateY(0); opacity:.35} 40%{transform:translateY(-4px); opacity:1}}
+.cv-tray{padding:14px 16px 20px; border-top:1px solid var(--edge); background:var(--bg); min-height:96px; display:grid; gap:10px; align-content:end; position:relative; z-index:2}
+.cv-tray .opts{display:flex; flex-wrap:wrap; gap:7px}
+.rise{animation:rise 380ms var(--ease) both}
+@keyframes rise{from{opacity:0; transform:translateY(14px)}}
+
+/* ===== B · toybox ===== */
+.tb-head{position:absolute; left:22px; right:110px; top:96px}
+.tb-head .title{transition:none}
+.stampin{animation:stampin 460ms var(--spring) both}
+@keyframes stampin{from{transform:scale(1.25) rotate(-2deg); opacity:0}}
+.toy{position:absolute; width:76px; height:76px; border-radius:50%; background:#FFFDF9; border:1.5px solid color-mix(in srgb,var(--ink) 14%,transparent); box-shadow:0 8px 16px -10px rgba(59,50,44,.45); display:grid; place-items:center; align-content:center; gap:2px; cursor:grab; touch-action:none; user-select:none; -webkit-user-select:none}
+.toy:active{cursor:grabbing}
+.toy b{font:700 10.5px/1 var(--f-display); text-align:center; max-width:66px}
+.toy .glyph{width:32px; height:28px}
+.toy .draw{width:44px; height:44px; color:var(--ink)}
+.toy.day{width:56px; height:56px; font:800 18px/1 var(--f-display)}
+.toy .float{display:contents}
+.toy.idle{animation:bob var(--bd,3.6s) ease-in-out var(--bdl,0s) infinite}
+@keyframes bob{0%,100%{translate:0 0} 50%{translate:0 -6px}}
+.toy.in{box-shadow:0 3px 6px -4px rgba(59,50,44,.45)}
+.bowl{position:absolute; overflow:visible}
+.bowl path{fill:none; stroke:var(--ink); stroke-width:2.6; stroke-linecap:round}
+.bowl.wobble{animation:wobble 500ms var(--ease)}
+@keyframes wobble{25%{rotate:-4deg} 60%{rotate:3deg} 85%{rotate:-1deg}}
+.floor{position:absolute; left:0; overflow:visible}
+.floor path{fill:none; stroke:var(--ink); stroke-width:2; stroke-linecap:round; opacity:.5}
+.tb-coach{position:absolute; left:0; top:0; transform-origin:0 0; transition:transform 760ms var(--spring-soft); pointer-events:auto; cursor:pointer}
+.tb-coach .m{width:100%; height:100%; display:block}
+.tb-foot{position:absolute; left:22px; right:22px; bottom:22px; display:grid; gap:10px}
+
+/* ===== C · one drawing ===== */
+.world{position:absolute; left:0; top:0; transform-origin:0 0}
+.region{position:absolute; padding:96px 22px 22px; display:flex; flex-direction:column; gap:16px}
+.region .lbl{position:absolute; left:22px; top:58px; font:400 18px/1 var(--f-hand); color:var(--taupe)}
+.tiles{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.tile{appearance:none; border:1.5px solid color-mix(in srgb,var(--ink) 14%,transparent); background:transparent; border-radius:20px; padding:12px 10px 10px; cursor:pointer; display:grid; justify-items:center; gap:6px; transition:transform 160ms var(--ease), border-color 300ms}
+.tile:active{transform:scale(.96)}
+.tile b{font:700 14px/1.1 var(--f-display); position:relative; z-index:1}
+.tile .glyph{width:44px; height:40px}
+.tile .draw{width:76px; height:76px; color:var(--ink)}
+.tile.wide{grid-column:1 / -1; grid-template-columns:auto auto; justify-content:center; align-items:center}
+.tile[aria-checked="true"]{border-color:var(--ink); animation:stamp 420ms var(--spring)}
+.cam-coach{position:absolute; width:180px; height:180px; transform-origin:0 0; transition:transform 760ms var(--spring-soft), opacity 300ms}
+.spacer{flex:1}
+
+/* ===== D · index cards ===== */
+.ic-card{position:absolute; left:18px; right:18px; top:132px; bottom:22px; background:#FFFDF9; border-radius:22px; border:1px solid var(--edge); box-shadow:0 18px 36px -24px rgba(59,50,44,.5); padding:26px 20px 20px; display:flex; flex-direction:column; gap:16px; touch-action:pan-y; user-select:none; -webkit-user-select:none; overflow:hidden}
+.ic-card::before{content:""; position:absolute; inset:0; background:repeating-linear-gradient(transparent 0 31px, rgba(168,90,60,.07) 31px 32px); pointer-events:none}
+.ic-card::after{content:""; position:absolute; top:0; bottom:0; left:46px; width:1.5px; background:rgba(168,90,60,.16); pointer-events:none}
+.ic-card > *{position:relative; z-index:1}
+.ic-card .hint{font:500 10.5px/1 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--taupe); text-align:center}
+.ic-coach{position:absolute; width:120px; height:120px; left:50%; top:30px; margin-left:-60px; z-index:5; transition:transform 500ms var(--spring)}
+
+/* ===== E · collage ===== */
+.cl-page{position:absolute; left:12px; right:12px; top:44px; height:404px; background:#FFFDF9; border-radius:24px; border:1px solid var(--edge); box-shadow:0 14px 30px -24px rgba(59,50,44,.45); overflow:hidden; transition:height 760ms var(--ease)}
+.cl-page::before{content:""; position:absolute; inset:0; background:repeating-linear-gradient(transparent 0 31px, rgba(59,50,44,.05) 31px 32px)}
+.cl-page > *{position:absolute}
+.cl-title{left:18px; top:12px; font:400 30px/1 var(--f-hand); color:var(--ink)}
+.slot{border:1.5px dashed color-mix(in srgb,var(--ink) 16%,transparent); border-radius:16px; transition:opacity 300ms}
+.sticker{background:#fff; border-radius:16px; padding:6px; box-shadow:0 8px 16px -8px rgba(59,50,44,.45); display:grid; place-items:center; gap:2px}
+.sticker::before{content:""; position:absolute; top:-9px; left:50%; width:46px; height:16px; margin-left:-23px; background:rgba(240,201,168,.75); transform:rotate(-4deg) scaleX(var(--tape,1)); transform-origin:left; transition:transform 260ms var(--ease) 180ms}
+.sticker b{font:700 11px/1 var(--f-display); text-align:center}
+.sticker .glyph{width:40px; height:36px}
+.sticker .draw{width:70px; height:70px; color:var(--ink)}
+.slap{animation:slap 420ms var(--spring) both}
+@keyframes slap{0%{scale:1.18} 100%{scale:1}}
+.peel{animation:peel 420ms var(--ease) forwards}
+@keyframes peel{to{transform:translate(30px,60px) rotate(24deg); opacity:0}}
+.cl-cal{display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font:400 22px/1 var(--f-hand); color:var(--ink)}
+.cl-tray{position:absolute; left:0; right:0; bottom:0; top:460px; padding:4px 22px 22px; display:flex; flex-direction:column; gap:12px; transition:transform 600ms var(--ease)}
+.cl-tray.gone{transform:translateY(110%)}
+.cl-tray .opts{display:flex; flex-wrap:wrap; gap:7px}
+.coach-in .m{width:100%; height:100%; display:block}
+.cl-date{left:18px; top:14px; font:500 10.5px/1 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--ink2)}
+.cl-title{left:18px; top:30px; font:400 32px/1 var(--f-hand)!important; color:var(--ink)!important; max-width:none!important}
+.preview{transition:opacity 200ms}
+.pv-num{font:800 38px/.9 var(--f-display); letter-spacing:-.05em}
+.pv-num small{font-size:16px}
+.pv-label{align-content:center}
+.pv-note{font-size:19px; line-height:1.05; transform:rotate(-3deg)}
+.cl-cal span{transition:color 200ms, transform 200ms}
+.cl-cal span.picked{color:var(--terra); transform:scale(1.15)}
+
+
+__MASCOT_CSS__
+.m .look{translate:var(--lx,0px) var(--ly,0px); transition:transform .35s ease, translate .14s linear}
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{animation-duration:1ms!important; animation-delay:0ms!important; transition-duration:1ms!important}
+}
+</style>
+
+<div class="wrap">
+  <div class="side">
+    <div class="dmeta">Second Strong · onboarding · Sketchbook</div>
+    <h1>The <em>collage,</em> two ways.</h1>
+    <p class="lede">A new start page that previews the page you are about to make, then the build. Compare it plain and with one continuous line.</p>
+    <ul class="vlist" id="vlist"></ul>
+    <p class="tip">The phone restarts when you switch</p>
+  </div>
+  <div class="phone-col">
+    <div class="phone"><div class="page" id="page"></div></div>
+    <button class="replay" id="replay" type="button">Replay from the start</button>
+  </div>
+</div>
+
+<script>
+(function(){
+__MASCOT_JS__
+
+const DRAW = { squat:"__SQUAT__", plate:"__PLATE__", morning:"__MORNING__", wind:"__WIND__" };
+const GLYPH = {
+  peri:"M20 4 a14 14 0 1 1 0 28 a14 14 0 1 1 0 -28 M20 4 a9 14 0 0 0 0 28",
+  meno:"M20 4 a14 14 0 1 1 0 28 a14 14 0 1 1 0 -28 M20 4 V32",
+  post:"M7 26 a13 13 0 0 1 26 0 M2 26 H38 M20 6 v4 M9 11 l3 3 M31 11 l-3 3",
+  surg:"M20 4 a14 14 0 1 1 -10 4.2 M10 8.2 l-1 -5 M10 8.2 l5 -.8",
+  unsure:"M13 14 a7 7 0 1 1 9.5 6.5 c-2.2 1 -2.5 2.6 -2.5 5 M20 32 v.2"
+};
+const STAGES = [["peri","Perimenopause"],["meno","Menopause"],["post","After menopause"],["surg","Surgical"],["unsure","Not sure"]];
+const ACK = { peri:"Perimenopause. I'll plan around the harder days.", meno:"Menopause. Noted.", post:"After menopause. Strength matters even more now.", surg:"Thank you for telling me. We'll go gently.", unsure:"That's fine. We'll work it out together." };
+const GOALS = [["strong","Strength","squat"],["protein","Protein","plate"],["energy","Energy","morning"],["sleep","Sleep","wind"]];
+const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const NS = "http://www.w3.org/2000/svg";
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const page = document.getElementById("page");
+const esc = s => String(s).replace(/[<>&"]/g, ch => ({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"})[ch]);
+
+let S, epoch = 0;
+const fresh = () => ({ coach:"bramble", name:"Bramble", named:false, stage:null, goals:[], days:[] });
+const coachName = () => (S.name || "").trim() || CHARS[S.coach].name;
+const goalText = () => S.goals.map(g => GOALS.find(x => x[0] === g)[1].toLowerCase()).join(" and ");
+const dayText = () => S.days.map(d => DAYS[d]).join(", ");
+
+/* cancellable waits: switching experience bumps the epoch and stops old scripts */
+class Stop extends Error {}
+function wait(ms){ const e = epoch; return new Promise((res, rej) => setTimeout(() => e === epoch ? res() : rej(new Stop()), REDUCED ? Math.min(ms, 30) : ms)); }
+function alive(e){ if (e !== epoch) throw new Stop(); }
+function el(tag, cls, html){ const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; }
+function prect(n){ const p = page.getBoundingClientRect(), r = n.getBoundingClientRect(); return {x:r.left-p.left, y:r.top-p.top, w:r.width, h:r.height}; }
+function relTo(n, root){ const p = root.getBoundingClientRect(), r = n.getBoundingClientRect(), s = (root._scale || 1); return {x:(r.left-p.left)/s, y:(r.top-p.top)/s, w:r.width/s, h:r.height/s}; }
+
+/* ink */
+function inkLayer(root, w, h){ const s = document.createElementNS(NS, "svg"); s.setAttribute("class", "ink"); s.setAttribute("width", w); s.setAttribute("height", h); s.setAttribute("viewBox", `0 0 ${w} ${h}`); root.appendChild(s); return s; }
+function smooth(pts){
+  let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i-1] || pts[i], p1 = pts[i], p2 = pts[i+1], p3 = pts[i+2] || p2;
+    d += ` C${(p1[0]+(p2[0]-p0[0])/6).toFixed(1)} ${(p1[1]+(p2[1]-p0[1])/6).toFixed(1)} ${(p2[0]-(p3[0]-p1[0])/6).toFixed(1)} ${(p2[1]-(p3[1]-p1[1])/6).toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+  }
+  return d;
+}
+function ringPts(r, pad = 6, turns = 1.1, start = -2.4){
+  const cx = r.x + r.w/2, cy = r.y + r.h/2, rx = r.w/2 + pad, ry = r.h/2 + pad, pts = [];
+  for (let i = 0; i <= 24; i++) { const t = i/24, a = start + t*Math.PI*2*turns, k = 1 + Math.sin(t*9)*.02 + t*.03; pts.push([cx + Math.cos(a)*rx*k, cy + Math.sin(a)*ry*k]); }
+  return pts;
+}
+const underPts = (r, dy = -3) => { const y = r.y + r.h + dy; return [[r.x-4, y+2], [r.x+r.w*.35, y-1], [r.x+r.w*.7, y+2], [r.x+r.w+6, y-2]]; };
+function stroke(svg, d, o = {}){
+  const p = document.createElementNS(NS, "path");
+  p.setAttribute("d", d); p.setAttribute("fill", "none"); p.setAttribute("stroke-linecap", "round"); p.setAttribute("stroke-linejoin", "round"); p.setAttribute("stroke", o.color || "var(--terra)"); p.setAttribute("stroke-width", o.w || 2.4);
+  if (o.cls) p.setAttribute("class", o.cls); if (o.opacity) p.setAttribute("opacity", o.opacity);
+  svg.appendChild(p);
+  const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+  const a = p.animate([{strokeDashoffset:len},{strokeDashoffset:0}], {duration:REDUCED?1:(o.dur||700), delay:REDUCED?0:(o.delay||0), easing:"cubic-bezier(.45,0,.2,1)", fill:"forwards"});
+  p.done = a.finished.catch(() => {});
+  return p;
+}
+const highlight = (svg, r, o = {}) => stroke(svg, smooth(underPts(r, o.dy ?? -3)), {color:"var(--apricot)", w:o.w || 12, dur:o.dur || 420, cls:o.cls || "pick", opacity:.9, delay:o.delay});
+function dropMarks(svg, cls){ svg.querySelectorAll("." + cls).forEach(p => { p.classList.add("fade"); setTimeout(() => p.remove(), 380); }); }
+function drawGlyphs(root, delay = 120){
+  root.querySelectorAll(".glyph path").forEach((p, i) => {
+    const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+    p.animate([{strokeDashoffset:len},{strokeDashoffset:0}], {duration:REDUCED?1:800, delay:REDUCED?0:delay + i*90, easing:"cubic-bezier(.45,0,.2,1)", fill:"forwards"});
+  });
+  root.querySelectorAll(".drawme").forEach((d, i) => { d.classList.add("sketch"); d.style.animationDelay = (delay + i*140) + "ms"; });
+}
+const glyph = id => `<svg class="glyph" viewBox="0 0 40 36" aria-hidden="true"><path d="${GLYPH[id]}"/></svg>`;
+const drawing = (id, cls = "") => `<div class="draw drawme ${cls}" style="--src:url(${DRAW[id]})" aria-hidden="true"></div>`;
+
+/* coach */
+function makeCoach(parent, cls){
+  const w = el("div", "coach " + (cls || "")); w.dataset.state = "idle"; w.innerHTML = mascot(S.coach); parent.appendChild(w);
+  let t; return { el:w,
+    set(s, ms){ clearTimeout(t); w.dataset.state = s; if (ms) t = setTimeout(() => w.dataset.state = "idle", ms); },
+    swap(k){ w.innerHTML = mascot(k); w.firstElementChild.classList.add("swap"); } };
+}
+/* outline-then-fill (drawn to life) */
+function outlineCoach(coachEl){
+  const host = coachEl.querySelector(".m"); if (!host || REDUCED) return;
+  host.style.opacity = "0";
+  const c = CHARS[S.coach], svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("viewBox", "0 0 200 200"); Object.assign(svg.style, {position:"absolute", inset:"0", width:"100%", height:"100%", overflow:"visible"});
+  coachEl.appendChild(svg);
+  const parts = [c.body, ...(c.back || []).filter(p => p.f === "b").map(p => p.d)];
+  Promise.all(parts.map((d, i) => stroke(svg, d, {color:"var(--ink)", w:2.6, dur:800, delay:i*110}).done)).then(() => {
+    host.style.transition = "opacity 420ms"; host.style.opacity = "1"; svg.style.transition = "opacity 420ms"; svg.style.opacity = "0"; setTimeout(() => svg.remove(), 450);
+  });
+}
+page.addEventListener("pointermove", e => {
+  if (REDUCED) return;
+  page.querySelectorAll(".m").forEach(svg => {
+    const r = svg.getBoundingClientRect(); if (!r.width) return;
+    const dx = e.clientX - (r.left + r.width/2), dy = e.clientY - (r.top + r.height*.45), d = Math.hypot(dx, dy) || 1, k = Math.min(1, d/220);
+    svg.style.setProperty("--lx", (dx/d*3.2*k).toFixed(2) + "px"); svg.style.setProperty("--ly", (dy/d*2.6*k).toFixed(2) + "px");
+  });
+});
+/* fly a copy of a node from one rect to another */
+function fly(node, from, to, o = {}){
+  const c = node.cloneNode(true);
+  Object.assign(c.style, {position:"absolute", left:from.x+"px", top:from.y+"px", width:from.w+"px", height:from.h+"px", margin:"0", zIndex:40, pointerEvents:"none", transformOrigin:"center"});
+  page.appendChild(c);
+  const dx = to.x - from.x + (to.w - from.w)/2, dy = to.y - from.y + (to.h - from.h)/2, s = to.w / from.w, arc = o.arc ?? -40, rot = o.rot || 0;
+  return c.animate([{transform:"translate(0,0) scale(1) rotate(0)"}, {transform:`translate(${dx*.5}px,${dy*.5+arc}px) scale(${(1+s)/2}) rotate(${rot/2}deg)`}, {transform:`translate(${dx}px,${dy}px) scale(${s}) rotate(${rot}deg)`}],
+    {duration:REDUCED?1:(o.dur||620), easing:"cubic-bezier(.45,0,.2,1)", fill:"forwards"}).finished.catch(()=>{}).then(() => { if (!o.keep) c.remove(); return c; });
+}
+function once(target, sel){ return new Promise(res => { const h = e => { const t = e.target.closest(sel); if (t && t.getAttribute("aria-disabled") !== "true") { target.removeEventListener("click", h); res(t); } }; target.addEventListener("click", h); }); }
+const planCardHTML = (extra = "") => `<div class="plancard">
+  <div class="row"><div><div class="num">100<small>g</small></div><div class="lab">protein a day</div></div>${drawing((GOALS.find(g => S.goals.includes(g[0])) || GOALS[0])[2])}</div>
+  <div class="wk">${DAYS.map((d,i)=>`<div><span>${d[0]}</span><i class="${S.days.includes(i)?"on":""}" style="animation-delay:${300+i*70}ms"></i></div>`).join("")}</div>
+  <div class="lab" style="display:flex;justify-content:space-between"><span>${S.days.length} × 20 min</span><span>${esc(coachName())} · coach</span></div>${extra}</div>`;
+
+/* ======================= collage (with an optional continuous line) ======================= */
+async function collage(root, e, opt = {}){
+  const W = page.clientWidth, H = page.clientHeight;
+  const today = new Date().toLocaleDateString("en-GB", {weekday:"long", day:"numeric", month:"long"});
+  root.innerHTML = `<div class="cl-page" id="pg"><div class="cl-date">${esc(today)}</div><div class="cl-title line writing" id="ttl">My week</div></div><div class="cl-tray" id="tray"></div>`;
+  const pg = root.querySelector("#pg"), tray = root.querySelector("#tray"), ttl = root.querySelector("#ttl");
+  ttl.style.setProperty("--d", "700ms"); ttl.style.setProperty("--st", "steps(10)");
+  const PW = W - 24;
+  const ink = inkLayer(pg, PW, 760);
+  const SL = { coach:[PW-118, 18, 104, 104], stage:[18, 76, 112, 112], g0:[144, 150, 100, 110], g1:[254, 162, 100, 110], cal:[16, 314, PW-32, 40] };
+  const slotEls = {};
+  for (const [k, [x, y, w, h]] of Object.entries(SL)) { if (k === "cal") continue; const s = el("div", "slot"); Object.assign(s.style, {left:x+"px", top:y+"px", width:w+"px", height:h+"px", opacity:"0"}); pg.appendChild(s); slotEls[k] = s; }
+  const cal = el("div", "cl-cal", DAYS.map(d => `<span>${d[0]}</span>`).join("")); Object.assign(cal.style, {left:SL.cal[0]+"px", top:SL.cal[1]+"px", width:SL.cal[2]+"px", opacity:".35"}); pg.appendChild(cal);
+  const nameTag = el("div", "hand"); Object.assign(nameTag.style, {left:(SL.coach[0]-4)+"px", top:(SL.coach[1]+SL.coach[3]+4)+"px", width:"112px", textAlign:"center", fontSize:"20px"}); pg.appendChild(nameTag);
+  const show = html => { tray.innerHTML = html; [...tray.children].forEach((c, i) => { c.classList.add("rise"); c.style.animationDelay = i*60 + "ms"; }); drawGlyphs(tray, 80); };
+  const box = k => { const [x, y, w, h] = SL[k]; return {x, y, w, h}; };
+
+  /* ---- the continuous line: one pen, extended to each new thing on the page ---- */
+  let pen = null;
+  const visited = {};
+  function extend(pts, dur = 900){ if (!opt.line) return null; const p = stroke(ink, smooth(pen ? [pen, ...pts] : pts), {color:"var(--terra)", w:2.4, dur}); pen = pts[pts.length - 1]; return p; }
+  /* a small knot: the thread loops once at a point, like string tied through tape */
+  function knot(pt, key, o = {}){
+    if (!opt.line || (key && visited[key])) return null; if (key) visited[key] = true;
+    const r = o.r ?? 6, loop = [];
+    for (let i = 0; i <= 12; i++) { const a = Math.PI/2 + i/12 * Math.PI * 2.1; loop.push([pt[0] + Math.cos(a)*r, pt[1] - r + Math.sin(a)*r]); }
+    const mid = pen ? [(pen[0] + pt[0])/2 + (o.sway ?? 0), Math.min(pen[1], pt[1]) - (o.lift ?? 28)] : null;
+    return extend(mid ? [mid, [pt[0], pt[1] + 2], ...loop] : loop, o.dur || 900);
+  }
+  function visit(r, key, o = {}){
+    if (!opt.line || (key && visited[key])) return null; if (key) visited[key] = true;
+    const cx = r.x + r.w/2, cy = r.y + r.h/2, a = pen ? Math.atan2(pen[1] - cy, pen[0] - cx) : Math.PI;
+    const loop = ringPts(r, o.pad ?? 9, o.turns ?? 1.06, a);
+    const start = loop[0], mid = pen ? [(pen[0] + start[0])/2 + (o.sway ?? 0), Math.min(pen[1], start[1]) - (o.lift ?? 26)] : null;
+    return extend(mid ? [mid, ...loop] : loop, o.dur || 1000);
+  }
+
+  /* ---- stickers ---- */
+  const stuck = {};
+  let coachSticker = null;
+  async function stick(key, from, html, rot){
+    const [x, y, w, h] = SL[key];
+    if (stuck[key]) { const old = stuck[key]; old.classList.add("peel"); setTimeout(() => old.remove(), 420); }
+    const s = el("div", "sticker", html); Object.assign(s.style, {left:x+"px", top:y+"px", width:w+"px", height:h+"px", transform:`rotate(${rot}deg)`, visibility:"hidden"});
+    s.style.setProperty("--tape", "0"); pg.appendChild(s); stuck[key] = s;
+    if (slotEls[key]) slotEls[key].style.opacity = "0";
+    const fr = prect(from), to = prect(s);
+    await fly(s, {x:fr.x, y:fr.y, w:fr.w, h:fr.w * h / w}, to, {arc:-60, rot, dur:560}); alive(e);
+    s.style.visibility = "visible"; s.classList.add("slap"); requestAnimationFrame(() => s.style.setProperty("--tape", "1"));
+    knot([x + w/2 + 18, y - 2], key);
+    return s;
+  }
+
+  /* ---- welcome: a preview of the page you're about to make ---- */
+  const preview = [];
+  const pv = (html, x, y, w, h, rot, depth, cls = "") => {
+    const s = el("div", "sticker preview " + cls, html); Object.assign(s.style, {left:x+"px", top:y+"px", width:w+"px", height:h+"px", transform:`rotate(${rot}deg)`});
+    s.style.setProperty("--tape", "0"); s._depth = depth; s._rot = rot; pg.appendChild(s); preview.push(s); return s;
+  };
+  const pDraw = pv(`<div class="draw drawme" style="--src:url(${DRAW.squat})"></div><b>Strength</b>`, 22, 84, 112, 128, -7, 8);
+  const pCoach = pv(`<div class="coach-in" data-state="hello" style="width:100%;height:100%">${mascot(S.coach)}</div>`, PW - 168, 74, 144, 144, 5, 14);
+  const pMoon = pv(`${glyph("peri")}<b>Perimenopause</b>`, 34, 232, 118, 82, 4, 6);
+  const pNum = pv(`<div class="pv-num">100<small>g</small></div><b>protein a day</b>`, PW - 156, 240, 128, 84, -3, 10, "pv-label");
+  const note = el("div", "hand pv-note", `this is what we'll make`); Object.assign(note.style, {left:"0", right:"0", top:"344px", textAlign:"center"}); pg.appendChild(note);
+  const arrow = document.createElementNS(NS, "svg"); arrow.setAttribute("class", "pv-arrow"); arrow.setAttribute("viewBox", "0 0 40 40"); Object.assign(arrow.style, {left:(PW/2 - 20)+"px", top:"300px", width:"40px", height:"40px", position:"absolute", overflow:"visible"}); pg.appendChild(arrow);
+  cal.style.opacity = "0";
+  preview.forEach((s, i) => {
+    s.style.opacity = "0";
+    setTimeout(() => { if (e !== epoch) return; s.style.opacity = "1"; s.classList.add("slap"); s.style.setProperty("--tape", "1"); drawGlyphs(s, 120); }, 700 + i * 260);
+  });
+  note.style.opacity = "0"; setTimeout(() => { if (e !== epoch) return; note.style.cssText += ";opacity:1;transition:opacity 300ms"; stroke(arrow, "M22 38 C18 28 24 16 20 6 M20 6 l-5 7 M20 6 l5 7", {color:"var(--terra)", w:2.2, dur:520}); }, 1900);
+  setTimeout(() => { const ci = pCoach.querySelector(".coach-in"); if (ci) ci.dataset.state = "idle"; }, 2600);
+  /* stickers lean towards the pointer, and wiggle when tapped */
+  const lean = ev => { const r = pg.getBoundingClientRect(), nx = (ev.clientX - r.left) / r.width - .5, ny = (ev.clientY - r.top) / r.height - .5;
+    preview.forEach(s => { s.style.transition = "transform 220ms var(--ease)"; s.style.transform = `translate(${nx * s._depth}px, ${ny * s._depth}px) rotate(${s._rot + nx * 4}deg)`; }); };
+  pg.addEventListener("pointermove", lean);
+  preview.forEach(s => s.addEventListener("click", () => { s.animate([{rotate:"0deg"},{rotate:"-6deg"},{rotate:"5deg"},{rotate:"0deg"}], {duration:420, easing:"ease-out"}); const ci = s.querySelector(".coach-in"); if (ci) { ci.dataset.state = "proud"; setTimeout(() => ci.dataset.state = "idle", 1700); } }));
+  show(`<div class="meta">Second Strong</div><h1 class="title">Let's make your <em>first page.</em></h1><p class="hand" style="margin:-4px 0 0">Two minutes. One page. All yours.</p><div class="spacer"></div><button class="btn" id="go" type="button">Begin</button>`);
+  setTimeout(() => { if (e !== epoch) return; highlight(ink, relTo(ttl, pg), {dy:-4, w:10, dur:500, cls:"w"}); if (opt.line) extend([[-8, 60], [10, 58], ...underPts(relTo(ttl, pg), 2), [relTo(ttl, pg).x + relTo(ttl, pg).w + 24, 52], [PW - 150, 60]], 1300); }, 750);
+  await once(tray, "#go"); alive(e);
+  pg.removeEventListener("pointermove", lean);
+  /* the preview peels away: your page starts blank */
+  preview.forEach((s, i) => setTimeout(() => { s.classList.add("peel"); setTimeout(() => s.remove(), 420); }, i * 90));
+  note.classList.add("fade"); arrow.classList.add("fade"); dropMarks(ink, "w");
+  await wait(420);
+  cal.style.transition = "opacity 400ms"; cal.style.opacity = "1";
+  Object.values(slotEls).forEach((sl, i) => { sl.style.transition = `opacity 300ms ${i*80}ms`; sl.style.opacity = "1"; });
+
+  /* ---- coach ---- */
+  show(`<div class="meta">Your coach</div><h2 class="title">Pick <em>one.</em></h2><div class="thumbs" id="th">${ORDER.map(k=>`<button class="thumb" type="button" data-c="${k}" aria-checked="false" aria-label="${CHARS[k].name}"><div data-state="idle">${mascot(k)}</div></button>`).join("")}</div>
+    <div class="field"><label for="nm">Name</label><input id="nm" maxlength="14" autocomplete="off" value=""></div><div class="spacer"></div><button class="btn" id="keep" type="button" aria-disabled="true">Keep</button>`);
+  const nm = tray.querySelector("#nm"), keep = tray.querySelector("#keep");
+  tray.querySelector("#th").addEventListener("click", async ev => {
+    const b = ev.target.closest(".thumb"); if (!b) return;
+    S.coach = b.dataset.c; if (!S.named) S.name = CHARS[S.coach].name;
+    tray.querySelectorAll(".thumb").forEach(t => t.setAttribute("aria-checked", t === b));
+    nm.value = S.name; keep.textContent = "Keep " + coachName(); keep.setAttribute("aria-disabled", "false"); nameTag.textContent = coachName();
+    coachSticker = await stick("coach", b, `<div class="coach-in" data-state="hello" style="width:100%;height:100%">${mascot(S.coach)}</div>`, 4);
+    setTimeout(() => { const ci = coachSticker?.querySelector(".coach-in"); if (ci) ci.dataset.state = "idle"; }, 1600);
+  });
+  nm.addEventListener("input", () => { S.name = nm.value; S.named = true; keep.textContent = "Keep " + coachName(); nameTag.textContent = coachName(); });
+  await once(tray, "#keep"); alive(e);
+  const cstate = (s, ms) => { const ci = coachSticker?.querySelector(".coach-in"); if (!ci) return; ci.dataset.state = s; if (ms) setTimeout(() => ci.dataset.state = "idle", ms); };
+
+  /* ---- stage ---- */
+  show(`<h2 class="title">Where are <em>you?</em></h2><div class="opts">${STAGES.map(([id,l])=>`<button class="chipx" type="button" data-v="${id}">${glyph(id)}${l}</button>`).join("")}</div><div class="spacer"></div><button class="btn" id="next" type="button" aria-disabled="true">Continue</button>`);
+  tray.querySelector(".opts").addEventListener("click", async ev => {
+    const b = ev.target.closest(".chipx"); if (!b) return; S.stage = b.dataset.v;
+    tray.querySelectorAll(".chipx").forEach(t => t.setAttribute("aria-checked", t === b)); tray.querySelector("#next").setAttribute("aria-disabled", "false");
+    cstate(S.stage === "surg" ? "comfort" : "listening", 1300);
+    await stick("stage", b.querySelector(".glyph"), `${glyph(S.stage)}<b>${STAGES.find(x => x[0] === S.stage)[1]}</b>`, -5);
+  });
+  await once(tray, "#next"); alive(e);
+
+  /* ---- goals ---- */
+  show(`<h2 class="title">What <em>matters?</em></h2><div class="opts">${GOALS.map(([id,l,d])=>`<button class="chipx" type="button" data-v="${id}" aria-checked="false">${drawing(d)}${l}</button>`).join("")}</div><p class="hand" style="margin:0;min-height:22px" id="hint"></p><button class="btn" id="next" type="button" aria-disabled="true">Continue</button>`);
+  tray.querySelector(".opts").addEventListener("click", async ev => {
+    const b = ev.target.closest(".chipx"); if (!b) return; const v = b.dataset.v, on = !S.goals.includes(v);
+    if (on && S.goals.length >= 2) { tray.querySelector("#hint").textContent = "two is plenty"; return; }
+    tray.querySelector("#hint").textContent = "";
+    S.goals = on ? S.goals.concat(v) : S.goals.filter(x => x !== v); b.setAttribute("aria-checked", on);
+    tray.querySelector("#next").setAttribute("aria-disabled", String(!S.goals.length));
+    if (on) { cstate("proud", 1300); const g = GOALS.find(x => x[0] === v); await stick("g" + (S.goals.length - 1), b.querySelector(".draw"), `<div class="draw" style="--src:url(${DRAW[g[2]]})"></div><b>${g[1]}</b>`, S.goals.length === 1 ? -4 : 6); }
+    else { ["g0","g1"].forEach(k => { if (stuck[k]) { stuck[k].classList.add("peel"); const o = stuck[k]; setTimeout(() => o.remove(), 420); delete stuck[k]; slotEls[k].style.opacity = "1"; } });
+      S.goals.forEach((gv, i) => { const g = GOALS.find(x => x[0] === gv); const s = el("div", "sticker slap", `<div class="draw" style="--src:url(${DRAW[g[2]]})"></div><b>${g[1]}</b>`); const [x,y,w,h] = SL["g"+i]; Object.assign(s.style, {left:x+"px", top:y+"px", width:w+"px", height:h+"px", transform:`rotate(${i ? 6 : -4}deg)`}); pg.appendChild(s); stuck["g"+i] = s; slotEls["g"+i].style.opacity = "0"; }); }
+  });
+  await once(tray, "#next"); alive(e);
+
+  /* ---- days: circled on the page (by the line itself, in the line version) ---- */
+  show(`<h2 class="title">Your <em>days.</em></h2><div class="dayrow">${DAYS.map((d,i)=>`<button class="dayb" type="button" data-d="${i}" aria-checked="false" aria-label="${d}">${d[0]}</button>`).join("")}</div><div class="spacer"></div><button class="btn" id="next" type="button" aria-disabled="true">Finish my page</button>`);
+  const circles = {};
+  tray.querySelector(".dayrow").addEventListener("click", ev => {
+    const b = ev.target.closest(".dayb"); if (!b) return; const d = +b.dataset.d, on = !S.days.includes(d); if (on && S.days.length >= 4) return;
+    S.days = (on ? S.days.concat(d) : S.days.filter(x => x !== d)).sort(); b.setAttribute("aria-checked", on);
+    const letter = cal.children[d];
+    if (opt.line) { letter.classList.toggle("picked", on); }
+    else if (on) circles[d] = stroke(ink, smooth(ringPts(relTo(letter, pg), 7, 1.1, -1.8)), {dur:460});
+    else circles[d]?.classList.add("fade");
+    if (on) cstate("lifting", 1100);
+    tray.querySelector("#next").setAttribute("aria-disabled", String(S.days.length < 2));
+  });
+  await once(tray, "#next"); alive(e);
+  if (opt.line) {
+    const cr = relTo(cal, pg);
+    extend([[PW - 9, pen ? pen[1] + 40 : 200], [PW - 9, cr.y + cr.h + 14]], 700); await wait(560);
+    for (const d of S.days.slice().reverse()) { const r = relTo(cal.children[d], pg); knot([r.x + r.w/2, r.y + r.h + 10], "d" + d, {lift:-4, r:5, dur:560}); await wait(460); }
+  }
+
+  /* ---- reveal: the tray drops away and the page becomes the plan ---- */
+  tray.classList.add("gone");
+  await wait(250);
+  pg.style.height = (H - 60) + "px";
+  Object.values(slotEls).forEach(s => s.style.opacity = "0");
+  const big = el("div", "", `<div style="font:800 46px/.9 var(--f-display);letter-spacing:-.05em">100<small style="font-size:20px">g</small></div><div class="meta" style="margin-top:4px">protein a day</div>`);
+  Object.assign(big.style, {left:"142px", top:"66px", maxWidth:"92px"}); pg.appendChild(big);
+  big.animate([{transform:"scale(1.3) rotate(-4deg)", opacity:0}, {transform:"none", opacity:1}], {duration:REDUCED?1:480, delay:REDUCED?0:400, easing:"cubic-bezier(.3,1.5,.5,1)", fill:"backwards"});
+  await wait(700);
+  highlight(ink, relTo(big.firstElementChild, pg), {dy:-12, w:16, dur:600});
+  if (opt.line) { const r = relTo(big.firstElementChild, pg), cr = relTo(cal, pg); extend([[9, cr.y + cr.h + 6], [9, cr.y - 30], [9, r.y + r.h + 40], [r.x - 12, r.y + r.h + 10], ...underPts(r, 6), [r.x + r.w + 16, r.y + r.h - 6]], 1300); }
+  await wait(opt.line ? 900 : 200);
+  const nt = el("div", "hand line writing", `${DAYS[S.days[0]]} first. Easy on rough mornings. — ${esc(coachName())}`);
+  nt.style.setProperty("--d", "1200ms"); nt.style.setProperty("--st", "steps(24)");
+  Object.assign(nt.style, {left:"18px", top:"376px", right:"18px"}); pg.appendChild(nt);
+  if (opt.line) { const r = relTo(nt, pg), u = underPts({x:r.x, y:r.y, w:Math.min(r.w, PW - 40), h:r.h}, 4).reverse(); extend([[PW - 9, (pen ? pen[1] : 120) + 30], [PW - 9, r.y + r.h - 2], ...u, [r.x - 8, r.y + r.h + 22], [r.x + 30, r.y + r.h + 30]], 1600); }
+  cstate("proud", 2000);
+  const go = el("button", "btn", "Start my week"); go.type = "button"; Object.assign(go.style, {position:"absolute", left:"22px", right:"22px", bottom:"22px", width:"auto"}); root.appendChild(go); go.classList.add("rise");
+  await new Promise(r => go.addEventListener("click", r, {once:true})); alive(e);
+  cstate("hello", 2000);
+}
+
+/* ---------- switcher ---------- */
+const EXPS = [
+  {id:"collage", name:"Collage", desc:"Build your plan page as you answer. Picks slap on as taped stickers, days get circled, and the page becomes your plan.", run:(r, e) => collage(r, e, {line:false})},
+  {id:"collage-line", name:"Collage + line", desc:"The same page, with one continuous ink line that travels to every sticker as it lands, visits your days and ends under your coach's note.", run:(r, e) => collage(r, e, {line:true})}
+];
+let X = "collage";
+try { X = localStorage.getItem("ss-collage") || "collage"; } catch(err) {}
+if (!["collage", "collage-line"].includes(X)) X = "collage";
+function start(){
+  epoch++; const e = epoch;
+  S = fresh();
+  page.innerHTML = ""; const root = el("div", "root"); page.appendChild(root);
+  try { localStorage.setItem("ss-collage", X); } catch(err) {}
+  EXPS.find(x => x.id === X).run(root, e).catch(err => { if (!(err instanceof Stop)) console.error(err); });
+}
+const vlist = document.getElementById("vlist");
+vlist.innerHTML = EXPS.map((x, i) => `<li><button class="vbtn" type="button" data-x="${x.id}" aria-pressed="${x.id===X}"><span class="ltr">${String.fromCharCode(65+i)}</span><b>${x.name}</b><span>${x.desc}</span></button></li>`).join("");
+vlist.addEventListener("click", ev => { const b = ev.target.closest(".vbtn"); if (!b) return; X = b.dataset.x; vlist.querySelectorAll(".vbtn").forEach(v => v.setAttribute("aria-pressed", v === b)); start(); });
+document.getElementById("replay").addEventListener("click", start);
+window.__ob = { get S(){ return S; }, setX(x){ X = x; start(); } };
+start();
+})();
+</script>

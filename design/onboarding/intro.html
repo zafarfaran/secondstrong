@@ -1,0 +1,719 @@
+<meta charset="utf-8">
+<title>Second Strong Intro Animations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Gochi+Hand&family=IBM+Plex+Mono:wght@500&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap">
+<style>
+/* Layout: a desk of phones. Row one, five cast-peek intros (first open or returning); row two, moments between screens. */
+:root{
+  --bg:#FBF8F4; --card:#F6F0E8; --almond:#EDE3D6; --ink:#3B322C; --ink2:#5D534B;
+  --taupe:#A8968A; --terra:#A85A3C; --apricot:#F0C9A8; --edge:rgba(59,50,44,.10); --shadow:rgba(59,50,44,.22);
+  --desk:#EFE8DE; --deskInk:#3B322C; --deskInk2:#6E6158;
+  --f-display:"Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --f-serif:"Newsreader", Georgia, serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --f-hand:"Gochi Hand", "Comic Sans MS", cursive;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --spring:linear(0, .009, .035 2.1%, .141, .281 6.7%, .723 12.9%, .938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.129 32.8%, 1.051 39.6%, 1.017 43.1%, .991, .977 51%, .974 53.8%, .975 57.1%, .997 69.8%, 1.003 76.9%, 1);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --desk:#1C1714; --deskInk:#F1E9DF; --deskInk2:#B8AA9D; color-scheme:dark }}
+:root[data-theme="dark"]{ --desk:#1C1714; --deskInk:#F1E9DF; --deskInk2:#B8AA9D; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--desk); color:var(--deskInk); font:400 16px/1.45 var(--f-display); margin:0}
+button{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--terra); outline-offset:3px}
+.wrap{max-width:1180px; margin:0 auto; padding-inline:clamp(16px,3vw,40px); padding-block:36px 56px}
+.dmeta{font:500 12px/1.2 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--deskInk2)}
+h1{font:800 clamp(30px,4.2vw,46px)/1.02 var(--f-display); letter-spacing:-.035em; margin:.3em 0 .3em; text-wrap:balance}
+h1 em, h2 em{font-family:var(--f-serif); font-style:italic; font-weight:400}
+h2{font:800 clamp(22px,2.6vw,30px)/1.05 var(--f-display); letter-spacing:-.03em; margin:0}
+.lede{margin:0; color:var(--deskInk2); max-width:64ch}
+.sec{margin-top:40px; border-top:1px solid color-mix(in srgb,var(--deskInk) 12%,transparent); padding-top:26px}
+.sechead{display:flex; flex-wrap:wrap; gap:12px 20px; align-items:end; justify-content:space-between}
+.sechead p{margin:6px 0 0; color:var(--deskInk2); max-width:58ch; font-size:15px}
+.seg{display:inline-flex; border:1.5px solid color-mix(in srgb,var(--deskInk) 18%,transparent); border-radius:99px; padding:3px}
+.seg button{appearance:none; border:0; background:transparent; border-radius:99px; padding:7px 14px; font:600 13.5px/1 var(--f-display); cursor:pointer; color:var(--deskInk2)}
+.seg button[aria-pressed="true"]{background:var(--deskInk); color:var(--desk)}
+.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,196px),1fr)); gap:32px 20px; margin-top:24px}
+#trans{grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.ld{display:grid; gap:12px; justify-items:center}
+.frame{width:min(100%,260px); aspect-ratio:260/540; border-radius:38px; background:#2A231F; padding:8px; box-shadow:0 22px 44px -22px rgba(40,30,20,.45)}
+.scr{position:relative; width:100%; height:100%; border-radius:31px; background:var(--bg); color:var(--ink); overflow:hidden; isolation:isolate; touch-action:none}
+.scr::before{content:""; position:absolute; inset:0; background:repeating-linear-gradient(transparent 0 25px, rgba(59,50,44,.04) 25px 26px); pointer-events:none}
+.cap{width:min(100%,260px); display:grid; gap:4px}
+.cap .top{display:flex; justify-content:space-between; align-items:baseline; gap:10px}
+.cap b{font:800 16px/1.15 var(--f-display)}
+.cap span{font-size:13.5px; color:var(--deskInk2); line-height:1.4}
+.cap em{font-style:normal; font:500 10px/1.3 var(--f-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--terra)}
+.replay{appearance:none; border:1.5px solid color-mix(in srgb,var(--deskInk) 18%,transparent); background:transparent; border-radius:99px; padding:5px 10px; font:500 10px/1 var(--f-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--deskInk2); cursor:pointer; white-space:nowrap}
+.replay:hover{color:var(--deskInk); border-color:var(--deskInk)}
+
+/* screen pieces */
+.abs{position:absolute}
+.ink{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; z-index:4}
+.ink path{fill:none; stroke-linecap:round; stroke-linejoin:round}
+.wm{font:800 27px/1 var(--f-display); letter-spacing:-.04em; white-space:nowrap}
+.meta{font:500 9.5px/1.2 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase}
+.hand{font:400 19px/1.15 var(--f-hand); color:var(--terra)}
+.big-hand{font:400 38px/1 var(--f-hand); color:var(--ink)}
+.coach{position:absolute; transform-origin:50% 100%}
+.coach .m{width:100%; height:100%; display:block}
+.card{position:absolute; left:16px; right:16px; background:var(--card); border:1px solid var(--edge); border-radius:16px; padding:11px 13px; font:800 13.5px/1.15 var(--f-display)}
+.card small{display:block; font:500 9.5px/1.3 var(--f-mono); letter-spacing:.06em; color:var(--ink2); text-transform:uppercase; margin-bottom:5px}
+.tabs{position:absolute; left:0; right:0; bottom:0; height:62px; border-top:1px solid var(--edge); background:var(--bg); display:grid; grid-template-columns:repeat(4,1fr); padding:8px 4px 18px; z-index:6}
+.tabs span{display:grid; justify-items:center; gap:3px; font:500 9px/1 var(--f-mono); letter-spacing:.04em; color:var(--taupe); position:relative}
+.tabs svg{width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+.tabs .on{color:var(--ink)}
+.tabs i{position:absolute; bottom:-6px; height:2.5px; width:14px; border-radius:2px; background:var(--terra); left:50%; margin-left:-7px}
+.fadein{animation:fadein 420ms var(--ease) both}
+@keyframes fadein{from{opacity:0; transform:translateY(6px)}}
+.writein{animation:write var(--d,700ms) var(--st,steps(12)) both}
+@keyframes write{from{clip-path:inset(0 100% 0 0)} to{clip-path:inset(0 -6% 0 0)}}
+.sway{animation:sway 2.6s ease-in-out infinite; transform-origin:50% 0}
+@keyframes sway{0%,100%{rotate:-3deg} 50%{rotate:3deg}}
+
+/* ===== soft mascot rig v2 ===== */
+.m{overflow:visible}
+.m .rig,.m .pose{transform-box:view-box; transform-origin:100px 178px}
+.m .pose{transition:transform .5s cubic-bezier(.3,1.4,.5,1)}
+.m .look{transition:transform .35s ease}
+.m .blink{transform-box:fill-box; transform-origin:center}
+.m .brow{transform-box:fill-box; transform-origin:center; transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
+.m .sway{transform-box:view-box; transform-origin:102px 100px}
+.m .bob{animation:bob 3.2s ease-in-out infinite}
+.m .shadow{transform-box:fill-box; transform-origin:center}
+.m .e-shut,.m .e-happy,.m .mo-open,.m .db{opacity:0}
+.m .cheek{transition:opacity .3s}
+.m .fx>g{opacity:0}
+.m .draw{stroke-dasharray:70; stroke-dashoffset:70}
+.m .arm{transform:rotate(-40deg) scale(0); opacity:0; transition:transform .45s cubic-bezier(.3,1.5,.5,1), opacity .2s}
+
+.m .rig{animation:breathe 3.6s ease-in-out infinite}
+.m .blink{animation:blink 4.6s infinite}
+.m .sway{animation:sway 4.2s ease-in-out infinite}
+
+[data-state="listening"] .m .pose{transform:rotate(-6deg)}
+[data-state="listening"] .m .look{transform:translate(-2px,1px) scale(1.1)}
+[data-state="listening"] .m .brow{transform:translateY(-2.5px)}
+[data-state="listening"] .m .fx-listen{opacity:1}
+[data-state="listening"] .m .fx-listen .draw{animation:drawin 1.6s ease-out infinite}
+[data-state="listening"] .m .fx-listen .draw:nth-child(2){animation-delay:.18s}
+
+[data-state="thinking"] .m .look{transform:translate(4px,-5px)}
+[data-state="thinking"] .m .pose{transform:rotate(3deg)}
+[data-state="thinking"] .m .brow-l{transform:rotate(5deg)}
+[data-state="thinking"] .m .brow-r{transform:translateY(-3.5px) rotate(-8deg)}
+[data-state="thinking"] .m .fx-think{opacity:1}
+[data-state="thinking"] .m .fx-think circle{transform-box:fill-box; transform-origin:center; animation:dot 1.5s ease-in-out infinite}
+[data-state="thinking"] .m .fx-think circle:nth-child(2){animation-delay:.2s}
+[data-state="thinking"] .m .fx-think circle:nth-child(3){animation-delay:.4s}
+
+[data-state="proud"] .m .rig{animation:hop 1.7s cubic-bezier(.3,.7,.4,1) infinite}
+[data-state="proud"] .m .shadow{animation:shadowhop 1.7s cubic-bezier(.3,.7,.4,1) infinite}
+[data-state="proud"] .m .brow{transform:translateY(-3px)}
+[data-state="proud"] .m .e-open,[data-state="proud"] .m .mo-shut{opacity:0}
+[data-state="proud"] .m .e-happy,[data-state="proud"] .m .mo-open{opacity:1}
+[data-state="proud"] .m .fx-proud{opacity:1}
+[data-state="proud"] .m .fx-proud .draw{animation:drawin 1.7s ease-out infinite}
+[data-state="proud"] .m .fx-proud .draw:nth-child(n+2){animation-delay:.25s}
+
+[data-state="resting"] .m .rig{animation-duration:5.6s}
+[data-state="resting"] .m .pose{transform:scale(1.04,.94)}
+[data-state="resting"] .m .brow{transform:translateY(2px)}
+[data-state="resting"] .m .e-open{opacity:0}
+[data-state="resting"] .m .e-shut{opacity:1}
+[data-state="resting"] .m .fx-rest{opacity:1}
+[data-state="resting"] .m .fx-rest text{animation:zed 3.6s ease-in-out infinite; opacity:0}
+[data-state="resting"] .m .fx-rest text:nth-child(2){animation-delay:1.2s}
+[data-state="resting"] .m .fx-rest text:nth-child(3){animation-delay:2.4s}
+
+[data-state="hello"] .m .pose{transform:rotate(-4deg)}
+[data-state="hello"] .m .brow{transform:translateY(-3px)}
+[data-state="hello"] .m .arm-r{opacity:1; transform:rotate(-140deg) scale(1); animation:wave .9s ease-in-out .3s infinite}
+[data-state="hello"] .m .e-open,[data-state="hello"] .m .mo-shut{opacity:0}
+[data-state="hello"] .m .e-happy,[data-state="hello"] .m .mo-open{opacity:1}
+[data-state="hello"] .m .fx-hello{opacity:1}
+[data-state="hello"] .m .fx-hello text{animation:pophi 2.7s ease-out infinite}
+
+[data-state="lifting"] .m .arm{opacity:1; transform:rotate(-80deg) scale(1); animation:press 1.8s cubic-bezier(.5,0,.3,1) .3s infinite}
+[data-state="lifting"] .m .db{opacity:1}
+[data-state="lifting"] .m .rig{animation:squat 1.8s cubic-bezier(.5,0,.3,1) .3s infinite}
+[data-state="lifting"] .m .look{transform:translate(0,-1px)}
+[data-state="lifting"] .m .brow-l{transform:translateY(1.5px) rotate(14deg)}
+[data-state="lifting"] .m .brow-r{transform:translateY(1.5px) rotate(-14deg)}
+[data-state="lifting"] .m .fx-lift{opacity:1}
+[data-state="lifting"] .m .fx-lift .draw{animation:drawin 1.8s ease-out .3s infinite}
+
+[data-state="stretching"] .m .arm{opacity:1; transform:rotate(-165deg) scale(1); animation:reach 3s ease-in-out .3s infinite}
+[data-state="stretching"] .m .rig{animation:tall 3s ease-in-out .3s infinite}
+[data-state="stretching"] .m .brow{transform:translateY(-2px)}
+[data-state="stretching"] .m .e-open{opacity:0}
+[data-state="stretching"] .m .e-shut{opacity:1}
+[data-state="stretching"] .m .mo-shut{opacity:0}
+[data-state="stretching"] .m .mo-open{opacity:1}
+
+[data-state="comfort"] .m .pose{transform:rotate(7deg)}
+[data-state="comfort"] .m .rig{animation-duration:4.8s}
+[data-state="comfort"] .m .brow-l{transform:translateY(-1px) rotate(-16deg)}
+[data-state="comfort"] .m .brow-r{transform:translateY(-1px) rotate(16deg)}
+[data-state="comfort"] .m .e-open{opacity:0}
+[data-state="comfort"] .m .e-shut{opacity:1}
+[data-state="comfort"] .m .cheek{opacity:.9}
+[data-state="comfort"] .m .fx-comfort{opacity:1}
+[data-state="comfort"] .m .fx-comfort path{transform-box:fill-box; transform-origin:center; animation:beat 2.4s ease-in-out infinite}
+
+@keyframes breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(.978,1.04)}}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.08)}}
+@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes hop{0%,100%{transform:translateY(0) scale(1,1)}14%{transform:translateY(0) scale(1.12,.86)}38%{transform:translateY(-22px) scale(.92,1.1)}58%{transform:translateY(0) scale(1.14,.86)}72%{transform:translateY(0) scale(.97,1.04)}84%{transform:scale(1,1)}}
+@keyframes shadowhop{0%,100%,58%,84%{transform:scale(1);opacity:1}38%{transform:scale(.62);opacity:.45}}
+@keyframes squat{0%,100%{transform:translateY(0) scale(1.06,.93)}50%{transform:translateY(-4px) scale(.97,1.05)}}
+@keyframes tall{0%,100%{transform:scale(1,1)}50%{transform:scale(.94,1.1)}}
+@keyframes wave{0%,100%{transform:rotate(-140deg) scale(1)}50%{transform:rotate(-105deg) scale(1)}}
+@keyframes press{0%,100%{transform:rotate(-80deg) scale(1)}50%{transform:rotate(-172deg) scale(1)}}
+@keyframes reach{0%,100%{transform:rotate(-160deg) scale(1)}50%{transform:rotate(-178deg) scale(1.06)}}
+@keyframes drawin{0%{stroke-dashoffset:70}45%,80%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:0;opacity:0}}
+@keyframes dot{0%,100%{transform:scale(.4);opacity:.3}40%{transform:scale(1);opacity:1}}
+@keyframes zed{0%{opacity:0;transform:translate(0,6px)}25%,60%{opacity:1}100%{opacity:0;transform:translate(6px,-10px)}}
+@keyframes pophi{0%{opacity:0;transform:translate(0,6px) rotate(-8deg)}15%,70%{opacity:1;transform:translate(0,0) rotate(-8deg)}100%{opacity:0;transform:translate(0,-4px) rotate(-8deg)}}
+@keyframes beat{0%,100%{transform:scale(.85)}15%{transform:scale(1.08)}30%{transform:scale(.95)}45%{transform:scale(1.04)}}
+
+
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{animation-duration:1ms!important; animation-delay:0ms!important; transition-duration:1ms!important; animation-iteration-count:1!important}
+}
+</style>
+
+<div class="wrap">
+  <div class="dmeta">Second Strong · intro and in-app motion</div>
+  <h1>The cast, <em>saying hello.</em></h1>
+  <p class="lede">The still launch screen hands over to a short intro every time the app opens. The first time, the whole cast greets you and leads into onboarding. After that, your own coach comes forward. Underneath: the moments between screens.</p>
+
+  <section class="sec">
+    <div class="sechead"><div><h2>Five <em>intros</em></h2><p>About two seconds each, and skippable with a tap. Switch to see how each one ends on a first open or a returning one.</p></div>
+      <div class="seg" role="group" aria-label="Which open"><button type="button" data-mode="first" aria-pressed="false">First open</button><button type="button" data-mode="back" aria-pressed="true">Returning</button></div></div>
+    <div class="grid" id="intros"></div>
+  </section>
+
+  <section class="sec">
+    <div class="sechead"><div><h2>Between <em>screens</em></h2><p>The same characters carry you from one screen to the next. Pull to refresh is live: drag down on that phone.</p></div></div>
+    <div class="grid" id="trans"></div>
+  </section>
+</div>
+
+<script>
+(function(){
+const EYE = "#2A211C", NOSE = "#3A2C25";
+const circ = (cx,cy,r) => `M${cx-r} ${cy} a${r} ${r} 0 1 1 ${r*2} 0 a${r} ${r} 0 1 1 ${-r*2} 0 Z`;
+/* tones: [light, base, shade, deep] */
+const CHARS = {
+  pebble:{ name:"Pebble", trait:"Steady. Plain words, small steps.",
+    say:"Rough night. We keep today small: one walk, one proper lunch.",
+    tones:{ b:["#ECE3DA","#CDBFB2","#A6978A","#7C6E62"], x:["#D3E0A8","#A9BD7C","#7F975A","#5E7444"] },
+    box:[33,73,169,176], arms:[[46,142],[160,142]],
+    back:[], body:"M36 150 C28 110 62 72 105 73 C150 74 174 108 167 147 C162 172 122 176 100 176 C70 176 42 171 36 150 Z",
+    front:[{d:"M68 84 C70 73 86 68 97 75 C105 70 118 74 117 83 C106 89 80 91 68 84 Z",f:"x"}],
+    dots:[[130,102,2.2],[142,121,1.6],[60,130,1.9],[147,141,2.3],[118,161,1.6],[72,154,1.5],[90,100,1.2]],
+    lines:[{d:"M76 80 C80 77 86 76 90 78",c:"x0",w:1.6}],
+    eyes:[[84,124],[122,124]], mouth:[103,141], cheeks:[[68,140],[138,140]] },
+  fern:{ name:"Fern", trait:"Gentle. Notices the small wins.",
+    say:"You slept badly and still got up. That counts. Ten minutes outside?",
+    tones:{ b:["#E2EAC8","#BCCA97","#90A46C","#5E7344"], a:["#CFE0A2","#9EBA72","#6F8D4A","#4F6A34"] },
+    box:[50,100,150,176], arms:[[60,146],[140,146]],
+    back:[], body:"M58 166 C46 134 62 100 100 100 C138 100 154 134 142 166 C135 179 65 179 58 166 Z",
+    sway:{ stem:"M101 103 C100 88 101 76 104 66",
+      leaves:["M101 88 C88 72 66 70 57 80 C70 94 90 96 101 88 Z","M104 68 C112 50 136 43 149 51 C141 67 118 74 104 68 Z"],
+      veins:["M99 88 C86 82 73 80 63 80","M106 67 C118 60 132 55 143 52"] },
+    front:[], lines:[],
+    eyes:[[86,134],[114,134]], mouth:[100,149], cheeks:[[72,148],[128,148]] },
+  wren:{ name:"Wren", trait:"Bright. Keeps things moving.",
+    say:"Three sessions this week and your squat is up on last month. Thursday again?",
+    tones:{ b:["#FCE4CF","#F2BE96","#D6956A","#A86A45"], a:["#F0BA90","#E0A076","#C27E55","#9A5E3A"],
+            x:["#FFF8F0","#FCE8D4","#F0CCAA","#D9A982"], k:["#F6B37A","#E0874F","#B9622F","#8E4720"] },
+    box:[48,80,156,174], arms:[[58,132],[146,132]],
+    back:[{d:"M142 128 C158 112 174 97 186 90 C189 103 181 117 166 129 Z",f:"a"},
+          {d:"M144 137 C163 129 181 121 193 119 C189 132 176 141 158 143 Z",f:"a"}],
+    body:"M48 128 C48 96 74 80 102 80 C132 80 156 100 156 130 C156 158 132 174 102 174 C72 174 48 158 48 128 Z",
+    inner:[{d:"M70 152 C70 133 84 123 102 123 C120 123 134 133 134 152 C134 168 120 176 102 176 C84 176 70 168 70 152 Z",f:"x"}],
+    front:[{d:"M53 118 C40 130 41 156 60 167 C67 152 67 133 61 120 Z",f:"a"},
+           {d:"M151 118 C164 130 163 156 144 167 C137 152 137 133 143 120 Z",f:"a"},
+           {d:"M98 83 C91 71 95 58 108 55 C104 64 106 73 111 81 Z",f:"a"},
+           {d:"M106 83 C108 70 118 63 129 65 C121 70 117 76 115 85 Z",f:"a"},
+           {d:"M93 127 C97 123 109 123 113 127 C111 134 107 139 103 140 C99 139 95 134 93 127 Z",f:"k"}],
+    lines:[{d:"M57 133 C55 143 56 151 60 158",c:"a0",w:1.8},{d:"M147 133 C149 143 148 151 144 158",c:"a0",w:1.8},
+           {d:"M93 173 v8 M88 181 h10 M111 173 v8 M106 181 h10",c:"k2",w:2.6}],
+    eyes:[[86,113],[120,113]], mouth:null, cheeks:[[70,129],[136,129]] },
+  bramble:{ name:"Bramble", trait:"Strong and practical. Big on rest.",
+    say:"Heavy legs today, so rest is the training. We lift on Friday.",
+    tones:{ b:["#ECCDAE","#CFA27C","#A77A56","#7A573C"], a:["#FDF4E8","#F1DCC4","#D9B996","#B8946E"],
+            x:["#F5D2BF","#E5AE95","#C68B71","#A06A52"] },
+    box:[46,82,154,176], arms:[[54,144],[146,144]],
+    back:[{d:circ(67,92,18),f:"b"},{d:circ(133,92,18),f:"b"},{d:circ(67,93,9),f:"x"},{d:circ(133,93,9),f:"x"}],
+    body:"M46 142 C46 104 70 82 100 82 C130 82 154 104 154 142 C154 167 132 176 100 176 C68 176 46 167 46 142 Z",
+    front:[{d:"M77 142 C77 128 87 121 100 121 C113 121 123 128 123 142 C123 155 113 162 100 162 C87 162 77 155 77 142 Z",f:"a"},
+           {d:"M91 132 C91 126 109 126 109 132 C109 138 103 142 100 142 C97 142 91 138 91 132 Z",f:NOSE},
+           {d:"M94 130 a4 2 0 1 0 8 0 a4 2 0 1 0 -8 0 Z",f:"#FFFFFF",o:.55}],
+    lines:[{d:"M100 142 v4",c:"b3",w:2.4}],
+    eyes:[[80,114],[120,114]], mouth:[100,150], cheeks:[[61,133],[139,133]] },
+  luna:{ name:"Luna", trait:"Calm. Good company at 3am.",
+    say:"Awake at three again. Breathe out longer than in. We'll go gently today.",
+    tones:{ b:["#FFFBEC","#EEE5C2","#CEC194","#A3976A"], c:["#F6EFD3","#DCD0A4","#B9AC7C","#958859"],
+            s:["#FFE9B3","#F5C77E","#DDA04E","#B57C30"] },
+    box:[51,79,149,177], arms:[[58,138],[142,138]],
+    back:[], body:circ(100,128,49),
+    front:[{d:circ(72,104,8.5),f:"c"},{d:circ(129,155,6.5),f:"c"},{d:circ(125,98,4.2),f:"c"},{d:circ(64,151,3.6),f:"c"}],
+    star:"M0 -12 C1.4 -12 2.2 -5.4 3.6 -4 C5 -2.6 11.6 -2.2 11.8 -0.6 C12 1 6.6 3.2 5.8 5 C5 6.8 7.6 11.6 6.4 12.4 C5.2 13.2 1.4 9 0 9 C-1.4 9 -5.2 13.2 -6.4 12.4 C-7.6 11.6 -5 6.8 -5.8 5 C-6.6 3.2 -12 1 -11.8 -0.6 C-11.6 -2.2 -5 -2.6 -3.6 -4 C-2.2 -5.4 -1.4 -12 0 -12 Z",
+    lines:[], eyes:[[84,126],[116,126]], mouth:[100,143], cheeks:[[69,141],[131,141]] },
+  otto:{ name:"Otto", trait:"Warm and playful. Makes it lighter.",
+    say:"Hips felt stiff yesterday. Five minutes of floor stretches before the kettle boils?",
+    tones:{ b:["#CFA889","#A98264","#7F5D45","#563E2E"], a:["#FFF8EF","#F3E3CF","#DCC2A4","#BC9E7E"] },
+    box:[52,86,148,177], arms:[[58,146],[142,146]],
+    back:[{d:"M136 160 C158 166 179 158 189 141 C179 147 160 151 140 146 Z",f:"b"},
+          {d:circ(70,99,11),f:"b"},{d:circ(130,99,11),f:"b"},{d:circ(70,100,5.5),f:"#6B4C38"},{d:circ(130,100,5.5),f:"#6B4C38"}],
+    body:"M54 150 C50 112 72 86 100 86 C128 86 150 112 146 150 C144 170 126 177 100 177 C74 177 56 170 54 150 Z",
+    front:[{d:"M65 130 C65 112 82 105 100 111 C118 105 135 112 135 130 C135 149 119 159 100 159 C81 159 65 149 65 130 Z",f:"a"},
+           {d:"M92 131 C92 126 108 126 108 131 C108 136 103 139 100 139 C97 139 92 136 92 131 Z",f:NOSE},
+           {d:"M95 129.5 a3.5 1.8 0 1 0 7 0 a3.5 1.8 0 1 0 -7 0 Z",f:"#FFFFFF",o:.55}],
+    lines:[{d:"M100 139 v3.5",c:"b3",w:2.2},
+           {d:"M79 141 l-19 -4 M79 146 l-18 3 M121 141 l19 -4 M121 146 l18 3",c:"a3",w:1.5}],
+    eyes:[[85,122],[115,122]], mouth:[100,147], cheeks:[[74,140],[126,140]] },
+  tilly:{ name:"Tilly", trait:"Patient. Here for the long run.",
+    say:"Same weight as last week, and it moved more easily. That is strength building.",
+    tones:{ b:["#EED3A0","#D2AE6E","#A7844A","#7A5F31"], a:["#DCE5BC","#AFBE88","#869A61","#5F7242"],
+            x:["#F6E4BC","#E6C98E","#CCAA68","#A88648"], r:["#C49F64","#9E7C43","#7A5E30","#5C4622"] },
+    box:[34,94,166,160], arms:[[50,152],[150,152]], armTone:"a", eyeScale:.82,
+    back:[{d:"M46 166 a14 9 0 1 0 28 0 a14 9 0 1 0 -28 0 Z",f:"a"},{d:"M126 166 a14 9 0 1 0 28 0 a14 9 0 1 0 -28 0 Z",f:"a"},
+          {d:"M160 154 C168 154 176 158 178 162 C172 164 166 164 160 162 Z",f:"a"}],
+    body:"M34 160 C34 114 62 94 100 94 C138 94 166 114 166 160 Z",
+    front:[{d:"M46 150 C46 136 54 124 66 120 C74 124 78 136 76 152 C66 156 54 156 46 150 Z",f:"x"},
+           {d:"M154 150 C154 136 146 124 134 120 C126 124 122 136 124 152 C134 156 146 156 154 150 Z",f:"x"},
+           {d:"M84 152 C86 144 92 140 100 140 C108 140 114 144 116 152 C110 156 90 156 84 152 Z",f:"x"},
+           {d:"M28 158 h144 a7 7 0 0 1 0 14 h-144 a7 7 0 0 1 0 -14 Z",f:"r"},
+           {d:circ(100,113,27),f:"a"}],
+    lines:[], eyes:[[90,111],[110,111]], mouth:[100,126], cheeks:[[80,122],[120,122]] }
+};
+const ORDER = ["pebble","fern","wren","bramble","luna","otto","tilly"];
+const STATES = [
+  ["idle","Idle","Sits on <b>Today</b>, breathing and blinking."],
+  ["hello","Hello","The first open of the day, and the moment a member meets their coach."],
+  ["listening","Listening","Leans in while she types a message or a check-in note."],
+  ["thinking","Thinking","While a reply is being written."],
+  ["proud","Proud","A logged session, or a lift above her own baseline."],
+  ["lifting","Lifting","Keeps her company through a <b>strength session</b> timer."],
+  ["stretching","Stretching","Warm-ups, mobility and the morning routine."],
+  ["comfort","Comfort","A rough-night check-in or a symptom flare. Quiet, no fuss."],
+  ["resting","Resting","Rest days and the wind-down screen."]
+];
+let uid = 0;
+
+function mascot(key){
+  const c = CHARS[key], u = "k" + (++uid), T = c.tones;
+  const grad = (id, t, at) => `<radialGradient id="${u}${id}" ${at||'cx="34%" cy="28%" r="80%"'}><stop offset="0" stop-color="${t[0]}"/><stop offset=".52" stop-color="${t[1]}"/><stop offset="1" stop-color="${t[2]}"/></radialGradient>`;
+  const defs = Object.entries(T).map(([k,t]) => k==="c"
+      ? grad(k, [t[0],t[1],t[3]], 'cx="68%" cy="72%" r="85%"') : grad(k,t)).join("")
+    + `<filter id="${u}b10" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="9"/></filter>`
+    + `<filter id="${u}b3" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.6"/></filter>`
+    + `<filter id="${u}b1" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.2"/></filter>`
+    + `<clipPath id="${u}clip"><path d="${c.body}"/></clipPath>`;
+  const fill = f => (f.length === 1 ? `url(#${u}${f})` : f);
+  const tone = s => T[s[0]][+s[1]];
+  const shape = p => `<path d="${p.d}" fill="${fill(p.f)}"${p.o?` opacity="${p.o}"`:""}/>`;
+  const [x1,y1,x2,y2] = c.box, w = x2-x1, h = y2-y1;
+  /* form shadow + key highlight, clipped to the body */
+  const volume = `<g clip-path="url(#${u}clip)">
+      <ellipse cx="${x1+w*.62}" cy="${y2+4}" rx="${w*.6}" ry="${h*.32}" fill="${T.b[3]}" opacity=".38" filter="url(#${u}b10)"/>
+      <ellipse cx="${x1+w*.3}" cy="${y1+h*.24}" rx="${w*.24}" ry="${h*.16}" fill="#FFFFFF" opacity=".42" filter="url(#${u}b10)"/>
+    </g>
+    <ellipse cx="${x1+w*.27}" cy="${y1+h*.17}" rx="${Math.max(5,w*.06)}" ry="${Math.max(3,h*.035)}" transform="rotate(-28 ${x1+w*.27} ${y1+h*.17})" fill="#FFFFFF" opacity=".55" filter="url(#${u}b1)"/>`;
+  const es = c.eyeScale || 1;
+  const eye = ([x,y], i) => `<g transform="translate(${x} ${y}) scale(${es})">
+      <path class="brow brow-${i?"r":"l"}" d="M-6.5 -14 Q0 -18 6.5 -14" fill="none" stroke="${T.b[3]}" stroke-width="2.6" stroke-linecap="round" opacity=".85"/>
+      <g class="look"><g class="blink e-open">
+        <ellipse rx="6.6" ry="8" fill="${EYE}"/>
+        <ellipse cx="0" cy="3.5" rx="4.2" ry="3" fill="#4A3A31" opacity=".9"/>
+        <circle cx="-2.2" cy="-3.2" r="2.5" fill="#FFFFFF"/>
+        <circle cx="2.4" cy="2.4" r="1.1" fill="#FFFFFF" opacity=".75"/>
+      </g></g>
+      <path class="e-shut" d="M-6.5 0 Q0 5.5 6.5 0" fill="none" stroke="${EYE}" stroke-width="2.8" stroke-linecap="round"/>
+      <path class="e-happy" d="M-6.5 2.5 Q0 -6.5 6.5 2.5" fill="none" stroke="${EYE}" stroke-width="2.8" stroke-linecap="round"/></g>`;
+  const cheek = ([x,y]) => `<ellipse class="cheek" cx="${x}" cy="${y}" rx="8.5" ry="5.2" fill="#F09A82" opacity=".5" filter="url(#${u}b3)"/>`;
+  const mouth = c.mouth ? `<g transform="translate(${c.mouth[0]} ${c.mouth[1]})">
+      <path class="mo-shut" d="M-5.5 -0.5 Q0 4.5 5.5 -0.5" fill="none" stroke="${EYE}" stroke-width="2.4" stroke-linecap="round"/>
+      <g class="mo-open"><path d="M-7 -1.5 Q0 -2.5 7 -1.5 Q6 8 0 8.5 Q-6 8 -7 -1.5 Z" fill="#4A2620"/>
+        <path d="M-4 5 Q0 2.5 4 5 Q2.5 8 0 8.2 Q-2.5 8 -4 5 Z" fill="#E58A79"/></g></g>` : "";
+  const armFill = fill(c.armTone || "b");
+  const db = `<g class="db"><rect x="-12" y="34" width="24" height="4" rx="2" fill="#5A4A40"/><rect x="-16" y="27" width="7" height="18" rx="3" fill="${NOSE}"/><rect x="9" y="27" width="7" height="18" rx="3" fill="${NOSE}"/></g>`;
+  const arm = (side,[x,y]) => `<g transform="translate(${x} ${y})${side==="l"?" scale(-1 1)":""}"><g class="arm arm-${side}"><rect x="-7.5" y="-4" width="15" height="40" rx="7.5" fill="${armFill}"/>${db}</g></g>`;
+  const sway = c.sway ? `<g class="sway">
+      <path d="${c.sway.stem}" fill="none" stroke="${T.a[2]}" stroke-width="5" stroke-linecap="round"/>
+      ${c.sway.leaves.map(d=>`<path d="${d}" fill="${fill("a")}"/>`).join("")}
+      ${c.sway.veins.map(d=>`<path d="${d}" fill="none" stroke="${T.a[0]}" stroke-width="1.8" stroke-linecap="round" opacity=".9"/>`).join("")}</g>` : "";
+  const star = c.star ? `<g class="bob"><g transform="translate(152 70)">
+      <path d="${c.star}" fill="${fill("s")}"/><circle cx="-3" cy="-3" r="2" fill="#FFFFFF" opacity=".7"/></g></g>` : "";
+  const dots = (c.dots||[]).map(([x,y,r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${T.b[3]}" opacity=".28"/>`).join("");
+  const lines = c.lines.map(l => `<path d="${l.d}" fill="none" stroke="${tone(l.c)}" stroke-width="${l.w}" stroke-linecap="round" stroke-linejoin="round"/>`).join("");
+  const fx = `<g class="fx" fill="none" stroke="var(--terra)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <g class="fx-listen"><path class="draw" d="M30 104 q-9 13 0 26"/><path class="draw" d="M19 97 q-14 20 0 40"/></g>
+      <g class="fx-think" fill="var(--terra)" stroke="none"><circle cx="150" cy="66" r="3.4"/><circle cx="164" cy="52" r="4.6"/><circle cx="181" cy="38" r="6"/></g>
+      <g class="fx-proud"><path class="draw" d="M150 50 l9 9 l18 -21"/><path class="draw" d="M146 30 l-4 -8"/><path class="draw" d="M186 52 l8 -2"/></g>
+      <g class="fx-rest" fill="var(--terra)" stroke="none" font-family="Gochi Hand, cursive"><text x="146" y="74" font-size="18">z</text><text x="160" y="58" font-size="22">z</text><text x="176" y="40" font-size="26">z</text></g>
+      <g class="fx-hello" fill="var(--terra)" stroke="none" font-family="Gochi Hand, cursive"><text x="18" y="62" font-size="30">hi</text></g>
+      <g class="fx-lift"><path class="draw" d="M22 70 q-6 10 0 20"/><path class="draw" d="M178 70 q6 10 0 20"/></g>
+      <g class="fx-comfort" fill="var(--terra)" stroke="none"><path d="M166 64 c-5 -8 -18 -5 -15 5 c2 6 15 13 15 13 s13 -7 15 -13 c3 -10 -10 -13 -15 -5 Z"/></g></g>`;
+  return `<svg class="m" viewBox="0 0 200 200" role="img" aria-label="${c.name}">
+    <defs>${defs}</defs>
+    <ellipse class="shadow" cx="100" cy="181" rx="50" ry="6.5" fill="var(--shadow)" filter="url(#${u}b3)"/>
+    <g class="rig"><g class="pose">
+      <g data-layer="arms">${arm("l",c.arms[0])}${arm("r",c.arms[1])}</g>
+      <g data-layer="back">${c.back.map(shape).join("")}</g>
+      <g data-layer="body"><path d="${c.body}" fill="${fill("b")}"/>${(c.inner||[]).map(p=>`<g clip-path="url(#${u}clip)">${shape(p)}</g>`).join("")}${volume}${dots}</g>
+      ${sway}
+      <g data-layer="details">${c.front.map(shape).join("")}${lines}</g>
+      <g data-layer="face">${c.cheeks.map(cheek).join("")}${c.eyes.map(eye).join("")}${mouth}</g>
+    </g></g>${star}${fx}</svg>`;
+}
+
+
+
+const NS = "http://www.w3.org/2000/svg";
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+class Stop extends Error {}
+const MINE = "bramble";
+let MODE = "back";
+const today = new Date().toLocaleDateString("en-GB", {weekday:"long", day:"numeric", month:"long"});
+const F = n => n.toFixed(1);
+const esc = s => String(s).replace(/[<>&"]/g, ch => ({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"})[ch]);
+function make(tag, cls, html, style){ const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; if (style) Object.assign(n.style, style); return n; }
+function smooth(pts){
+  let d = `M${F(pts[0][0])} ${F(pts[0][1])}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i-1] || pts[i], p1 = pts[i], p2 = pts[i+1], p3 = pts[i+2] || p2;
+    d += ` C${F(p1[0]+(p2[0]-p0[0])/6)} ${F(p1[1]+(p2[1]-p0[1])/6)} ${F(p2[0]-(p3[0]-p1[0])/6)} ${F(p2[1]-(p3[1]-p1[1])/6)} ${F(p2[0])} ${F(p2[1])}`;
+  }
+  return d;
+}
+const pill = (x, y, w, h) => { const r = 14; return `M${F(x + r)} ${F(y)} L${F(x + w - r)} ${F(y)} Q${F(x + w)} ${F(y)} ${F(x + w)} ${F(y + r)} L${F(x + w)} ${F(y + h - r)} Q${F(x + w)} ${F(y + h)} ${F(x + w - r)} ${F(y + h)} L${F(x + r)} ${F(y + h)} Q${F(x)} ${F(y + h)} ${F(x)} ${F(y + h - r)} L${F(x)} ${F(y + r)} Q${F(x)} ${F(y)} ${F(x + r)} ${F(y)}`; };
+const TABS = `<span><svg viewBox="0 0 26 26"><circle cx="13" cy="13" r="8"/><path d="M13 9 v4 l3 2"/></svg>Today</span><span><svg viewBox="0 0 26 26"><circle cx="13" cy="14" r="8"/><path d="M8 14 h10"/></svg>Food</span><span><svg viewBox="0 0 26 26"><path d="M4 6 h18 v11 h-9 l-5 4 v-4 h-4 z"/></svg>Coach</span><span><svg viewBox="0 0 26 26"><path d="M4 20 C9 18 12 12 15 12 S20 7 22 5"/></svg>Progress</span>`;
+
+/* every phone runs its own cancellable loop */
+function stage(scr, fn, gap = 1100){
+  let token = 0;
+  const run = async () => {
+    const my = ++token;
+    const wait = ms => new Promise((res, rej) => setTimeout(() => my === token ? res() : rej(new Stop()), REDUCED ? 0 : ms));
+    while (my === token) {
+      scr.innerHTML = "";
+      const svg = document.createElementNS(NS, "svg"); svg.setAttribute("class", "ink"); scr.appendChild(svg);
+      const W = scr.clientWidth, H = scr.clientHeight; svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+      const pen = (d, o = {}) => {
+        const p = document.createElementNS(NS, "path"); p.setAttribute("d", d); p.setAttribute("stroke", o.color || "var(--terra)"); p.setAttribute("stroke-width", o.w || 2.4);
+        (o.into || svg).appendChild(p);
+        const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+        p.done = p.animate([{strokeDashoffset:len}, {strokeDashoffset:0}], {duration:REDUCED ? 1 : (o.dur || 700), delay:REDUCED ? 0 : (o.delay || 0), easing:"cubic-bezier(.4,.05,.35,1)", fill:"forwards"}).finished.catch(() => {}).then(() => { if (my !== token) throw new Stop(); });
+        return p;
+      };
+      const A = (el, kf, o) => el.animate(kf, {fill:"forwards", easing:"cubic-bezier(.65,0,.35,1)", ...o, duration:REDUCED ? 1 : (o?.duration ?? 500), delay:REDUCED ? 0 : (o?.delay ?? 0)}).finished.catch(() => {}).then(() => { if (my !== token) throw new Stop(); });
+      const coach = (k, size, style) => { const c = make("div", "coach", mascot(k), {width:size + "px", height:size + "px", ...style}); c.dataset.state = "idle"; scr.appendChild(c); return c; };
+      try { await fn({scr, svg, W, H, pen, wait, A, coach}); await wait(gap); }
+      /* (fire-and-forget animations from a stopped run reject quietly) */
+      catch (err) { if (!(err instanceof Stop)) console.error(err); return; }
+    }
+  };
+  run();
+  return () => { token++; run(); };
+}
+const say = (c, s, ms = 1500) => { c.dataset.state = s; if (ms) setTimeout(() => { if (c.dataset.state === s) c.dataset.state = "idle"; }, ms); };
+
+/* shared endings */
+function wordmark(scr, W, y, pen){
+  const w = make("div", "wm abs", "Second Strong", {left:"0", right:"0", top:(y - 27) + "px", textAlign:"center", clipPath:"inset(0 100% 0 0)"}); scr.appendChild(w);
+  w.animate([{clipPath:"inset(0 100% 0 0)"}, {clipPath:"inset(0 0 0 0)"}], {duration:REDUCED ? 1 : 800, delay:REDUCED ? 0 : 120, easing:"cubic-bezier(.4,.05,.35,1)", fill:"forwards"});
+  pen(smooth([[W * .14, y + 14], [W * .5, y + 11], [W * .86, y + 14]]), {dur:900});
+  return w;
+}
+async function endReturning({scr, svg, W, H, pen, wait, A}, mine, others, word){
+  /* the rest step back; your coach comes forward and says morning, then tucks into the corner over Today */
+  others.forEach((c, i) => A(c, [{transform:getComputedStyle(c).transform}, {transform:"translateY(160px) scale(.8)", opacity:0}], {duration:420, delay:i * 35, easing:"cubic-bezier(.5,0,1,.6)"}));
+  word && A(word, [{opacity:1}, {opacity:0, transform:"translateY(-10px)"}], {duration:280});
+  svg.querySelectorAll("path").forEach(p => A(p, [{opacity:1}, {opacity:0}], {duration:280}));
+  /* move to an exact place on screen: measure where it is, jump there, animate from the old spot */
+  const flip = (el, x, y, size, dur, easing) => {
+    const r = el.getBoundingClientRect(), sr = scr.getBoundingClientRect();
+    el.getAnimations().forEach(a => a.cancel());
+    Object.assign(el.style, {left:x + "px", top:y + "px", width:size + "px", height:size + "px", transform:"none", transformOrigin:"0 0", opacity:"1"});
+    return A(el, [{transform:`translate(${r.left - sr.left - x}px, ${r.top - sr.top - y}px) scale(${r.width / size})`}, {transform:"none"}], {duration:dur, easing});
+  };
+  if (mine.parentElement !== scr) scr.appendChild(mine);
+  say(mine, "hello", 1600);
+  await flip(mine, W/2 - 64, H * .42, 128, 720, "cubic-bezier(.3,1.3,.5,1)");
+  const hi = make("div", "big-hand abs writein", "Morning.", {left:"0", right:"0", top:(H * .24) + "px", textAlign:"center"}); hi.style.setProperty("--d", "650ms"); hi.style.setProperty("--st", "steps(10)"); scr.appendChild(hi);
+  await wait(680);
+  pen(smooth([[W/2 - 62, H * .24 + 45], [W/2, H * .24 + 42], [W/2 + 64, H * .24 + 45]]), {dur:380});
+  await wait(900);
+  A(hi, [{opacity:1}, {opacity:0, transform:"translateY(-8px)"}], {duration:260});
+  svg.querySelectorAll("path").forEach(p => A(p, [{opacity:1}, {opacity:0}], {duration:260}));
+  await flip(mine, W - 66, 46, 52, 620, "cubic-bezier(.65,0,.35,1)");
+  scr.appendChild(make("div", "abs fadein", `<div class="meta">${esc(today)}</div><div style="font:800 21px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:5px">How was <em style="font-family:var(--f-serif);font-weight:400">the night?</em></div>`, {left:"18px", top:"58px", right:"80px"}));
+  [[132, "Protein", "0 of 100g today"], [212, "Today", "Lower body · 20 min"]].forEach(([y, k, v], i) => scr.appendChild(make("div", "card fadein", `<small>${k}</small>${v}`, {top:y + "px", animationDelay:(150 + i * 120) + "ms"})));
+  await wait(1500);
+}
+async function endFirst({scr, svg, W, H, pen, wait}, cast, word){
+  /* first open: everyone waves, then the question that starts onboarding */
+  cast.forEach((c, i) => setTimeout(() => say(c, "hello", 1800), i * 80));
+  await wait(500);
+  word && word.animate([{opacity:1}, {opacity:0}], {duration:260, fill:"forwards"});
+  svg.querySelectorAll("path").forEach(p => p.animate([{opacity:1}, {opacity:0}], {duration:260, fill:"forwards"}));
+  const q = make("div", "abs fadein", `<div class="big-hand" style="font-size:34px"><span style="display:inline-block">Hello.</span></div><div style="font:800 19px/1.15 var(--f-display);letter-spacing:-.02em;margin-top:8px">Who would you like<br>in your corner?</div>`, {left:"0", right:"0", top:(H * .2) + "px", textAlign:"center"});
+  scr.appendChild(q);
+  await wait(500);
+  const t = q.firstElementChild.firstElementChild.getBoundingClientRect(), sr = scr.getBoundingClientRect();
+  pen(smooth([[t.left - sr.left - 4, t.bottom - sr.top + 2], [t.left - sr.left + t.width/2, t.bottom - sr.top], [t.right - sr.left + 6, t.bottom - sr.top + 2]]), {dur:380});
+  await wait(1800);
+}
+const ending = (ctx, cast, word) => MODE === "back" ? endReturning(ctx, cast[ORDER.indexOf(MINE)], cast.filter((_, i) => i !== ORDER.indexOf(MINE)), word) : endFirst(ctx, cast, word);
+
+/* ---------- intros ---------- */
+async function stadium(ctx){
+  const {scr, W, H, pen, wait, A, coach} = ctx, size = 58, step = (W - size - 8) / 6;
+  const cast = ORDER.map((k, i) => coach(k, size, {left:(4 + i * step) + "px", top:(H - size * .62) + "px"}));
+  await Promise.all(cast.map((c, i) => A(c, [{transform:"translateY(80px)"}, {transform:"translateY(0)"}], {duration:600, delay:120 + i * 70, easing:"cubic-bezier(.3,1.35,.5,1)"})));
+  const word = wordmark(scr, W, H * .38, pen);
+  for (let round = 0; round < 2; round++) {
+    await Promise.all(cast.map((c, i) => A(c, [{transform:"translateY(0)"}, {transform:"translateY(-26px) scale(1.04,.98)", offset:.45}, {transform:"translateY(0) scale(1.06,.94)", offset:.8}, {transform:"translateY(0)"}], {duration:560, delay:i * 85, easing:"ease-in-out"})));
+  }
+  cast.forEach(c => c.getAnimations().forEach(a => a.cancel()));
+  await ending(ctx, cast, word);
+}
+async function curtain(ctx){
+  const {scr, svg, W, H, pen, wait, A, coach} = ctx, size = 60, floor = H * .64, step = (W - size - 10) / 6;
+  /* coaches live in a box that ends at the stage line, so they rise from behind it */
+  const box = make("div", "abs", "", {left:"0", right:"0", top:"0", height:floor + "px", overflow:"hidden"}); scr.appendChild(box);
+  pen(smooth([[-6, floor + 1], [W * .5, floor - 1], [W + 6, floor + 1]]), {dur:700});
+  await wait(500);
+  const cast = ORDER.map((k, i) => { const c = make("div", "coach", mascot(k), {width:size + "px", height:size + "px", left:(5 + i * step) + "px", top:(floor - size + 6) + "px", transform:"translateY(80px)"}); c.dataset.state = "idle"; box.appendChild(c); return c; });
+  for (let i = 0; i < cast.length; i++) { A(cast[i], [{transform:"translateY(80px)"}, {transform:"translateY(-10px)", offset:.7}, {transform:"translateY(0)"}], {duration:520, easing:"cubic-bezier(.3,1.2,.5,1)"}); setTimeout(() => say(cast[i], "hello", 700), 300); await wait(150); }
+  await wait(300);
+  const word = wordmark(scr, W, H * .3, pen);
+  await wait(900);
+  /* hand the coaches up to the screen so they can step out of the box */
+  cast.forEach(c => { const r = c.getBoundingClientRect(), sr = scr.getBoundingClientRect(); c.getAnimations().forEach(a => a.cancel()); Object.assign(c.style, {left:(r.left - sr.left) + "px", top:(r.top - sr.top) + "px", transform:"none"}); scr.appendChild(c); });
+  box.remove();
+  await ending(ctx, cast, word);
+}
+async function wire(ctx){
+  const {scr, W, H, pen, wait, A, coach} = ctx, size = 54, y = H * .5, step = (W - size - 16) / 6;
+  pen(smooth([[-6, y - 18], [W * .25, y + 2], [W * .5, y + 8], [W * .75, y + 2], [W + 6, y - 18]]), {dur:800, w:2});
+  await wait(500);
+  const sagAt = x => { const t = x / W; return y - 18 + 26 * Math.sin(Math.PI * t); };
+  const cast = ORDER.map((k, i) => { const x = 8 + i * step; return coach(k, size, {left:x + "px", top:(sagAt(x + size/2) - size + 8) + "px", opacity:"0"}); });
+  for (const [i, c] of cast.entries()) {
+    c.style.opacity = "1";
+    A(c, [{transform:"translateY(-260px)"}, {transform:"translateY(0) scale(1.12,.86)", offset:.75}, {transform:"translateY(-6px)", offset:.88}, {transform:"translateY(0)"}], {duration:640, easing:"cubic-bezier(.5,0,.6,1)"})
+      .then(() => { c.getAnimations().forEach(a => a.cancel()); c.firstElementChild.classList.add("sway"); c.firstElementChild.style.animationDelay = (-i * .3) + "s"; });
+    await wait(120);
+  }
+  await wait(600);
+  const word = wordmark(scr, W, H * .26, pen);
+  await wait(1000);
+  cast.forEach(c => c.firstElementChild.classList.remove("sway"));
+  await ending(ctx, cast, word);
+}
+async function popup(ctx){
+  const {scr, W, H, pen, wait, A, coach} = ctx, size = 58, base = H * .66, step = (W - size - 24) / 6;
+  scr.style.perspective = "700px";
+  const stageCard = make("div", "abs", "", {left:"10px", right:"10px", top:base + "px", height:"60px", background:"var(--card)", border:"1px solid var(--edge)", borderRadius:"14px", transformOrigin:"50% 0", transform:"rotateX(88deg)"}); scr.appendChild(stageCard);
+  await A(stageCard, [{transform:"rotateX(88deg)"}, {transform:"rotateX(62deg)"}], {duration:520, easing:"cubic-bezier(.3,1.3,.5,1)"});
+  const cast = ORDER.map((k, i) => coach(k, size, {left:(12 + i * step) + "px", top:(base - size + 14) + "px", transform:"rotateX(-90deg)"}));
+  for (const c of cast) { A(c, [{transform:"rotateX(-90deg)"}, {transform:"rotateX(12deg)", offset:.7}, {transform:"rotateX(0)"}], {duration:520, easing:"cubic-bezier(.3,1.3,.5,1)"}); await wait(110); }
+  await wait(300);
+  const tab = make("div", "abs", `<div class="wm" style="font-size:21px">Second Strong</div>`, {left:"50%", top:(H * .3 - 34) + "px", transform:"translateX(-50%) rotateX(-90deg)", transformOrigin:"50% 100%", background:"#FFFDF9", padding:"10px 16px", borderRadius:"12px", boxShadow:"0 10px 20px -12px rgba(59,50,44,.5)"}); scr.appendChild(tab);
+  await A(tab, [{transform:"translateX(-50%) rotateX(-90deg)"}, {transform:"translateX(-50%) rotateX(0)"}], {duration:600, easing:"cubic-bezier(.3,1.3,.5,1)"});
+  await wait(900);
+  if (MODE === "back") { /* the others fold flat, yours stays standing */
+    cast.forEach((c, i) => { if (ORDER[i] !== MINE) A(c, [{transform:"rotateX(0)"}, {transform:"rotateX(-90deg)"}], {duration:380, delay:i * 40}); });
+    A(stageCard, [{transform:"rotateX(62deg)"}, {transform:"rotateX(90deg)"}], {duration:420, delay:300});
+    await wait(500);
+  }
+  await ending(ctx, cast, tab);
+}
+async function peekaboo(ctx){
+  const {scr, W, H, pen, wait, A, coach} = ctx, s = 70;
+  /* each coach peeks in from an edge and looks at the middle */
+  const spots = [
+    {x:-s * .4, y:H * .16, r:90}, {x:W - s * .6, y:H * .1, r:-90}, {x:W * .3, y:-s * .45, r:180}, {x:-s * .4, y:H * .58, r:90},
+    {x:W - s * .6, y:H * .5, r:-90}, {x:W * .16, y:H - s * .55, r:0}, {x:W * .6, y:H - s * .55, r:0}];
+  const away = sp => sp.r === 90 ? "translateX(-60px)" : sp.r === -90 ? "translateX(60px)" : sp.r === 180 ? "translateY(-60px)" : "translateY(60px)";
+  const cast = ORDER.map((k, i) => { const sp = spots[i]; const c = coach(k, s, {left:sp.x + "px", top:sp.y + "px", transform:`${away(sp)} rotate(${sp.r}deg)`, transformOrigin:"50% 50%"}); c._sp = sp; return c; });
+  for (const c of cast) { A(c, [{transform:`${away(c._sp)} rotate(${c._sp.r}deg)`}, {transform:`translate(0,0) rotate(${c._sp.r}deg)`}], {duration:520, easing:"cubic-bezier(.3,1.3,.5,1)"}); await wait(110); }
+  const word = wordmark(scr, W, H * .4, pen);
+  await wait(1300);
+  if (MODE === "back") {
+    cast.forEach((c, i) => { if (ORDER[i] !== MINE) A(c, [{transform:`translate(0,0) rotate(${c._sp.r}deg)`}, {transform:`${away(c._sp)} rotate(${c._sp.r}deg)`}], {duration:360, delay:i * 30, easing:"cubic-bezier(.5,0,1,.6)"}); });
+    await wait(400);
+    const mine = cast[ORDER.indexOf(MINE)];
+    mine.getAnimations().forEach(a => a.cancel()); mine.style.transform = "none"; mine.style.transformOrigin = "50% 100%";
+    await ending(ctx, cast, word);
+  } else {
+    cast.forEach(c => { c.getAnimations().forEach(a => a.cancel()); c.style.transform = `rotate(${c._sp.r}deg)`; });
+    await endFirst(ctx, cast, word);
+  }
+}
+
+/* ---------- between screens ---------- */
+async function wipe({scr, W, H, pen, wait, A, coach}){
+  const tabs = make("div", "tabs", TABS); scr.appendChild(tabs);
+  const mark = make("i"); tabs.children[0].classList.add("on"); tabs.children[0].appendChild(mark);
+  const todayP = make("div", "abs", `<div class="meta">${esc(today)}</div><div style="font:800 22px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:5px">Today</div>`, {left:"18px", top:"52px"});
+  scr.appendChild(todayP);
+  const cardsT = [[110, "Protein", "64 of 100g"], [186, "Strength", "Lower body · done"]].map(([y, k, v]) => { const c = make("div", "card", `<small>${k}</small>${v}`, {top:y + "px"}); scr.appendChild(c); return c; });
+  const next = make("div", "abs", `<div class="meta">Bramble · coach</div><div style="font:800 22px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:5px">Coach</div>
+    <div style="margin-top:22px;background:var(--almond);border-radius:16px 16px 5px 16px;padding:8px 12px;font:600 13px/1.25 var(--f-display);margin-left:auto;width:fit-content">Knees ache after squats.</div>
+    <div style="margin-top:14px;background:var(--card);border:1px solid var(--edge);border-radius:16px;padding:11px 13px;font:400 13px/1.4 var(--f-display)">Swap squats for box sit-to-stands this week. Same effort, kinder on the knees.</div>`,
+    {left:"0", top:"0", right:"0", bottom:"62px", padding:"52px 18px 0", background:"var(--bg)", clipPath:"inset(0 100% 0 0)", zIndex:5});
+  scr.appendChild(next);
+  await wait(900);
+  /* tap Coach: your coach hops across and the new screen opens behind it */
+  tabs.children[0].classList.remove("on"); tabs.children[2].classList.add("on"); tabs.children[2].appendChild(mark);
+  const c = coach(MINE, 64, {left:"-70px", top:(H - 62 - 58) + "px", zIndex:7}); say(c, "hello", 1600);
+  const dur = 900, steps = 3;
+  A(next, [{clipPath:"inset(0 100% 0 0)"}, {clipPath:"inset(0 0 0 0)"}], {duration:dur, easing:"cubic-bezier(.45,0,.3,1)"});
+  const hop = []; for (let i = 0; i <= steps * 2; i++) { const t = i / (steps * 2); hop.push({transform:`translate(${(W + 80) * t}px, ${i % 2 ? -24 : 0}px)`}); }
+  await A(c, hop, {duration:dur, easing:"cubic-bezier(.45,0,.3,1)"});
+  await wait(1500);
+}
+async function peekLoader({scr, W, H, pen, wait, A, coach}){
+  const head = make("div", "abs", `<div class="meta">Progress</div><div style="font:800 22px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:5px">Your <em style="font-family:var(--f-serif);font-weight:400">strength</em></div>`, {left:"18px", top:"52px"});
+  scr.appendChild(head);
+  pen(smooth([[18, 112], [W * .5, 110], [W - 18, 112]]), {color:"rgba(59,50,44,.12)", w:1, dur:1});
+  /* your coach peeks up from the bottom edge and looks around until the content lands */
+  const c = coach(MINE, 96, {left:(W/2 - 48) + "px", top:(H - 58) + "px"});
+  await A(c, [{transform:"translateY(80px)"}, {transform:"translateY(0)"}], {duration:600, easing:"cubic-bezier(.3,1.35,.5,1)"});
+  const dots = make("div", "hand abs", "", {left:"0", right:"0", top:(H - 96) + "px", textAlign:"center", fontSize:"26px"}); scr.appendChild(dots);
+  const look = c.querySelectorAll(".look");
+  for (let i = 0; i < 4; i++) {
+    dots.textContent = ".".repeat((i % 3) + 1);
+    look.forEach(l => { l.style.transition = "translate 280ms ease"; l.style.translate = i % 2 ? "4px -1px" : "-4px -1px"; });
+    await wait(420);
+  }
+  look.forEach(l => l.style.translate = "0 0"); dots.textContent = "";
+  /* data arrives: the chart is drawn, the coach ducks back down */
+  say(c, "proud", 900);
+  pen(smooth([[24, 300], [W * .25, 288], [W * .45, 262], [W * .7, 236], [W - 24, 210]]), {dur:1000, w:2.6});
+  [["Goblet squat", "up 4kg on week one", 136]].forEach(([k, v, y]) => scr.appendChild(make("div", "card fadein", `<small>${k}</small>${v}`, {top:y + "px"})));
+  await wait(500);
+  await A(c, [{transform:"translateY(0)"}, {transform:"translateY(100px)"}], {duration:420, easing:"cubic-bezier(.5,0,1,.6)"});
+  await wait(1200);
+}
+function pullRefresh(scr){
+  /* live: drag down to lower the coach on a pen thread; release to refresh */
+  let state = null;
+  const build = () => {
+    scr.innerHTML = "";
+    const svg = document.createElementNS(NS, "svg"); svg.setAttribute("class", "ink"); scr.appendChild(svg);
+    const W = scr.clientWidth, H = scr.clientHeight; svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const thread = document.createElementNS(NS, "path"); thread.setAttribute("stroke", "var(--terra)"); thread.setAttribute("stroke-width", "2"); svg.appendChild(thread);
+    const list = make("div", "abs", "", {left:"0", right:"0", top:"0", bottom:"0", transition:"transform 420ms var(--ease)"}); scr.appendChild(list);
+    list.innerHTML = `<div class="abs" style="left:18px;top:52px"><div class="meta">Food</div><div style="font:800 22px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:5px">Today's <em style="font-family:var(--f-serif);font-weight:400">meals</em></div></div>`;
+    const rows = [["Breakfast", "Yoghurt and berries · 22g"], ["Lunch", "Salmon, rice, greens · 34g"], ["Snack", "Cheese and oatcakes · 12g"]];
+    rows.forEach(([k, v], i) => list.appendChild(make("div", "card", `<small>${k}</small>${v}`, {top:(112 + i * 72) + "px"})));
+    const c = make("div", "coach", mascot(MINE), {width:"62px", height:"62px", left:(W/2 - 31) + "px", top:"-70px", transformOrigin:"50% 0"}); c.dataset.state = "idle"; scr.appendChild(c);
+    const hint = make("div", "hand abs", "pull down", {left:"0", right:"0", bottom:"18px", textAlign:"center", fontSize:"17px", opacity:".8"}); scr.appendChild(hint);
+    state = {W, H, thread, list, c, hint, pull:0};
+    set(0);
+  };
+  const set = p => {
+    const {W, thread, list, c} = state; state.pull = p;
+    const y = Math.min(150, p);
+    thread.setAttribute("d", `M${W/2} 0 L${W/2} ${Math.max(0, y - 52)}`);
+    c.style.transform = `translateY(${y}px) rotate(${Math.sin(y / 18) * 4}deg)`;
+    list.style.transform = `translateY(${y * .55}px)`;
+    if (y > 110 && c.dataset.state !== "listening") c.dataset.state = "listening";
+  };
+  const release = async () => {
+    const {c, list} = state; const p = state.pull;
+    if (p < 110) { list.style.transition = c.style.transition = "transform 420ms var(--ease)"; set(0); setTimeout(() => { list.style.transition = ""; c.style.transition = ""; }, 430); return; }
+    c.dataset.state = "proud";
+    c.animate([{transform:c.style.transform}, {transform:`translateY(${Math.min(150, p) + 14}px)`}, {transform:`translateY(${Math.min(150, p)}px)`}], {duration:500, easing:"ease-out"});
+    await new Promise(r => setTimeout(r, 900));
+    state.list.querySelectorAll(".card").forEach((cd, i) => cd.animate([{opacity:.3}, {opacity:1}], {duration:400, delay:i * 90}));
+    c.style.transition = state.list.style.transition = "transform 520ms cubic-bezier(.65,0,.35,1)";
+    set(0); c.dataset.state = "idle";
+    setTimeout(() => { c.style.transition = ""; state.list.style.transition = ""; }, 540);
+  };
+  let drag = null, demo = true;
+  scr.addEventListener("pointerdown", e => { demo = false; drag = e.clientY; scr.setPointerCapture(e.pointerId); state.c.style.transition = state.list.style.transition = "none"; state.hint.style.opacity = "0"; });
+  scr.addEventListener("pointermove", e => { if (drag == null) return; set(Math.max(0, (e.clientY - drag) * .9)); });
+  scr.addEventListener("pointerup", () => { if (drag == null) return; drag = null; release(); });
+  build();
+  /* until someone tries it, it demonstrates itself */
+  (async function loop(){
+    while (demo) {
+      await new Promise(r => setTimeout(r, 1400)); if (!demo) return;
+      for (let p = 0; p <= 140; p += 7) { if (!demo) return; state.c.style.transition = state.list.style.transition = "none"; set(p); await new Promise(r => setTimeout(r, 22)); }
+      if (!demo) return; await release(); await new Promise(r => setTimeout(r, 1600));
+    }
+  })();
+  return () => { demo = false; build(); };
+}
+async function cardToSession({scr, W, H, pen, wait, A, coach}){
+  scr.appendChild(make("div", "abs", `<div class="meta">${esc(today)}</div><div style="font:800 22px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:5px">Today</div>`, {left:"18px", top:"52px"}));
+  scr.appendChild(make("div", "card", `<small>Protein</small>64 of 100g`, {top:"110px"}));
+  const card = make("div", "card", `<small>Strength · 18:00</small>Lower body · 20 min`, {top:"186px", zIndex:5}); scr.appendChild(card);
+  await wait(900);
+  /* tap: the card becomes the session, and the coach joins in */
+  card.animate([{transform:"scale(1)"}, {transform:"scale(.97)"}, {transform:"scale(1)"}], {duration:200});
+  await wait(200);
+  const r = card.getBoundingClientRect(), sr = scr.getBoundingClientRect();
+  const full = make("div", "abs", "", {left:(r.left - sr.left) + "px", top:(r.top - sr.top) + "px", width:r.width + "px", height:r.height + "px", background:"var(--card)", border:"1px solid var(--edge)", borderRadius:"16px", zIndex:6}); scr.appendChild(full);
+  card.style.opacity = "0";
+  await A(full, [{left:full.style.left, top:full.style.top, width:full.style.width, height:full.style.height, borderRadius:"16px"}, {left:"0px", top:"0px", width:W + "px", height:H + "px", borderRadius:"31px"}], {duration:620});
+  const sess = make("div", "abs fadein", `<div class="meta">Lower body · 1 of 4</div><div style="font:800 24px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:6px">Goblet <em style="font-family:var(--f-serif);font-weight:400">squat</em></div><div style="font:500 11px/1 var(--f-mono);color:var(--ink2);margin-top:8px">10kg · 3 × 10</div>`, {left:"18px", top:"56px", zIndex:7}); scr.appendChild(sess);
+  const c = coach(MINE, 120, {left:(W/2 - 60) + "px", top:(H * .36) + "px", zIndex:7}); c.dataset.state = "lifting";
+  A(c, [{transform:"translateY(260px)"}, {transform:"translateY(0)"}], {duration:620, easing:"cubic-bezier(.3,1.3,.5,1)"});
+  await wait(400);
+  const cx = W/2, cy = H * .78, R = 34;
+  const ringBg = document.createElementNS(NS, "circle"); Object.entries({cx, cy, r:R, fill:"none", stroke:"rgba(59,50,44,.12)", "stroke-width":4}).forEach(([k, v]) => ringBg.setAttribute(k, v)); scr.querySelector(".ink").appendChild(ringBg);
+  scr.querySelector(".ink").style.zIndex = 8;
+  pen(`M${cx} ${cy - R} A${R} ${R} 0 1 1 ${cx - .1} ${cy - R}`, {dur:1800, w:4, ease:"linear"});
+  scr.appendChild(make("div", "abs fadein", "Set 1", {left:"0", right:"0", top:(cy - 9) + "px", textAlign:"center", font:"800 15px/1 var(--f-display)", zIndex:9}));
+  await wait(2200);
+}
+
+const INTROS = [
+  {name:"Stadium wave", tag:"Playful", desc:"The cast peeks up from the bottom edge and a wave ripples along them twice while the wordmark writes in.", run:stadium},
+  {name:"Curtain call", tag:"Theatrical", desc:"The pen draws a stage line and the coaches pop up behind it one at a time, each with a little hello.", run:curtain},
+  {name:"Birds on a wire", tag:"Charming", desc:"The pen draws a sagging wire, the coaches drop onto it one by one with a bounce and sway gently.", run:wire},
+  {name:"Pop-up book", tag:"Crafted", desc:"A paper stage folds up and the coaches unfold like pop-up cut-outs, then the wordmark pops up as a tab.", run:popup},
+  {name:"Peek-a-boo", tag:"Curious", desc:"The coaches peek in from every edge of the screen and watch the middle while the wordmark writes.", run:peekaboo}
+];
+const TRANS = [
+  {name:"Coach wipe", tag:"Changing tab", desc:"Tap a tab and your coach hops across the bottom, opening the new screen behind it.", run:wipe},
+  {name:"Peek loader", tag:"Screen loading", desc:"Your coach peeks up from the bottom and looks around until the data lands, then ducks away as the chart is drawn.", run:peekLoader},
+  {name:"Pull to refresh", tag:"Live · drag down", desc:"Pull down and your coach lowers on a pen thread. Pull far enough and it listens; let go and it refreshes.", live:pullRefresh},
+  {name:"Card to session", tag:"Starting a workout", desc:"Tap today's session: the card grows into the workout screen and the coach joins you, lifting, as the set timer starts.", run:cardToSession}
+];
+function add(container, item){
+  const art = make("article", "ld", `<div class="frame"><div class="scr" aria-label="${esc(item.name)} animation"></div></div>
+    <div class="cap"><div class="top"><b>${esc(item.name)}</b><button class="replay" type="button">Replay</button></div><em>${esc(item.tag)}</em><span>${esc(item.desc)}</span></div>`);
+  container.appendChild(art);
+  const scr = art.querySelector(".scr");
+  let restart = () => {};
+  art.querySelector(".replay").addEventListener("click", () => restart());
+  /* start once the whole grid is laid out, so the phone measures its final size */
+  pending.push(() => { restart = item.live ? item.live(scr) : stage(scr, item.run); });
+  return () => restart();
+}
+const pending = [];
+const introRestarts = INTROS.map(i => add(document.getElementById("intros"), i));
+TRANS.forEach(t => add(document.getElementById("trans"), t));
+requestAnimationFrame(() => pending.forEach(f => f()));
+document.querySelector(".seg").addEventListener("click", ev => {
+  const b = ev.target.closest("button"); if (!b) return;
+  MODE = b.dataset.mode; document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  introRestarts.forEach(r => r());
+});
+window.addEventListener("unhandledrejection", e => { if (e.reason instanceof Stop) e.preventDefault(); });
+window.__intro = { mode(m){ document.querySelector(`.seg [data-mode="${m}"]`).click(); } };
+})();
+</script>

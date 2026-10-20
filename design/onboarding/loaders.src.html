@@ -1,0 +1,312 @@
+<meta charset="utf-8">
+<title>Second Strong Loading Moments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Gochi+Hand&family=IBM+Plex+Mono:wght@500&family=Newsreader:ital,opsz,wght@1,6..72,400&display=swap">
+<style>
+/* Layout: a desk with six phones, one per loading moment, each looping. Captions say when each one plays and for how long. */
+:root{
+  --bg:#FBF8F4; --card:#F6F0E8; --almond:#EDE3D6; --ink:#3B322C; --ink2:#5D534B;
+  --taupe:#A8968A; --terra:#A85A3C; --apricot:#F0C9A8; --edge:rgba(59,50,44,.10); --shadow:rgba(59,50,44,.22);
+  --desk:#EFE8DE; --deskInk:#3B322C; --deskInk2:#6E6158;
+  --f-display:"Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --f-serif:"Newsreader", Georgia, serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --f-hand:"Gochi Hand", "Comic Sans MS", cursive;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --spring:linear(0, .009, .035 2.1%, .141, .281 6.7%, .723 12.9%, .938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.129 32.8%, 1.051 39.6%, 1.017 43.1%, .991, .977 51%, .974 53.8%, .975 57.1%, .997 69.8%, 1.003 76.9%, 1);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){ --desk:#1C1714; --deskInk:#F1E9DF; --deskInk2:#B8AA9D; color-scheme:dark }}
+:root[data-theme="dark"]{ --desk:#1C1714; --deskInk:#F1E9DF; --deskInk2:#B8AA9D; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--desk); color:var(--deskInk); font:400 16px/1.45 var(--f-display); margin:0}
+button{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--terra); outline-offset:3px}
+.wrap{max-width:1160px; margin:0 auto; padding-inline:clamp(16px,3vw,40px); padding-block:36px 56px}
+.dmeta{font:500 12px/1.2 var(--f-mono); letter-spacing:.08em; text-transform:uppercase; color:var(--deskInk2)}
+h1{font:800 clamp(30px,4.2vw,46px)/1.02 var(--f-display); letter-spacing:-.035em; margin:.3em 0 .3em; text-wrap:balance}
+h1 em{font-family:var(--f-serif); font-style:italic; font-weight:400}
+.lede{margin:0; color:var(--deskInk2); max-width:62ch}
+.grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:36px 28px; margin-top:34px}
+@media (max-width:980px){ .grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:620px){ .grid{grid-template-columns:minmax(0,1fr)} }
+.ld{display:grid; gap:14px; justify-items:center}
+.frame{width:min(100%,300px); aspect-ratio:300/600; border-radius:40px; background:#2A231F; padding:9px; box-shadow:0 24px 48px -22px rgba(40,30,20,.45)}
+.scr{position:relative; width:100%; height:100%; border-radius:32px; background:var(--bg); color:var(--ink); overflow:hidden; isolation:isolate}
+.scr::before{content:""; position:absolute; inset:0; background:repeating-linear-gradient(transparent 0 27px, rgba(59,50,44,.04) 27px 28px); pointer-events:none}
+.cap{width:min(100%,300px); display:grid; gap:4px}
+.cap .top{display:flex; justify-content:space-between; align-items:baseline; gap:10px}
+.cap b{font:800 17px/1.15 var(--f-display)}
+.cap span{font-size:14px; color:var(--deskInk2); line-height:1.4}
+.cap em{font-style:normal; font:500 10.5px/1.3 var(--f-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--deskInk2)}
+.replay{appearance:none; border:1.5px solid color-mix(in srgb,var(--deskInk) 18%,transparent); background:transparent; border-radius:99px; padding:5px 10px; font:500 10.5px/1 var(--f-mono); letter-spacing:.06em; text-transform:uppercase; color:var(--deskInk2); cursor:pointer; white-space:nowrap}
+.replay:hover{color:var(--deskInk); border-color:var(--deskInk)}
+.notes{margin-top:44px; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:24px; border-top:1px solid color-mix(in srgb,var(--deskInk) 12%,transparent); padding-top:26px}
+.notes h4{font:800 17px/1.2 var(--f-display); margin:0 0 6px}
+.notes p{margin:0; color:var(--deskInk2); font-size:15px; max-width:60ch}
+
+/* screen pieces */
+.abs{position:absolute}
+.meta{font:500 10px/1.2 var(--f-mono); letter-spacing:.08em; color:var(--ink2); text-transform:uppercase}
+.wm{font:800 30px/1 var(--f-display); letter-spacing:-.04em; white-space:nowrap}
+.hand{font:400 20px/1.15 var(--f-hand); color:var(--terra)}
+.big-hand{font:400 44px/1 var(--f-hand); color:var(--ink)}
+.ink{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; z-index:3}
+.ink path, .ink circle{fill:none; stroke-linecap:round; stroke-linejoin:round}
+.coach{position:absolute}
+.coach .m{width:100%; height:100%; display:block}
+.chip{position:absolute; background:var(--card); border:1.5px solid color-mix(in srgb,var(--ink) 16%,transparent); border-radius:99px; padding:6px 11px; font:700 12px/1 var(--f-display); white-space:nowrap}
+.bubble-me{position:absolute; right:16px; background:var(--almond); border-radius:16px 16px 5px 16px; padding:8px 12px; font:600 13px/1.25 var(--f-display); max-width:70%}
+.letter{position:absolute; font:400 13.5px/1.42 var(--f-display); color:var(--ink)}
+.face{position:absolute; width:34px; height:34px}
+.face svg{width:100%; height:100%; fill:none; stroke:var(--taupe); stroke-width:1.8; stroke-linecap:round}
+.draw{background:var(--ink); -webkit-mask:var(--src) center / contain no-repeat; mask:var(--src) center / contain no-repeat}
+.sketch{animation:sketch 1000ms var(--ease) both}
+@keyframes sketch{from{clip-path:polygon(0 0,0 0,0 0)} to{clip-path:polygon(0 0,250% 0,0 250%)}}
+.pop{animation:pop 420ms var(--spring) both}
+@keyframes pop{from{transform:scale(.4); opacity:0}}
+.writein{animation:write var(--d,700ms) var(--st,steps(12)) both}
+@keyframes write{from{clip-path:inset(0 100% 0 0)} to{clip-path:inset(0 -6% 0 0)}}
+.fadein{animation:fadein 420ms var(--ease) both}
+@keyframes fadein{from{opacity:0; transform:translateY(6px)}}
+@keyframes wordin{from{opacity:0; transform:translateY(5px)} to{opacity:1; transform:none}}
+.spin{transform-box:fill-box; transform-origin:center; animation:spin 1.4s linear infinite}
+.spin circle{stroke-dasharray:1 120; animation:dash 1.4s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes dash{0%{stroke-dasharray:1 120; stroke-dashoffset:0} 50%{stroke-dasharray:60 120; stroke-dashoffset:-14} 100%{stroke-dasharray:60 120; stroke-dashoffset:-86}}
+
+__MASCOT_CSS__
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{animation-duration:1ms!important; animation-delay:0ms!important; transition-duration:1ms!important; animation-iteration-count:1!important}
+}
+</style>
+
+<div class="wrap">
+  <div class="dmeta">Second Strong · loading moments · Sketchbook</div>
+  <h1>Waiting, <em>written in.</em></h1>
+  <p class="lede">Every wait in the app uses the same pen as onboarding. Instead of spinning, the app writes: a stroke underlines, rings, ticks or sketches the thing that's on its way. Each phone loops; replay any of them.</p>
+  <div class="grid" id="grid"></div>
+  <div class="notes">
+    <div><h4>Timing</h4><p>Launch screens finish in under two seconds and never block: if the app is ready sooner, the sequence skips to its last frame. Longer waits (plan, coach, scan) loop calmly until the result lands, then hand over without a jump.</p></div>
+    <div><h4>Motion rules</h4><p>The pen draws first, words write in after it, ticks and dots pop last. No shimmer, no bouncing dots, no progress percentages. With reduced motion turned on, each screen shows its finished frame.</p></div>
+    <div><h4>In the app</h4><p>On iOS these are Rive files: the pen strokes, the coach states and the timing all live in one state machine, so a loader can jump straight to "done" when data arrives.</p></div>
+  </div>
+</div>
+
+<script>
+(function(){
+__MASCOT_JS__
+
+const PLATE = "__PLATE__";
+const NS = "http://www.w3.org/2000/svg";
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const COACH = "bramble";
+class Stop extends Error {}
+const today = new Date().toLocaleDateString("en-GB", {weekday:"long", day:"numeric", month:"long"});
+
+function make(tag, cls, html, style){ const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; if (style) Object.assign(n.style, style); return n; }
+const F = n => n.toFixed(1);
+function smooth(pts){
+  let d = `M${F(pts[0][0])} ${F(pts[0][1])}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i-1] || pts[i], p1 = pts[i], p2 = pts[i+1], p3 = pts[i+2] || p2;
+    d += ` C${F(p1[0]+(p2[0]-p0[0])/6)} ${F(p1[1]+(p2[1]-p0[1])/6)} ${F(p2[0]-(p3[0]-p1[0])/6)} ${F(p2[1]-(p3[1]-p1[1])/6)} ${F(p2[0])} ${F(p2[1])}`;
+  }
+  return d;
+}
+const ellipse = (cx, cy, rx, ry) => `M${F(cx)} ${F(cy - ry)} A${F(rx)} ${F(ry)} 0 0 1 ${F(cx)} ${F(cy + ry)} A${F(rx)} ${F(ry)} 0 0 1 ${F(cx)} ${F(cy - ry)}`;
+const pill = (x, y, w, h) => { const r = 16; return `M${F(x + r)} ${F(y)} L${F(x + w - r)} ${F(y)} Q${F(x + w)} ${F(y)} ${F(x + w)} ${F(y + r)} L${F(x + w)} ${F(y + h - r)} Q${F(x + w)} ${F(y + h)} ${F(x + w - r)} ${F(y + h)} L${F(x + r)} ${F(y + h)} Q${F(x)} ${F(y + h)} ${F(x)} ${F(y + h - r)} L${F(x)} ${F(y + r)} Q${F(x)} ${F(y)} ${F(x + r)} ${F(y)}`; };
+
+/* each phone runs its own cancellable loop */
+function stage(scr, fn, gap = 900){
+  let token = 0;
+  const run = async () => {
+    const my = ++token;
+    const alive = () => { if (my !== token) throw new Stop(); };
+    const wait = ms => new Promise((res, rej) => setTimeout(() => my === token ? res() : rej(new Stop()), REDUCED ? 0 : ms));
+    while (my === token) {
+      scr.innerHTML = "";
+      const svg = document.createElementNS(NS, "svg"); svg.setAttribute("class", "ink"); scr.appendChild(svg);
+      const W = scr.clientWidth, H = scr.clientHeight; svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+      const pen = (d, o = {}) => {
+        const p = document.createElementNS(NS, "path"); p.setAttribute("d", d);
+        p.setAttribute("stroke", o.color || "var(--terra)"); p.setAttribute("stroke-width", o.w || 2.4); if (o.opacity) p.setAttribute("opacity", o.opacity);
+        (o.into || svg).appendChild(p);
+        const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+        const a = p.animate([{strokeDashoffset:len}, {strokeDashoffset:0}], {duration:REDUCED ? 1 : (o.dur || 700), delay:REDUCED ? 0 : (o.delay || 0), easing:o.ease || "cubic-bezier(.4,.05,.35,1)", fill:"forwards"});
+        p.done = a.finished.catch(() => {});
+        p.undraw = (dur = 500) => p.animate([{strokeDashoffset:0}, {strokeDashoffset:-len}], {duration:REDUCED ? 1 : dur, easing:"cubic-bezier(.4,0,.6,1)", fill:"forwards"}).finished.catch(() => {});
+        return p;
+      };
+      try { await fn({scr, svg, W, H, pen, wait, alive}); await wait(REDUCED ? 99999999 : gap); }
+      catch (err) { if (!(err instanceof Stop)) { console.error(err); return; } return; }
+    }
+  };
+  run();
+  return () => { token++; run(); };
+}
+const coachEl = (state, size, style) => make("div", "coach", mascot(COACH), {width:size + "px", height:size + "px", ...style});
+
+/* ---------- 1 · cold launch ---------- */
+async function coldLaunch({scr, W, H, pen, wait}){
+  const y = H * .44;
+  const word = make("div", "wm abs", "Second Strong", {left:"0", right:"0", top:(y - 30) + "px", textAlign:"center", clipPath:"inset(0 100% 0 0)"});
+  scr.appendChild(word);
+  const date = make("div", "meta abs", esc(today), {left:"0", right:"0", top:(y + 30) + "px", textAlign:"center", opacity:"0"});
+  scr.appendChild(date);
+  const line = pen(smooth([[-10, y + 16], [W * .3, y + 13], [W * .7, y + 17], [W + 10, y + 13]]), {dur:1000});
+  word.animate([{clipPath:"inset(0 100% 0 0)"}, {clipPath:"inset(0 0 0 0)"}], {duration:REDUCED ? 1 : 820, delay:REDUCED ? 0 : 160, easing:"cubic-bezier(.4,.05,.35,1)", fill:"forwards"});
+  await wait(900);
+  date.style.transition = "opacity 400ms"; date.style.opacity = "1";
+  await wait(800);
+  /* the wordmark lifts into the header; the pen sketches Today into place */
+  const lift = [{transform:"translateY(0) scale(1)"}, {transform:`translateY(${-(y - 64)}px) scale(.62)`}];
+  word.animate(lift, {duration:REDUCED ? 1 : 620, easing:"cubic-bezier(.65,0,.35,1)", fill:"forwards"});
+  date.animate([{transform:"translateY(0)"}, {transform:`translateY(${-(y - 40)}px)`}], {duration:REDUCED ? 1 : 620, easing:"cubic-bezier(.65,0,.35,1)", fill:"forwards"});
+  line.animate([{opacity:1}, {opacity:0}], {duration:300, fill:"forwards"});
+  await wait(560);
+  const cards = [[18, 120, W - 36, 96], [18, 230, W - 36, 120], [18, 364, W - 36, 96]];
+  cards.forEach(([x, cy, w, h], i) => pen(pill(x, cy, w, h), {dur:700, delay:i * 160, color:"var(--taupe)", w:1.6}));
+  await wait(500);
+  [["How was the night?", 138], ["Protein · 0 of 100g", 248], ["Today · lower body", 382]].forEach(([t, ty], i) => {
+    const n = make("div", "abs fadein", t, {left:"34px", top:ty + "px", font:"800 15px/1.1 var(--f-display)", animationDelay:(i * 160 + 300) + "ms"}); scr.appendChild(n);
+  });
+  pen(smooth([[34, 278], [W * .45, 276], [W - 40, 279]]), {color:"rgba(59,50,44,.14)", w:6, dur:500, delay:700});
+  pen(smooth([[34, 278], [W * .33, 277]]), {color:"var(--apricot)", w:7, dur:600, delay:1100});
+  await wait(1800);
+}
+
+/* ---------- 2 · morning open ---------- */
+async function morning({scr, W, H, pen, wait}){
+  const c = coachEl("hello", 150, {left:(W/2 - 75) + "px", top:(H * .42) + "px"}); c.dataset.state = "hello"; scr.appendChild(c);
+  c.animate([{transform:"translateY(260px)"}, {transform:"translateY(0)"}], {duration:REDUCED ? 1 : 720, easing:"cubic-bezier(.3,1.35,.5,1)", fill:"backwards"});
+  const meta = make("div", "meta abs fadein", esc(today), {left:"0", right:"0", top:(H * .2) + "px", textAlign:"center", animationDelay:"300ms"}); scr.appendChild(meta);
+  await wait(450);
+  const hi = make("div", "big-hand abs writein", "Morning.", {left:"0", right:"0", top:(H * .25) + "px", textAlign:"center"}); hi.style.setProperty("--d", "700ms"); hi.style.setProperty("--st", "steps(10)");
+  scr.appendChild(hi);
+  await wait(720);
+  pen(smooth([[W/2 - 70, H * .25 + 52], [W/2, H * .25 + 49], [W/2 + 72, H * .25 + 52]]), {dur:420});
+  await wait(1300);
+  /* the coach tucks into the corner; the check-in appears */
+  c.dataset.state = "idle";
+  c.animate([{transform:"none"}, {transform:`translate(${W/2 - 54}px, ${-(H * .42) + 14}px) scale(.44)`}], {duration:REDUCED ? 1 : 700, easing:"cubic-bezier(.65,0,.35,1)", fill:"forwards"});
+  [hi, meta].forEach(n => n.animate([{opacity:1}, {opacity:0, transform:"translateY(-12px)"}], {duration:300, fill:"forwards"}));
+  scr.querySelector(".ink").animate([{opacity:1}, {opacity:0}], {duration:300, fill:"forwards"});
+  await wait(420);
+  const q = make("div", "abs fadein", `<div class="meta">${esc(today)}</div><div style="font:800 24px/1.05 var(--f-display);letter-spacing:-.03em;margin-top:6px">How was <em style="font-family:var(--f-serif);font-weight:400">the night?</em></div>`, {left:"20px", top:"74px", right:"90px"});
+  scr.appendChild(q);
+  const mouths = ["M11 22 q5 -4 10 0", "M11 21 h10", "M11 21 q2.5 -2 5 0 q2.5 2 5 0", "M11 20 q5 2 10 0", "M10 19 q6 5 12 0"];
+  mouths.forEach((m, i) => { const f = make("div", "face pop", `<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="13"/><circle cx="11.5" cy="13" r="1" fill="currentColor"/><circle cx="20.5" cy="13" r="1" fill="currentColor"/><path d="${m}"/></svg>`, {left:(20 + i * ((W - 74) / 4)) + "px", top:"170px", animationDelay:(250 + i * 70) + "ms"}); scr.appendChild(f); });
+  await wait(2000);
+}
+
+/* ---------- 3 · writing your plan ---------- */
+async function writingPlan({scr, W, H, pen, wait}){
+  const c = coachEl("thinking", 96, {left:(W/2 - 48) + "px", top:"58px"}); c.dataset.state = "thinking"; scr.appendChild(c);
+  const head = make("div", "hand abs fadein", "writing your plan…", {left:"0", right:"0", top:"164px", textAlign:"center"}); scr.appendChild(head);
+  const steps = ["your protein target", "sessions on your days", "your first note"];
+  const y0 = 232, gap = 70;
+  const rows = steps.map((t, i) => { const n = make("div", "abs", t, {left:"34px", top:(y0 + i * gap) + "px", font:"700 15px/1 var(--f-display)", color:"var(--taupe)", transition:"color 400ms"}); scr.appendChild(n); return n; });
+  await wait(400);
+  let from = [14, y0 - 40];
+  for (let i = 0; i < steps.length; i++) {
+    const ly = y0 + i * gap + 26, ltr = i % 2 === 0;
+    const a = ltr ? 34 : W - 40, b = ltr ? W - 40 : 34;
+    const pts = i === 0 ? [from, [16, ly - 20], [a, ly], [b, ly]] : [from, [ltr ? 18 : W - 18, ly - gap / 2], [a, ly], [b, ly]];
+    await pen(smooth(pts), {dur:900}).done;
+    rows[i].style.color = "var(--ink)";
+    const tx = W - 44, ty = y0 + i * gap + 6;
+    pen(`M${tx - 7} ${ty} l5 6 l10 -12`, {dur:260, w:2.6});
+    from = [b, ly];
+    await wait(260);
+  }
+  c.dataset.state = "proud";
+  head.textContent = "ready."; head.style.animation = "none"; void head.offsetWidth; head.style.animation = "";
+  await wait(1700);
+}
+
+/* ---------- 4 · coach is thinking ---------- */
+async function coachThinking({scr, W, H, pen, wait}){
+  const top = make("div", "abs", `<div style="display:flex;align-items:center;gap:8px"><div style="width:42px;height:42px;position:relative" id="av"></div><div><div style="font:800 14px/1 var(--f-display)">Bramble</div><div class="meta" style="margin-top:3px">your coach</div></div></div>`, {left:"16px", top:"46px", right:"16px"});
+  scr.appendChild(top);
+  const av = coachEl("thinking", 42, {left:"0", top:"0"}); av.dataset.state = "thinking"; top.querySelector("#av").appendChild(av);
+  pen(`M16 104 L${W - 16} 104`, {color:"rgba(59,50,44,.12)", w:1, dur:1});
+  const me = make("div", "bubble-me fadein", "Hips are stiff today. Still train?", {top:"124px"}); scr.appendChild(me);
+  await wait(500);
+  const cx = 16, cy = 186, cw = W - 52, ch = 170;
+  await pen(pill(cx, cy, cw, ch), {color:"var(--taupe)", w:1.6, dur:800}).done;
+  /* the pen writes placeholder lines, then the reply arrives */
+  const lines = [[.86, 0], [.7, 1], [.8, 2], [.42, 3]];
+  for (let round = 0; round < 2; round++) {
+    const drawn = lines.map(([f, i]) => pen(`M${cx + 16} ${cy + 30 + i * 28} L${cx + 16 + (cw - 32) * f} ${cy + 30 + i * 28}`, {color:"rgba(168,90,60,.28)", w:7, dur:500, delay:i * 220}));
+    await wait(1400);
+    if (round === 0) await Promise.all(drawn.map(p => p.undraw(420)));
+  }
+  scr.querySelectorAll(".ink path").forEach((p, i) => { if (i > 1) p.animate([{opacity:1}, {opacity:0}], {duration:300, fill:"forwards"}); });
+  const text = "Yes, a lighter one. Swap squats for glute bridges and keep the walk. Protein at lunch.";
+  const words = text.split(" ");
+  const letter = make("div", "letter", words.map((w, i) => `<span style="opacity:0;display:inline-block;animation:wordin 420ms var(--ease) ${300 + Math.floor(i / 3) * 110}ms forwards">${w}&nbsp;</span>`).join(""), {left:(cx + 16) + "px", top:(cy + 18) + "px", width:(cw - 32) + "px"});
+  scr.appendChild(letter);
+  av.dataset.state = "hello";
+  await wait(2600);
+}
+
+/* ---------- 5 · scanning your plate ---------- */
+async function plateScan({scr, W, H, pen, wait}){
+  const cx = W/2, cy = H * .36, s = 170;
+  const meta = make("div", "meta abs fadein", "Lunch · 12:45", {left:"20px", top:"52px"}); scr.appendChild(meta);
+  const plate = make("div", "draw abs sketch", "", {left:(cx - s/2) + "px", top:(cy - s/2) + "px", width:s + "px", height:s + "px"}); plate.style.setProperty("--src", `url(${PLATE})`); scr.appendChild(plate);
+  await wait(700);
+  /* the pen rings the plate while it reads it */
+  for (let i = 0; i < 2; i++) { const r = pen(ellipse(cx, cy, s/2 + 16, s/2 + 10), {dur:900}); await r.done; if (i === 0) await r.undraw(600); }
+  const chips = [["Salmon · 28g", cx - 104, cy + s/2 + 40], ["Rice", cx + 26, cy + s/2 + 40], ["Greens", cx - 40, cy + s/2 + 80]];
+  chips.forEach(([t, x, y], i) => { const n = make("div", "chip pop", t, {left:x + "px", top:y + "px", animationDelay:(i * 160) + "ms"}); scr.appendChild(n); });
+  await wait(800);
+  const fit = make("div", "abs fadein", "Fits your day", {left:"0", right:"0", top:(cy + s/2 + 136) + "px", textAlign:"center", font:"800 20px/1 var(--f-display)"}); scr.appendChild(fit);
+  await wait(300);
+  pen(smooth([[cx - 70, cy + s/2 + 162], [cx, cy + s/2 + 159], [cx + 72, cy + s/2 + 162]]), {dur:420});
+  await wait(1800);
+}
+
+/* ---------- 6 · small waits ---------- */
+async function smallWaits({scr, svg, W, H, pen, wait}){
+  const spin = document.createElementNS(NS, "g"); spin.setAttribute("class", "spin");
+  spin.innerHTML = `<circle cx="${W/2}" cy="84" r="13" stroke="var(--terra)" stroke-width="2.6"/>`;
+  svg.appendChild(spin);
+  scr.appendChild(make("div", "meta abs", "Syncing with Apple Health", {left:"0", right:"0", top:"112px", textAlign:"center"}));
+  pen(`M20 150 L${W - 20} 150`, {color:"rgba(59,50,44,.10)", w:1, dur:1});
+  scr.appendChild(make("div", "meta abs", "Today, while it loads", {left:"20px", top:"168px"}));
+  const cards = [[192, 92], [298, 120], [432, 92]];
+  cards.forEach(([y, h]) => pen(pill(18, y, W - 36, h), {color:"rgba(59,50,44,.16)", w:1.4, dur:1}));
+  /* the pen writes faint lines across each placeholder, again and again, instead of a shimmer */
+  for (let round = 0; round < 3; round++) {
+    const ps = [];
+    cards.forEach(([y, h], ci) => {
+      const n = Math.floor((h - 30) / 22) + 1;
+      for (let i = 0; i < n; i++) ps.push(pen(`M34 ${y + 26 + i * 22} L${34 + (W - 100) * [.8, .55, .7, .4][(i + ci) % 4]} ${y + 26 + i * 22}`, {color:"rgba(168,90,60,.18)", w:8, dur:520, delay:(ci * 3 + i) * 140}));
+    });
+    await wait(1900);
+    await Promise.all(ps.map(p => p.undraw(500)));
+  }
+}
+
+const esc = s => String(s).replace(/[<>&"]/g, ch => ({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"})[ch]);
+const LOADERS = [
+  {name:"Cold launch", when:"First open · under 2s", desc:"The pen draws one stroke and the wordmark writes along it. Then it lifts into the header while Today is sketched into place.", run:coldLaunch},
+  {name:"Morning open", when:"Daily open · about 2s", desc:"Your coach rises and waves, \"Morning.\" writes in and gets underlined, then the coach tucks into the corner and the check-in appears.", run:morning},
+  {name:"Writing your plan", when:"After onboarding · 3–5s", desc:"The coach thinks while the pen underlines each step in turn, ticks it off, and lands on \"ready.\"", run:writingPlan},
+  {name:"Coach is thinking", when:"Chat replies · loops", desc:"The pen draws the reply card and writes faint placeholder lines across it until the answer arrives a few words at a time.", run:coachThinking},
+  {name:"Scanning your plate", when:"Food photo · 1–3s", desc:"The plate sketches in, the pen rings it while it reads, the items land as chips, and \"Fits your day\" is underlined.", run:plateScan},
+  {name:"Small waits", when:"Syncs and lists · loops", desc:"A pen spinner for quick syncs, and Today placeholders the pen writes across instead of a grey shimmer.", run:smallWaits}
+];
+const grid = document.getElementById("grid");
+LOADERS.forEach((l, i) => {
+  const art = make("article", "ld", `<div class="frame"><div class="scr" aria-label="${esc(l.name)} animation"></div></div>
+    <div class="cap"><div class="top"><b>${esc(l.name)}</b><button class="replay" type="button">Replay</button></div><em>${esc(l.when)}</em><span>${esc(l.desc)}</span></div>`);
+  grid.appendChild(art);
+  const restart = stage(art.querySelector(".scr"), l.run);
+  art.querySelector(".replay").addEventListener("click", restart);
+});
+window.__ld = { count: LOADERS.length };
+})();
+</script>
