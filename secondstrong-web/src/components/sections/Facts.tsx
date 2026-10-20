@@ -3,9 +3,10 @@
 import { useRef } from "react";
 import { facts } from "@/content/site";
 import { useStill } from "@/lib/motion/MotionProvider";
-import { clamp01, pinProgress, span01, useFrame, useLayoutRebuild } from "@/lib/motion/frame";
+import { clamp01, measurePin, pinAt, span01, useFrame, useLayoutRebuild, type Pin } from "@/lib/motion/frame";
 import { factsExitX, factsGx, isPhone, type Pt } from "@/lib/line/geometry";
 import { rise, wipe } from "@/lib/motion/reveal";
+import { trace } from "@/lib/line/trace";
 import { makeSchedule, type ScheduleState } from "@/lib/motion/schedule";
 
 type Marks = Record<"c0" | "mid" | "m1" | "c1" | "u1" | "u2" | "c2" | "pill" | "band" | "end", number>;
@@ -15,6 +16,11 @@ interface Built {
   bracketLen: number;
   vw: number;
   mob: boolean;
+  pin: Pin;
+  /** Point on the line at a drawn length (sampled once, not measured per frame). */
+  point: (l: number) => [number, number];
+  /** Each column's text lines, revealed in turn. */
+  items: Element[][];
   /** Scroll progress → what's drawn, which chart the view is on, how much text is showing. */
   at: (p: number) => ScheduleState;
 }
@@ -134,7 +140,8 @@ export function Facts() {
       L,
       mob ? { lead: 0.3, hold: 1.4, travel: 0.6, exit: 0.6 } : { lead: 0.3, hold: 0.45, travel: 0.3, exit: 0.6 },
     );
-    built.current = { L, marks, bracketLen, vw, mob, at };
+    const items = texts.current.map((t) => (t ? [...t.children] : []));
+    built.current = { L, marks, bracketLen, vw, mob, pin: measurePin(section.current), point: trace(d, L), items, at };
     if (still) shown.current = 1;
     paintedAt.current = -1;
     paint();
@@ -147,9 +154,9 @@ export function Facts() {
     const state = b.at(shown.current);
     const dr = state.drawn;
     path.style.strokeDashoffset = `${L - dr}`;
-    const pt = path.getPointAtLength(Math.min(dr, L));
-    nib.current?.setAttribute("cx", `${pt.x}`);
-    nib.current?.setAttribute("cy", `${pt.y}`);
+    const [x, y] = b.point(dr);
+    nib.current?.setAttribute("cx", `${x}`);
+    nib.current?.setAttribute("cy", `${y}`);
     if (nib.current) nib.current.style.opacity = dr > 2 && dr < L - 2 ? "1" : "0";
 
     // what the pen has passed stays drawn: the training line, the bone fills, the bracket, the bars
@@ -165,8 +172,7 @@ export function Facts() {
     cols.forEach(([a, s0, e], i) => {
       wipe(axes.current[i], span01(dr, a, s0 + (e - s0) * 0.4));
       // the figure and its words reveal while the pen holds on the chart, and stay
-      const items = texts.current[i]?.children;
-      if (items) [...items].forEach((el, j) => wipe(el, span01(state.text[i], j * 0.2, 0.5 + j * 0.25)));
+      b.items[i].forEach((el, j) => wipe(el, span01(state.text[i], j * 0.2, 0.5 + j * 0.25)));
     });
 
     // phones: the camera follows the pen across the three screens
@@ -177,14 +183,14 @@ export function Facts() {
 
   useFrame(() => {
     const b = built.current;
-    if (!b || !section.current) return;
-    const want = clamp01(pinProgress(section.current) / 0.94);
+    if (!b) return;
+    const want = clamp01(pinAt(b.pin) / 0.94);
     if (want === shown.current && paintedAt.current === want) return;
     shown.current += (want - shown.current) * 0.2;
     if (Math.abs(want - shown.current) < 0.0005) shown.current = want;
     paint();
     paintedAt.current = shown.current;
-  }, !still);
+  }, !still, section);
 
   return (
     <section className="facts" id="facts" data-tone="light" aria-label="What actually changes after 40" ref={section}>

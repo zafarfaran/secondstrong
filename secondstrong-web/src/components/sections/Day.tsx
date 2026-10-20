@@ -4,9 +4,10 @@ import { useRef } from "react";
 import { daySteps } from "@/content/site";
 import { Draw } from "@/components/ui/Draw";
 import { useStill } from "@/lib/motion/MotionProvider";
-import { clamp01, pinProgress, span01, useFrame, useLayoutRebuild } from "@/lib/motion/frame";
+import { clamp01, measurePin, pinAt, span01, useFrame, useLayoutRebuild, type Pin } from "@/lib/motion/frame";
 import { dayGx, isPhone, type Pt } from "@/lib/line/geometry";
-import { wipe } from "@/lib/motion/reveal";
+import { slide, wipe } from "@/lib/motion/reveal";
+import { trace } from "@/lib/line/trace";
 import { makeSchedule, type ScheduleState } from "@/lib/motion/schedule";
 
 interface Built {
@@ -16,6 +17,11 @@ interface Built {
   leave: number[];
   vw: number;
   mob: boolean;
+  pin: Pin;
+  /** Point on the line at a drawn length (sampled once, not measured per frame). */
+  point: (l: number) => [number, number];
+  /** Each column's text lines, revealed in turn. */
+  items: Element[][];
   /** Scroll progress → what's drawn, which moment the view is on, how much text is showing. */
   at: (p: number) => ScheduleState;
 }
@@ -36,6 +42,7 @@ export function Day() {
   const pen = useRef<SVGPathElement>(null);
   const nib = useRef<SVGCircleElement>(null);
   const pics = useRef<(HTMLDivElement | null)[]>([]);
+  const reveals = useRef<(HTMLDivElement | null)[]>([]);
   const texts = useRef<(HTMLDivElement | null)[]>([]);
   const built = useRef<Built | null>(null);
   const shown = useRef(0); // eased scroll progress
@@ -107,7 +114,8 @@ export function Day() {
       L,
       mob ? { lead: 0.3, hold: 1.4, travel: 0.6, exit: 0.6 } : { lead: 0.3, hold: 0.45, travel: 0.25, exit: 0.6 },
     );
-    built.current = { L, arrive, leave, vw, mob, at };
+    const items = texts.current.map((t) => (t ? [...t.children] : []));
+    built.current = { L, arrive, leave, vw, mob, pin: measurePin(section.current), point: trace(d, L), items, at };
     if (still) shown.current = 1;
     paintedAt.current = -1;
     paint();
@@ -120,16 +128,15 @@ export function Day() {
     const state = b.at(shown.current);
     const dr = state.drawn;
     path.style.strokeDashoffset = `${L - dr}`;
-    const pt = path.getPointAtLength(Math.min(dr, L));
-    nib.current?.setAttribute("cx", `${pt.x}`);
-    nib.current?.setAttribute("cy", `${pt.y}`);
+    const [x, y] = b.point(dr);
+    nib.current?.setAttribute("cx", `${x}`);
+    nib.current?.setAttribute("cy", `${y}`);
     if (nib.current) nib.current.style.opacity = dr > 2 && dr < L - 2 ? "1" : "0";
 
     arrive.forEach((a, i) => {
       // the drawing appears as the arch goes over it; its words reveal while the pen holds, and stay
-      wipe(pics.current[i], span01(dr, a, leave[i]));
-      const items = texts.current[i]?.children;
-      if (items) [...items].forEach((el, j) => wipe(el, span01(state.text[i], j * 0.2, 0.5 + j * 0.25)));
+      slide(reveals.current[i], span01(dr, a, leave[i]));
+      b.items[i].forEach((el, j) => wipe(el, span01(state.text[i], j * 0.2, 0.5 + j * 0.25)));
     });
 
     // phones: one moment per screen; the view moves on only after the hold
@@ -140,14 +147,14 @@ export function Day() {
 
   useFrame(() => {
     const b = built.current;
-    if (!b || !section.current) return;
-    const want = clamp01(pinProgress(section.current) / 0.94);
+    if (!b) return;
+    const want = clamp01(pinAt(b.pin) / 0.94);
     if (want === shown.current && paintedAt.current === want) return;
     shown.current += (want - shown.current) * 0.2;
     if (Math.abs(want - shown.current) < 0.0005) shown.current = want;
     paint();
     paintedAt.current = shown.current;
-  }, !still);
+  }, !still, section);
 
   return (
     <section className="day f-honey" id="day" data-tone="light" aria-label="A day with Second Strong" ref={section}>
@@ -165,7 +172,9 @@ export function Day() {
               {daySteps.map((s, i) => (
                 <div className="dcol" key={s.time}>
                   <div className="dpic" ref={(el) => void (pics.current[i] = el)}>
-                    <Draw name={s.draw} label={`Line drawing: ${s.title}`} />
+                    <div className="rv" ref={(el) => void (reveals.current[i] = el)}>
+                      <Draw name={s.draw} label={`Line drawing: ${s.title}`} />
+                    </div>
                   </div>
                   <div className="dtxt" ref={(el) => void (texts.current[i] = el)}>
                     <span className="t">{s.time}</span>

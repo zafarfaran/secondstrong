@@ -48,7 +48,7 @@ export function useScrubVideo(
     const want = progress() * (v.duration - 0.05);
     shown.current += (want - shown.current) * 0.25;
     seek(v, shown.current);
-  }, active);
+  }, active, video);
 }
 
 /** Seek only when the difference is visible, so idle frames don't thrash the decoder. */

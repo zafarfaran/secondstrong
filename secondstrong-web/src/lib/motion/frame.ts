@@ -1,20 +1,53 @@
 "use client";
 
-import { useEffect, useEffectEvent } from "react";
+import { useEffect, useEffectEvent, type RefObject } from "react";
 
-/** Runs `callback` every animation frame while `active`, always calling the latest version. */
-export function useFrame(callback: () => void, active = true) {
+/**
+ * Scroll and viewport size, read once at the start of each frame before any callback writes to
+ * the DOM. Reading scrollY or scrollHeight after a style write forces the browser to lay out the
+ * page there and then; with several animations writing in turn, that happened several times a frame.
+ */
+export const view = { y: 0, w: 0, h: 0, docH: 0 };
+
+// One requestAnimationFrame loop for every animation, so the reads above happen once, up front.
+const callbacks = new Set<() => void>();
+let raf = 0;
+function tick() {
+  view.y = scrollY;
+  view.w = innerWidth;
+  view.h = innerHeight;
+  view.docH = document.documentElement.scrollHeight;
+  callbacks.forEach((cb) => cb());
+  raf = callbacks.size ? requestAnimationFrame(tick) : 0;
+}
+
+/**
+ * Runs `callback` every animation frame while `active`, always calling the latest version.
+ * With `target`, it only runs while that element is on or near the screen, so offscreen
+ * sections cost nothing. Callbacks should read scroll and viewport from `view`.
+ */
+export function useFrame(callback: () => void, active = true, target?: RefObject<Element | null>) {
   const onFrame = useEffectEvent(callback);
   useEffect(() => {
     if (!active) return;
-    let id = 0;
-    const loop = () => {
-      onFrame();
-      id = requestAnimationFrame(loop);
+    const cb = () => onFrame();
+    const start = () => {
+      callbacks.add(cb);
+      raf ||= requestAnimationFrame(tick);
     };
-    id = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(id);
-  }, [active]);
+    const stop = () => void callbacks.delete(cb);
+    const el = target?.current;
+    if (!el) {
+      start();
+      return stop;
+    }
+    const io = new IntersectionObserver(([e]) => (e.isIntersecting ? start() : stop()), { rootMargin: "50% 0px" });
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      stop();
+    };
+  }, [active, target]);
 }
 
 /** How far the viewport has scrolled through a pinned (tall) section, 0 to 1. */
@@ -22,6 +55,22 @@ export function pinProgress(el: HTMLElement): number {
   const r = el.getBoundingClientRect();
   const span = r.height - innerHeight;
   return span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+}
+
+/** Where a pinned section sits in the page. Measured when layout changes, so scroll frames needn't read layout. */
+export interface Pin {
+  top: number;
+  height: number;
+}
+export function measurePin(el: HTMLElement): Pin {
+  const r = el.getBoundingClientRect();
+  return { top: r.top + scrollY, height: r.height };
+}
+
+/** Same as `pinProgress`, from a measured `Pin` and this frame's `view`: no layout read. */
+export function pinAt(pin: Pin): number {
+  const span = pin.height - view.h;
+  return span > 0 ? Math.min(1, Math.max(0, (view.y - pin.top) / span)) : 0;
 }
 
 export const clamp01 = (x: number) => Math.min(1, Math.max(0, x));

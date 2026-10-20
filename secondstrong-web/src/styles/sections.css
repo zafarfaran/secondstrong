@@ -219,7 +219,7 @@ footer .foot-side { display: grid; justify-items: end; gap: 14px; }
 .ftxt p { font-size: 17px; line-height: 1.45; margin-top: 10px; max-width: 24em; }
 .ftxt cite { display: block; font: 500 12px/1.5 var(--mono); font-style: normal; color: var(--ink-2); margin-top: 10px; }
 .fnote { font: 500 12px/1.4 var(--mono); color: var(--ink-2); margin-top: 18px; }
-.fline { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+.fline { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; will-change: transform; } /* own layer: redrawing the line doesn't repaint the text */
 .fline .pen { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; }
 .fline .dash { fill: none; stroke: var(--terra-deep); stroke-width: 5; stroke-dasharray: 2 14; stroke-linecap: round; }
 .fline .fill { fill: var(--terra); }
@@ -240,7 +240,8 @@ footer .foot-side { display: grid; justify-items: end; gap: 14px; }
 .day .dhead h2 span { display: inline; }
 .dcols { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(28px, 3.4vw, 56px); margin-top: clamp(36px, 6vh, 64px); }
 .dpic { width: 100%; aspect-ratio: 1; max-width: 28vh; margin: 0 auto 0 0; }
-.dpic .draw { width: 100%; height: 100%; color: var(--ink); }
+.dpic .rv { width: 100%; height: 100%; overflow: hidden; will-change: transform; } /* revealed by transform (see slide()), so the masked drawing is never repainted */
+.dpic .draw { width: 100%; height: 100%; color: var(--ink); will-change: transform; }
 .dtxt { margin-top: 30px; }
 .dtxt .t { display: block; font: 500 14px/1 var(--mono); }
 .dtxt b { display: block; font-size: clamp(22px, 2vw, 30px); letter-spacing: -0.03em; line-height: 1.05; margin-top: 10px; }
@@ -296,6 +297,7 @@ footer .foot-side { display: grid; justify-items: end; gap: 14px; }
 @media (max-width: 860px) {
   /* phones: the three charts sit in a row three screens wide; the view pans with the pen */
   .facts { height: 540vh; } /* extra scroll on phones: each chart holds while you read it */
+  .facts .track, .day .track { will-change: transform; } /* the view pans by transform: keep it on the compositor */
   .facts .track { width: 300vw; justify-content: flex-start; padding-top: 92px; }
   .facts .fhead { width: 100vw; padding: 0 16px; margin: 0; }
   .facts .fhead h2 { font-size: 36px; }

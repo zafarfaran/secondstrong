@@ -43,7 +43,7 @@ export function Hero() {
     lastP.current = p;
     parts.current.forEach((el) => el.classList.toggle("on", p >= LANDS[Number(el.dataset.s)]));
     section.current?.classList.toggle("moved", p > 0.03);
-  }, animate);
+  }, animate, section);
 
   const part = (el: HTMLElement | null) => {
     if (el && !parts.current.includes(el)) parts.current.push(el);

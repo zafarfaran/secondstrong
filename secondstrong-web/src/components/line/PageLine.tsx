@@ -2,9 +2,9 @@
 
 import { useRef } from "react";
 import { useStill } from "@/lib/motion/MotionProvider";
-import { useFrame, useLayoutRebuild } from "@/lib/motion/frame";
+import { useFrame, useLayoutRebuild, view } from "@/lib/motion/frame";
 import { setHits } from "@/lib/motion/hits";
-import { box, isPhone, pageWidth } from "@/lib/line/geometry";
+import { box, isPhone, pageWidth, PHONE_BREAKPOINT } from "@/lib/line/geometry";
 import { buildRoute } from "@/lib/line/route";
 import { lengthForY, measure, pointAt, type Chunk, type Measured } from "@/lib/line/measure";
 
@@ -135,10 +135,10 @@ export function PageLine() {
     const dt = Math.min(0.1, (now - (lastT.current || now)) / 1000);
     lastT.current = now;
     if (!b) return;
-    const atBottom = scrollY + innerHeight >= document.documentElement.scrollHeight - 4;
-    const want = atBottom ? b.total : lengthForY(b, scrollY + innerHeight * 0.62);
+    const atBottom = view.y + view.h >= view.docH - 4;
+    const want = atBottom ? b.total : lengthForY(b, view.y + view.h * 0.62);
     if (drawn.current === want) return;
-    const k = 1 - Math.exp(-dt / (isPhone() ? LAG_PHONE : LAG_DESKTOP));
+    const k = 1 - Math.exp(-dt / (view.w < PHONE_BREAKPOINT ? LAG_PHONE : LAG_DESKTOP));
     drawn.current += (want - drawn.current) * k;
     if (Math.abs(want - drawn.current) < 0.5) drawn.current = want;
     paint();
