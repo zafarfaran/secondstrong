@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "default": "idle",
+  "states": {
+    "idle":       { "trigger": "Today screen at rest",                         "eyes": "open, blinking", "brows": "neutral",          "mouth": "smile",  "arms": "hidden",      "body": "breathe 3.6s" },
+    "hello":      { "trigger": "First open of the day; coach picked in onboarding", "eyes": "happy",   "brows": "lifted",           "mouth": "open",   "arms": "right waves", "body": "lean -4deg",   "fx": "handwritten 'hi'" },
+    "listening":  { "trigger": "Member is typing a message or check-in note",  "eyes": "open, wider",    "brows": "lifted",           "mouth": "smile",  "arms": "hidden",      "body": "lean -6deg",   "fx": "sound arcs" },
+    "thinking":   { "trigger": "Coach reply is being generated",               "eyes": "look up-right",  "brows": "one raised",       "mouth": "smile",  "arms": "hidden",      "body": "lean 3deg",    "fx": "three dots" },
+    "proud":      { "trigger": "Session logged; lift above her own baseline",  "eyes": "happy",          "brows": "lifted",           "mouth": "open",   "arms": "hidden",      "body": "hop with squash, shadow shrinks", "fx": "tick" },
+    "lifting":    { "trigger": "Strength session timer running",               "eyes": "open",           "brows": "knitted, determined", "mouth": "smile", "arms": "both press dumbbells", "body": "squat in time" },
+    "stretching": { "trigger": "Warm-up, mobility, morning routine",           "eyes": "shut",           "brows": "lifted",           "mouth": "open",   "arms": "both reach up", "body": "tall stretch 3s" },
+    "comfort":    { "trigger": "Rough-night check-in or symptom flare",        "eyes": "shut, soft",     "brows": "worried, soft",    "mouth": "smile",  "arms": "hidden",      "body": "lean 7deg, slow breathe", "fx": "slow heartbeat" },
+    "resting":    { "trigger": "Rest day; wind-down screen; member away",      "eyes": "shut",           "brows": "relaxed",          "mouth": "smile",  "arms": "hidden",      "body": "settled, breathe 5.6s", "fx": "z z z" }
+  },
+  "rules": [
+    "The coach is never sad, ill or disappointed. Time away shows 'resting'.",
+    "Big celebrations are for real effort (a session, a baseline beaten), never for body weight.",
+    "Reduced motion shows each state's end pose with no movement."
+  ]
+}
