@@ -1,0 +1,162 @@
+{
+  "v": 3,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-10-21T21:30:00Z"
+  },
+  "title": "Onboarding",
+  "launch": {
+    "view": "canvas"
+  },
+  "pages": [],
+  "boards": {
+    "ObWelcome.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "1 · Welcome",
+      "is_interactive": true,
+      "radius": 44
+    },
+    "ObCoach.dc.html": {
+      "x": 470,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "2 · Your coach",
+      "is_interactive": true,
+      "radius": 44
+    },
+    "ObStage.dc.html": {
+      "x": 940,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "3 · About you",
+      "is_interactive": true,
+      "radius": 44
+    },
+    "ObGoals.dc.html": {
+      "x": 1410,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "4 · What matters",
+      "is_interactive": true,
+      "radius": 44
+    },
+    "ObDays.dc.html": {
+      "x": 1880,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "5 · Your days",
+      "is_interactive": true,
+      "radius": 44
+    },
+    "ObPlan.dc.html": {
+      "x": 2350,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "6 · Your first week",
+      "is_interactive": true,
+      "radius": 44
+    },
+    "ObLightWelcome.dc.html": {
+      "x": 0,
+      "y": 1340,
+      "w": 390,
+      "h": 844,
+      "title": "1 · Welcome · light",
+      "is_interactive": true,
+      "radius": 44
+    },
+    "ObLightCoach.dc.html": {
+      "x": 470,
+      "y": 1340,
+      "w": 390,
+      "h": 844,
+      "title": "2 · Your coach · light",
+      "is_interactive": true,
+      "radius": 44
+    },
+    "ObLightStage.dc.html": {
+      "x": 940,
+      "y": 1340,
+      "w": 390,
+      "h": 844,
+      "title": "3 · About you · light",
+      "is_interactive": true,
+      "radius": 44
+    },
+    "ObLightGoals.dc.html": {
+      "x": 1410,
+      "y": 1340,
+      "w": 390,
+      "h": 844,
+      "title": "4 · What matters · light",
+      "is_interactive": true,
+      "radius": 44
+    },
+    "ObLightDays.dc.html": {
+      "x": 1880,
+      "y": 1340,
+      "w": 390,
+      "h": 844,
+      "title": "5 · Your days · light",
+      "is_interactive": true,
+      "radius": 44
+    },
+    "ObLightPlan.dc.html": {
+      "x": 2350,
+      "y": 1340,
+      "w": 390,
+      "h": 844,
+      "title": "6 · Your first week · light",
+      "is_interactive": true,
+      "radius": 44
+    }
+  },
+  "order": [
+    "ObWelcome.dc.html",
+    "ObCoach.dc.html",
+    "ObStage.dc.html",
+    "ObGoals.dc.html",
+    "ObDays.dc.html",
+    "ObPlan.dc.html",
+    "ObLightWelcome.dc.html",
+    "ObLightCoach.dc.html",
+    "ObLightStage.dc.html",
+    "ObLightGoals.dc.html",
+    "ObLightDays.dc.html",
+    "ObLightPlan.dc.html"
+  ],
+  "designSystems": [],
+  "notes": {
+    "dark": {
+      "kind": "title1",
+      "maxW": 2740,
+      "text": "Onboarding · paper and one line · dark",
+      "x": 0,
+      "y": -260
+    },
+    "light": {
+      "kind": "title1",
+      "maxW": 2740,
+      "text": "Onboarding · paper and one line · light",
+      "x": 0,
+      "y": 1080
+    },
+    "about": {
+      "fill": "gray",
+      "size": 24,
+      "w": 440,
+      "maxH": 330,
+      "x": 2820,
+      "y": 0,
+      "text": "One ink line runs through every screen: it underlines the question, rings your answer and draws on into the plan. Torn-paper scenes, paper moons for the stages, paper icons for the goals, and each coach on a small paper hill. Press Play on Welcome to walk it."
+    }
+  }
+}
