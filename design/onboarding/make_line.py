@@ -76,8 +76,8 @@ css = '''
 .overview .ink path.transit{opacity:.5!important; stroke:#A8968A!important; stroke-width:1.6px!important}
 .overview .ink path{vector-effect:non-scaling-stroke; stroke-dasharray:none!important; stroke-width:3.2px; stroke:#A85A3C}
 .overview .ol-sec > *{opacity:.3; transition:opacity 900ms}
-.ol-end{position:absolute; left:0; right:0; bottom:22px; z-index:9; display:grid; justify-items:center; gap:10px}
-.ol-end .hand{margin:0; font-size:22px}
+.ol-end{position:absolute; left:0; right:0; bottom:22px; padding-inline:28px; z-index:9; display:grid; justify-items:center; gap:10px}
+.ol-end .hand{margin:0; font-size:22px; text-align:center; text-wrap:balance}
 '''
 rep('.coach-in .m{width:100%; height:100%; display:block}', '.coach-in .m{width:100%; height:100%; display:block}' + css)
 open('line.src.html', 'w', encoding='utf-8').write(s)

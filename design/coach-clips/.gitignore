@@ -1,0 +1,5 @@
+_shots/
+renders/
+hevc/
+.hyperframes/
+node_modules/
