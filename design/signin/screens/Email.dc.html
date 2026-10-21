@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Sign in with email</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&amp;family=Gochi+Hand&amp;family=IBM+Plex+Mono:wght@500&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3B322C}a:hover{color:#A85A3C}
+input:focus{outline:none}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #FBF8F4; color: #3B322C; font-family: 'Bricolage Grotesque', system-ui, sans-serif; display: flex; flex-direction: column; padding: 58px 24px 34px">
+  <a href="Main.dc.html" aria-label="Back" style="width: 44px; height: 44px; margin-left: -10px; display: flex; align-items: center; justify-content: center; border-radius: 22px">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3B322C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+  </a>
+
+  <div style="margin-top: 22px; font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #5D534B">Sign in with email</div>
+  <h1 style="margin: 10px 0 0; font-size: 34px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.02">What's your <em style="font-family: 'Newsreader', serif; font-style: italic; font-weight: 400; letter-spacing: -0.01em">email?</em></h1>
+  <p style="margin: 12px 0 0; font-size: 16px; line-height: 1.4; color: #5D534B; max-width: 320px">We'll send a link that signs you in, so there's no password to remember.</p>
+
+  <div style="margin-top: 34px; display: flex; flex-direction: column; gap: 8px">
+    <label for="email" style="font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #5D534B">Email</label>
+    <div style="position: relative">
+      <input id="email" type="email" autocomplete="email" inputmode="email" value="anna.hart@example.com" style="width: 100%; box-sizing: border-box; height: 56px; padding: 0 16px; border-radius: 16px; border: 1.5px solid #3B322C; background: #F6F0E8; font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; color: #3B322C">    </div>
+  </div>
+
+  <div style="margin-top: 30px; display: flex; align-items: flex-start; gap: 6px; color: #A85A3C">
+    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="#A85A3C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M26 26 C14 24 7 17 6 5"/><path d="M6 5 l-3 8"/><path d="M6 5 l6 6"/></svg>
+    <span style="font-family: 'Gochi Hand', cursive; font-size: 19px; line-height: 1.1; margin-top: 12px; transform: rotate(-3deg)">the one you check most</span>
+  </div>
+
+  <div style="flex-grow: 1"></div>
+
+  <div style="display: flex; flex-direction: column; gap: 14px; align-items: stretch">
+    <a href="Inbox.dc.html" style="height: 52px; border-radius: 26px; background: #3B322C; color: #FBF8F4; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 600">Send me a link</a>
+    <a href="#password" style="align-self: center; min-height: 44px; display: flex; align-items: center; font-size: 15px; font-weight: 500; color: #5D534B; text-decoration: underline; text-underline-offset: 3px">Use a password instead</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

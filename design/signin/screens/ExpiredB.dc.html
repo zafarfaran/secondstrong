@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Link expired, illustrated</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&amp;family=Gochi+Hand&amp;family=IBM+Plex+Mono:wght@500&amp;family=Newsreader:ital,opsz,wght@1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3B322C}a:hover{color:#A85A3C}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #FBF8F4; color: #3B322C; font-family: 'Bricolage Grotesque', system-ui, sans-serif; display: flex; flex-direction: column; padding: 58px 24px 34px">
+  <a href="MainB.dc.html" aria-label="Close" style="width: 44px; height: 44px; margin-left: -10px; display: flex; align-items: center; justify-content: center; border-radius: 22px">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3B322C" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </a>
+
+  <div style="height: 290px; display: flex; justify-content: center; align-items: flex-end">
+    <img src="/_blob/df8c0145a8952d900053bccfb5eded20" alt="Otto the otter scratching its head, holding a curled paper slip beside a small hourglass" style="width: 290px; height: 290px">
+  </div>
+
+  <div style="margin-top: 30px; font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #5D534B">Sign-in link</div>
+  <h1 style="margin: 10px 0 0; font-size: 34px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.02">That link has <em style="font-family: 'Newsreader', serif; font-style: italic; font-weight: 400; letter-spacing: -0.01em">expired.</em></h1>
+  <p style="margin: 12px 0 0; font-size: 16px; line-height: 1.4; color: #5D534B">Links work once, for 15 minutes, to keep your account safe. A fresh one goes to <b style="font-weight: 600; color: #3B322C">anna.hart@example.com</b>.</p>
+
+  <div style="flex-grow: 1"></div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px">
+    <a href="InboxB.dc.html" style="height: 52px; border-radius: 26px; background: #3B322C; color: #FBF8F4; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 600">Send a new link</a>
+    <a href="MainB.dc.html" style="height: 52px; border-radius: 26px; border: 1.5px solid rgba(59,50,44,.28); box-sizing: border-box; color: #3B322C; text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 600">Sign in another way</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

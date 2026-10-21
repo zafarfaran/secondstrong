@@ -1,0 +1,546 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Email.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "2 · Email",
+      "w": 390,
+      "x": 470,
+      "y": 0,
+      "page": "explore"
+    },
+    "Expired.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "5 · Link expired",
+      "w": 390,
+      "x": 1880,
+      "y": 0,
+      "page": "explore"
+    },
+    "ExpiredB.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "5b · Link expired, illustrated",
+      "w": 390,
+      "x": 1880,
+      "y": 1340,
+      "page": "explore"
+    },
+    "Inbox.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "3 · Check your inbox",
+      "w": 390,
+      "x": 940,
+      "y": 0,
+      "page": "explore"
+    },
+    "InboxB.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "3b · Check your inbox, illustrated",
+      "w": 390,
+      "x": 940,
+      "y": 1340,
+      "page": "explore"
+    },
+    "LineDark.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "7e · Sign in, dark",
+      "w": 390,
+      "x": 1880,
+      "y": 4020,
+      "page": "explore"
+    },
+    "LineEmail.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "7a · Email",
+      "w": 390,
+      "x": 0,
+      "y": 4020,
+      "page": "explore"
+    },
+    "LineExpired.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "7d · Link expired",
+      "w": 390,
+      "x": 1410,
+      "y": 4020,
+      "page": "explore"
+    },
+    "LineInbox.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "7b · Check your inbox",
+      "w": 390,
+      "x": 470,
+      "y": 4020,
+      "page": "explore"
+    },
+    "LineReturning.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "7c · Welcome back",
+      "w": 390,
+      "x": 940,
+      "y": 4020,
+      "page": "explore"
+    },
+    "Main.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "1 · Sign in",
+      "w": 390,
+      "x": 0,
+      "y": 0,
+      "page": "explore"
+    },
+    "MainB.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "1b · Sign in, illustrated",
+      "w": 390,
+      "x": 0,
+      "y": 1340,
+      "page": "explore"
+    },
+    "MainDark.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "6 · Sign in, dark",
+      "w": 390,
+      "x": 2350,
+      "y": 0,
+      "page": "explore"
+    },
+    "MainDarkB.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "6b · Sign in, dark, illustrated",
+      "w": 390,
+      "x": 2350,
+      "y": 1340,
+      "page": "explore"
+    },
+    "MainLine.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "7 · Direction: one line",
+      "w": 390,
+      "x": 0,
+      "y": 2680,
+      "page": "explore"
+    },
+    "MainPaper.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "9 · Direction: paper shapes",
+      "w": 390,
+      "x": 940,
+      "y": 2680,
+      "page": "explore"
+    },
+    "MainTable.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "8 · Direction: morning table",
+      "w": 390,
+      "x": 470,
+      "y": 2680,
+      "page": "explore"
+    },
+    "PaperDark.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "9e · Sign in, dark",
+      "w": 390,
+      "x": 1880,
+      "y": 5360,
+      "page": "explore"
+    },
+    "PaperEmail.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "9a · Email",
+      "w": 390,
+      "x": 0,
+      "y": 5360,
+      "page": "explore"
+    },
+    "PaperExpired.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "9d · Link expired",
+      "w": 390,
+      "x": 1410,
+      "y": 5360,
+      "page": "explore"
+    },
+    "PaperInbox.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "9b · Check your inbox",
+      "w": 390,
+      "x": 470,
+      "y": 5360,
+      "page": "explore"
+    },
+    "PaperReturning.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "9c · Welcome back",
+      "w": 390,
+      "x": 940,
+      "y": 5360,
+      "page": "explore"
+    },
+    "Returning.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "4 · Welcome back",
+      "w": 390,
+      "x": 1410,
+      "y": 0,
+      "page": "explore"
+    },
+    "ReturningB.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 44,
+      "title": "4b · Welcome back, illustrated",
+      "w": 390,
+      "x": 1410,
+      "y": 1340,
+      "page": "explore"
+    },
+    "MascotNight.dc.html": {
+      "x": 0,
+      "y": 6700,
+      "w": 390,
+      "h": 844,
+      "title": "10a · Coaches on paper, night",
+      "is_interactive": true,
+      "radius": 44,
+      "page": "explore"
+    },
+    "MascotDay.dc.html": {
+      "x": 470,
+      "y": 6700,
+      "w": 390,
+      "h": 844,
+      "title": "10b · Coaches on paper, sunrise",
+      "is_interactive": true,
+      "radius": 44,
+      "page": "explore"
+    },
+    "MascotPapercut.dc.html": {
+      "x": 940,
+      "y": 6700,
+      "w": 390,
+      "h": 844,
+      "title": "10c · Paper-cut coaches, night",
+      "is_interactive": true,
+      "radius": 44,
+      "page": "explore"
+    },
+    "FinalSignIn.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "1 · Sign in",
+      "is_interactive": true,
+      "radius": 44,
+      "page": "final"
+    },
+    "FinalEmail.dc.html": {
+      "x": 470,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "2 · Email",
+      "is_interactive": true,
+      "radius": 44,
+      "page": "final"
+    },
+    "FinalInbox.dc.html": {
+      "x": 940,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "3 · Check your inbox",
+      "is_interactive": true,
+      "radius": 44,
+      "page": "final"
+    },
+    "FinalReturning.dc.html": {
+      "x": 1410,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "4 · Welcome back",
+      "is_interactive": true,
+      "radius": 44,
+      "page": "final"
+    },
+    "FinalExpired.dc.html": {
+      "x": 1880,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "5 · Link expired",
+      "is_interactive": true,
+      "radius": 44,
+      "page": "final"
+    },
+    "FinalLightSignIn.dc.html": {
+      "x": 0,
+      "y": 1340,
+      "w": 390,
+      "h": 844,
+      "title": "1 · Sign in · light",
+      "is_interactive": true,
+      "radius": 44,
+      "page": "final"
+    },
+    "FinalLightEmail.dc.html": {
+      "x": 470,
+      "y": 1340,
+      "w": 390,
+      "h": 844,
+      "title": "2 · Email · light",
+      "is_interactive": true,
+      "radius": 44,
+      "page": "final"
+    },
+    "FinalLightInbox.dc.html": {
+      "x": 940,
+      "y": 1340,
+      "w": 390,
+      "h": 844,
+      "title": "3 · Check your inbox · light",
+      "is_interactive": true,
+      "radius": 44,
+      "page": "final"
+    },
+    "FinalLightReturning.dc.html": {
+      "x": 1410,
+      "y": 1340,
+      "w": 390,
+      "h": 844,
+      "title": "4 · Welcome back · light",
+      "is_interactive": true,
+      "radius": 44,
+      "page": "final"
+    },
+    "FinalLightExpired.dc.html": {
+      "x": 1880,
+      "y": 1340,
+      "w": 390,
+      "h": 844,
+      "title": "5 · Link expired · light",
+      "is_interactive": true,
+      "radius": 44,
+      "page": "final"
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-21T20:10:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas",
+    "page": "final"
+  },
+  "notes": {
+    "flow": {
+      "fill": "gray",
+      "maxH": 90,
+      "size": 24,
+      "text": "One door for new and returning members: Apple, Google or an emailed link. No passwords by default. Returning members see their own coach.",
+      "w": 560,
+      "x": 0,
+      "y": -120,
+      "page": "explore"
+    },
+    "flow2": {
+      "fill": "gray",
+      "maxH": 682,
+      "size": 24,
+      "text": "Same screens with richer, generated scenes (gpt-image-2, using the real coach art as reference). The originals above stay for comparison.",
+      "w": 447,
+      "x": 470,
+      "y": 1340,
+      "page": "explore"
+    },
+    "flow3": {
+      "fill": "gray",
+      "maxH": 300,
+      "size": 24,
+      "text": "Three looks that don't lean on the mascots. One line: a single ink line, like the onboarding. Morning table: a painted still life. Paper shapes: torn-paper hills the buttons sit on.",
+      "w": 447,
+      "x": 1410,
+      "y": 2680,
+      "page": "explore"
+    },
+    "heading": {
+      "kind": "title1",
+      "maxW": 2740,
+      "text": "Second Strong · sign in",
+      "w": 240,
+      "x": 0,
+      "y": -260,
+      "page": "explore"
+    },
+    "heading-line": {
+      "kind": "title1",
+      "maxW": 2270,
+      "text": "One line · the rest of the flow",
+      "w": 240,
+      "x": 0,
+      "y": 3760,
+      "page": "explore"
+    },
+    "heading-paper": {
+      "kind": "title1",
+      "maxW": 2270,
+      "text": "Paper shapes · the rest of the flow",
+      "w": 240,
+      "x": 0,
+      "y": 5100,
+      "page": "explore"
+    },
+    "heading2": {
+      "kind": "title1",
+      "maxW": 2740,
+      "text": "Illustrated versions",
+      "w": 240,
+      "x": 0,
+      "y": 1080,
+      "page": "explore"
+    },
+    "heading3": {
+      "kind": "title1",
+      "maxW": 2740,
+      "text": "Other directions, without the coaches",
+      "w": 240,
+      "x": 0,
+      "y": 2420,
+      "page": "explore"
+    },
+    "heading-mascot-paper": {
+      "kind": "title1",
+      "maxW": 1340,
+      "text": "Coaches on paper",
+      "x": 0,
+      "y": 6440,
+      "page": "explore"
+    },
+    "final-dark": {
+      "kind": "title1",
+      "maxW": 2270,
+      "text": "Sign in · final · dark",
+      "x": 0,
+      "y": -260,
+      "page": "final"
+    },
+    "final-light": {
+      "kind": "title1",
+      "maxW": 2270,
+      "text": "Sign in · final · light",
+      "x": 0,
+      "y": 1080,
+      "page": "final"
+    },
+    "final-about": {
+      "fill": "gray",
+      "size": 24,
+      "w": 420,
+      "maxH": 360,
+      "x": 2350,
+      "y": 0,
+      "page": "final",
+      "text": "The app follows the phone's light or dark setting. Dark: the coaches on paper at night, with Bramble, Miso and Otto in the same night paper scene. Light: the sunrise sign-in and the illustrated screens. Press Play on Sign in to walk the flow."
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Email.dc.html",
+    "Inbox.dc.html",
+    "Returning.dc.html",
+    "Expired.dc.html",
+    "MainDark.dc.html",
+    "MainB.dc.html",
+    "InboxB.dc.html",
+    "ReturningB.dc.html",
+    "ExpiredB.dc.html",
+    "MainDarkB.dc.html",
+    "MainLine.dc.html",
+    "MainTable.dc.html",
+    "MainPaper.dc.html",
+    "LineEmail.dc.html",
+    "LineInbox.dc.html",
+    "LineReturning.dc.html",
+    "LineExpired.dc.html",
+    "LineDark.dc.html",
+    "PaperEmail.dc.html",
+    "PaperInbox.dc.html",
+    "PaperReturning.dc.html",
+    "PaperExpired.dc.html",
+    "PaperDark.dc.html",
+    "MascotNight.dc.html",
+    "MascotDay.dc.html",
+    "MascotPapercut.dc.html",
+    "FinalSignIn.dc.html",
+    "FinalEmail.dc.html",
+    "FinalInbox.dc.html",
+    "FinalReturning.dc.html",
+    "FinalExpired.dc.html",
+    "FinalLightSignIn.dc.html",
+    "FinalLightEmail.dc.html",
+    "FinalLightInbox.dc.html",
+    "FinalLightReturning.dc.html",
+    "FinalLightExpired.dc.html"
+  ],
+  "pages": [
+    {
+      "id": "final",
+      "name": "Final"
+    },
+    {
+      "id": "explore",
+      "name": "Explorations"
+    }
+  ],
+  "title": "Sign In"
+}

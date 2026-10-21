@@ -8,6 +8,7 @@ Design work for the Second Strong app (native SwiftUI, iPhone first). Everything
 |---|---|---|
 | Coach mascots | Soft style, eight coaches (Miso the cat added), v2 redraw | `mascots/` |
 | Coach clips | All eight coaches, sixteen states each, as transparent video; suggest bubble; seamless state player | `coach-clips/` |
+| Sign in | One door: Apple, Google or emailed link; returning members meet their own coach | `signin/` |
 | Launch screen | Option A: the heavy S and clay dot, centred on almond | `launch/` |
 | Intro on open | Birds on a wire: the dot drops, draws the wire, the coaches land | `onboarding/coldstart.html`, `videos/cold-start.mp4` |
 | Between screens | Peek loader: your coach peeks up from the bottom edge while a screen loads | `onboarding/intro.html`, `videos/peek-loader.mp4` |
