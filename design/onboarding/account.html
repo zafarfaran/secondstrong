@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in, sign up and buying for someone: design options</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--almond:#EDE3D6;--card:#F6F0E8;--ink2:#5D534B;--pen:#A85A3C}
+*{box-sizing:border-box;margin:0}
+body{background:#E9E2D8;font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:28px 20px 60px}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.lede{color:var(--ink2);margin:6px 0 10px;max-width:700px;line-height:1.45}
+h2{font-size:15px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin:38px 0 6px}
+.flow{color:var(--ink2);font-size:14px;margin-bottom:14px;max-width:760px;line-height:1.5}
+.row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.opt{width:340px}.tag{font-weight:800;margin-bottom:4px}.why{font-size:13px;color:var(--ink2);line-height:1.4;margin-bottom:10px;min-height:54px}
+.phone{width:340px;height:620px;border-radius:34px;background:var(--ivory);box-shadow:0 10px 30px #3b322c26;padding:30px 26px 22px;display:flex;flex-direction:column;overflow:hidden;position:relative;background-image:repeating-linear-gradient(transparent 0 31px,#3b322c0a 31px 32px)}
+.meta{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2)}
+.title{font-size:31px;font-weight:800;letter-spacing:-.035em;margin:6px 0 4px;line-height:1.05}.title em{font-family:"Gochi";font-style:normal;font-weight:400;font-size:37px;letter-spacing:0}
+.sub{color:var(--ink2);font-size:14.5px;line-height:1.4;margin-top:4px}
+.hand{font-family:"Gochi"}
+.btn{margin-top:auto;height:52px;border-radius:26px;background:var(--ink);color:var(--ivory);font:600 16px "Bricolage";display:flex;align-items:center;justify-content:center;border:0;width:100%;cursor:pointer}
+.btn.ghost{background:none;color:var(--ink);border:1.5px solid #3b322c55}
+.btn.mt0{margin-top:0}.stack{display:flex;flex-direction:column;gap:10px}
+.btn.apple{background:#000;color:#fff}
+.or{display:flex;align-items:center;gap:10px;color:var(--ink2);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}.or::before,.or::after{content:"";flex:1;height:1px;background:#3b322c22}
+.small{font-size:12.5px;color:var(--ink2);line-height:1.4;text-align:center}.link{color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.field{border-bottom:2px solid var(--ink);padding:8px 0;font:600 20px "Bricolage";color:var(--ink);width:100%;border-top:0;border-left:0;border-right:0;background:none;outline:none;border-radius:0}
+.field::placeholder{color:#3b322c33}.lab{margin-top:14px}
+.mini{display:flex;align-items:center}.mini video{width:84px;height:84px;margin:-14px 0 -18px -10px}
+.big video{width:170px;height:170px;margin:0 auto;display:block}
+.cards{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+.card{border:1.5px solid #3b322c26;border-radius:22px;padding:18px;cursor:pointer;background:none;text-align:left;font:inherit;color:inherit;width:100%;transition:all .2s}
+.card.sel{border-color:var(--ink);background:var(--card)}.card b{font-size:19px;letter-spacing:-.02em}.card p{color:var(--ink2);font-size:14px;margin-top:4px;line-height:1.35}
+.steps{display:flex;flex-direction:column;gap:14px;margin-top:18px}.steps div{display:flex;gap:14px;align-items:flex-start}.steps i{flex:none;width:32px;height:32px;border-radius:50%;background:var(--almond);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800}
+.steps b{display:block;font-size:15.5px}.steps span{color:var(--ink2);font-size:14px;line-height:1.35}
+.hint{font-family:"Gochi";font-size:19px;color:var(--pen);margin-top:10px;line-height:1.2}
+.plan{border:1.5px solid var(--ink);background:var(--card);border-radius:18px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:14px}.plan b{font-size:17px}.plan small{display:block;color:var(--ink2);font-size:13px;margin-top:2px}.plan .p{font-weight:800;font-size:17px;text-align:right}
+.plan.alt{border-color:#3b322c26;background:none}
+.invite{border-radius:22px;background:var(--card);border:1px solid #3b322c14;padding:16px;margin-top:16px}.invite .link2{margin-top:10px;font-size:13.5px;color:var(--ink2);border:1px dashed #3b322c44;border-radius:12px;padding:9px 12px}
+.note{background:#a85a3c14;border-radius:14px;padding:10px 12px;font-size:13px;color:var(--ink);line-height:1.4;margin-top:12px}
+.open{margin-top:34px;background:#fff8;border:1px solid #3b322c1a;border-radius:16px;padding:16px 18px;max-width:760px;font-size:14px;line-height:1.5;color:var(--ink2)}.open b{color:var(--ink)}
+.hide{display:none}
+</style>
+</head>
+<body>
+<h1>Sign in, sign up and buying for someone</h1>
+<p class="lede">Live mock-ups with fake data; tap around. Nothing is built in the app yet. Tell me what to change, or which option to keep.</p>
+
+<h2>1 · Sign up and sign in</h2>
+<p class="flow">Where they sit: <b>welcome → questions → building your program → Save your program (sign up) → Begin your program → paywall.</b> Account first, so the program is saved and the trial survives a reinstall (spec 1.4); the email also reaches people who leave before paying (spec 2.9). Returning people sign in from the welcome screen. One screen handles both: email links and Apple sign-in create an account if there isn't one.</p>
+<div class="row">
+
+ <div class="opt"><div class="tag">A · Save your program (sign up)</div><div class="why">Right after the loading screen, before the program is revealed. Apple, Google or email. Choosing email opens the field in place.</div>
+ <div class="phone" id="su">
+  <div class="mini"><video src="../coach-clips/webm/bramble/gotit.webm" autoplay muted loop playsinline></video></div>
+  <div class="title" style="margin-top:8px">Save your <em>program.</em></div>
+  <div class="sub">So it's here when you come back. Your answers stay private to you.</div>
+  <div class="stack" style="margin-top:22px">
+   <button class="btn apple mt0">Continue with Apple</button>
+   <button class="btn ghost mt0">Continue with Google</button>
+   <div class="or">or</div>
+   <button class="btn ghost mt0" data-open>Continue with email</button>
+   <div class="hide" data-email><input class="field" placeholder="you@example.com" value=""><button class="btn mt0" style="margin-top:12px" data-send>Email me a link</button></div>
+  </div>
+  <div class="small" style="margin-top:auto">By continuing you agree to our <span class="link">Terms</span> and <span class="link">Privacy Policy</span>.</div></div></div>
+
+ <div class="opt"><div class="tag">B · Sign in (returning)</div><div class="why">From the welcome screen's "I already have an account". Email first, because most returning people know their email. Includes the web-signup restore the spec asks for.</div>
+ <div class="phone">
+  <div class="meta">Welcome back</div><div class="title">Sign <em>in.</em></div>
+  <div class="lab meta">Email</div><input class="field" placeholder="you@example.com">
+  <button class="btn mt0" style="margin-top:16px">Email me a link</button>
+  <div class="or" style="margin:22px 0 14px">or</div>
+  <div class="stack"><button class="btn apple mt0">Continue with Apple</button><button class="btn ghost mt0">Continue with Google</button></div>
+  <div class="small" style="margin-top:auto;line-height:1.7">Signed up on our website? Use the same email.<br><span class="link">I signed up on the web</span></div></div></div>
+
+ <div class="opt"><div class="tag">C · Check your email</div><div class="why">After "Email me a link". No password anywhere. The coach waits with you; the link opens the app and carries on.</div>
+ <div class="phone" id="sent">
+  <div class="big" style="margin-top:20px"><video src="../coach-clips/webm/bramble/listening.webm" autoplay muted loop playsinline></video></div>
+  <div class="title" style="text-align:center;margin-top:6px">Check your <em>email.</em></div>
+  <div class="sub" style="text-align:center">We sent a link to <b>sam@example.com</b>. Tap it on this phone and you're in.</div>
+  <div class="small" style="margin-top:22px">Nothing there? Check spam, or <span class="link">send it again</span>.</div>
+  <button class="btn ghost" style="margin-top:auto">Use a different email</button></div></div>
+</div>
+
+<h2>2 · Buying it for someone you love</h2>
+<p class="flow">The choice sits right after the welcome screen. <b>For me</b> carries on as today. <b>For someone I love</b> takes the short path below: your names, a message, payment, then an invite link to send. She then opens it, signs up on her own phone, answers her own questions, and chooses what (if anything) to share with you. Buying never gives access to her answers (family circle design, D6).</p>
+<div class="row">
+
+ <div class="opt"><div class="tag">1 · Who is it for?</div><div class="why">Two big cards after the welcome screen.</div>
+ <div class="phone" id="who">
+  <div class="meta">Second Strong</div><div class="title">Who is this <em>for?</em></div>
+  <div class="cards"><button class="card sel" data-c><b>For me</b><p>Answer a few questions and get your own program.</p></button>
+   <button class="card" data-c><b>For someone I love</b><p>Give your mum, or someone close to you, a stronger year. She sets up her own.</p></button></div>
+  <button class="btn">Continue</button></div></div>
+
+ <div class="opt"><div class="tag">2 · How it works</div><div class="why">Three plain steps, so nobody is surprised that she has to set it up herself.</div>
+ <div class="phone"><div class="meta">For someone you love</div><div class="title">Give her a stronger <em>year.</em></div>
+  <div class="steps"><div><i>1</i><span><b>You choose and pay</b>One bill, from you.</span></div><div><i>2</i><span><b>She gets a link</b>She picks her coach and answers her own questions.</span></div><div><i>3</i><span><b>She decides what you see</b>Only if she says yes, and she can stop any time.</span></div></div>
+  <button class="btn">Continue</button></div></div>
+
+ <div class="opt"><div class="tag">3 · About you both</div><div class="why">Just names and a message in your own words. We never ask about her health.</div>
+ <div class="phone"><div class="meta">A few words</div><div class="title">Who's it <em>for?</em></div>
+  <div class="lab meta">Her name</div><input class="field" placeholder="Mum">
+  <div class="lab meta">Your name</div><input class="field" placeholder="Sam">
+  <div class="lab meta">A message (optional)</div><input class="field hand" style="font:400 22px Gochi;color:var(--pen)" placeholder="Thinking of you. Go gently.">
+  <div class="hint">She'll see this when she opens the link.</div>
+  <button class="btn">Continue</button></div></div>
+
+ <div class="opt"><div class="tag">4 · Pay</div><div class="why">One bill. The first year, with an option to add more people on the same plan later. Price for several people is not set yet.</div>
+ <div class="phone"><div class="meta">One bill</div><div class="title">Choose a <em>plan.</em></div>
+  <div class="plan"><span><b>A year for Mum</b><small>Renews yearly. Cancel any time in Settings.</small></span><span class="p">£79.99</span></div>
+  <div class="plan alt"><span><b>Add more people</b><small>Everyone on one bill</small></span><span class="p" style="font-size:14px;font-weight:600;color:var(--ink2)">Price to be set</span></div>
+  <div class="note">You pay; she owns her account and her answers. If you stop paying, she keeps her account and has 30 days to carry on herself.</div>
+  <div class="small" style="margin-top:10px;color:var(--ink)">7 days free for Mum, then £79.99 a year, charged to you. Renews automatically.</div>
+  <button class="btn">Pay for Mum</button></div></div>
+
+ <div class="opt"><div class="tag">5 · Send the invite</div><div class="why">A link to send by message. Nothing is sent to her without you.</div>
+ <div class="phone"><div class="mini"><video src="../coach-clips/webm/bramble/cheer.webm" autoplay muted loop playsinline></video></div>
+  <div class="title" style="margin-top:6px">All set. Send it to <em>Mum.</em></div>
+  <div class="invite"><div class="meta">Your message</div><div class="hand" style="font-size:21px;color:var(--pen);margin-top:6px">Thinking of you. Go gently.</div><div class="link2">secondstrong.app/gift/k4x9-…</div></div>
+  <div class="note">Sam only sees how Mum's doing if she chooses to share it.</div>
+  <div class="stack" style="margin-top:auto"><button class="btn mt0">Send the link</button><button class="btn ghost mt0">Copy link</button></div></div></div>
+
+ <div class="opt"><div class="tag">6 · Her side: the invite</div><div class="why">What she sees when she opens it. Warm, with no pressure, and clear that sharing is her choice.</div>
+ <div class="phone"><div class="big" style="margin-top:14px"><video src="../coach-clips/webm/bramble/hello.webm" autoplay muted loop playsinline></video></div>
+  <div class="title" style="text-align:center">Sam got you <em>Second Strong.</em></div>
+  <div class="hand" style="text-align:center;font-size:21px;color:var(--pen);margin-top:6px">“Thinking of you. Go gently.”</div>
+  <div class="sub" style="text-align:center;margin-top:10px">Your first year is paid for. You choose your coach, your pace and what you share.</div>
+  <button class="btn">Start</button></div></div>
+</div>
+
+<div class="open"><b>Decided</b><br>
+• Sign-in: Apple, Google and email link. A gifted year carries the 7-day free trial. Price and seats for several people are decided later.<br><br>
+<b>Still to decide</b><br>
+• Whether the stores allow buying a subscription for someone else (Apple has no native subscription gifting), so gifting may need offer codes or a web purchase. Needs a store-rules check.<br>
+• When she accepts, does she sign up with the same email you typed, or any email? (I'd say any; the link is the key.)<br>
+• Buying for someone is only open to adults; the date-of-birth check for the buyer is not designed yet.</div>
+<script>
+const $=(r,s)=>r.querySelector(s),$$=(r,s)=>[...r.querySelectorAll(s)];
+const su=$(document,"#su");$(su,"[data-open]").onclick=e=>{e.target.classList.add("hide");$(su,"[data-email]").classList.remove("hide");$(su,".field").focus()};
+$(su,"[data-send]").onclick=()=>$(document,"#sent").scrollIntoView({behavior:"smooth",block:"center"});
+$$(document,"#who [data-c]").forEach(c=>c.onclick=()=>$$(document,"#who [data-c]").forEach(x=>x.classList.toggle("sel",x===c)));
+</script>
+</body>
+</html>

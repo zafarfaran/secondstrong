@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coach selection: transition ideas</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--ink2:#5D534B;--pen:#A85A3C}
+*{box-sizing:border-box;margin:0}
+body{background:#E9E2D8;font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:26px 20px 70px}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 18px;max-width:720px;line-height:1.45}
+.grid{display:flex;flex-wrap:wrap;gap:22px}
+.card{width:340px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:54px;margin-bottom:8px}
+.stage{position:relative;width:340px;height:340px;border-radius:28px;background:var(--ivory);box-shadow:0 8px 24px #3b322c22;overflow:hidden;background-image:repeating-linear-gradient(transparent 0 31px,#3b322c0a 31px 32px)}
+.plat{position:absolute;left:75px;bottom:14px;width:190px;z-index:1}
+.coach{position:absolute;left:70px;bottom:94px;width:200px;height:200px;z-index:2;will-change:transform}
+.coach video{position:absolute;left:0;top:0;width:200px;height:200px;display:block;pointer-events:none}.coach video.hello{opacity:0}
+.shadow{position:absolute;left:100px;width:140px;height:20px;border-radius:50%;background:#3b322c;opacity:.0;bottom:100px;z-index:1;filter:blur(5px)}
+.bit{position:absolute;z-index:4;pointer-events:none}
+svg.ring{position:absolute;inset:0;z-index:3;pointer-events:none}svg.ring ellipse{fill:none;stroke:var(--pen);stroke-width:2.6;stroke-linecap:round}
+.dim{position:absolute;inset:0;z-index:2;background:radial-gradient(circle at 50% 62%,transparent 70px,rgba(33,27,23,.62) 190px);opacity:0;pointer-events:none}
+.glow{position:absolute;left:50%;bottom:60px;width:260px;height:260px;margin-left:-130px;border-radius:50%;background:radial-gradient(circle,#ffd9a455,transparent 65%);opacity:0;z-index:1}
+.line{position:absolute;left:0;right:0;bottom:14px;text-align:center;font-family:"Gochi";font-size:22px;color:var(--pen);z-index:5;clip-path:inset(0 100% 0 0)}
+.btn{margin-top:8px;font:600 12px "Bricolage";border:1px solid #3b322c55;background:none;border-radius:14px;height:28px;padding:0 14px;color:var(--ink);cursor:pointer}
+.rec{background:#a85a3c18;border-radius:10px;padding:2px 8px;font-size:11px;color:var(--pen);margin-left:6px;font-weight:700}
+</style>
+</head>
+<body>
+<h1>Coach selection: transition ideas</h1>
+<p class="lede">Each stage is live: one coach is on the platform and the next waits at the side. Press Play to see the transition. These use the real coach clips and the paper platform. Nothing is built in the app yet.</p>
+<div class="grid" id="grid"></div>
+
+<script>
+const IMG="../../secondstrong-ios/Sources/SSDesign/Resources/Images/plinth.png";
+const clip=(c,s)=>`../coach-clips/webm/${c}/${s}.webm`;
+const CARDS=[
+ {t:"1 · Hop on and settle",d:"The coach arcs up and lands on the platform with a squash. The platform dips under the weight and springs back.",f:{dip:1}},
+ {t:"2 · Paper puff",d:"On landing, torn-paper scraps and a star burst out and drift down, in the paper art's colours.",f:{puff:1}},
+ {t:"3 · Pen scribble round",d:"The pen draws a quick loop round the coach as it lands, as it does for choices elsewhere, then fades.",f:{pen:1}},
+ {t:"4 · Spotlight",d:"The page dims and a warm circle of light opens on the platform. The coach lands inside it.",f:{spot:1}},
+ {t:"5 · Introduce itself",d:"The coach plays its hello and its temperament writes itself out in handwriting.",f:{intro:1}},
+ {t:"6 · Growing shadow",d:"The shadow under the platform sharpens as the coach comes down, so it reads as three-dimensional.",f:{shadow:1}},
+ {t:"7 · Wave goodbye",d:"The coach leaving turns and waves (its hello clip) before it slides off; the next glides in slowly.",f:{wave:1}},
+ {t:"8 · Confetti and fly",d:"For the final pick: paper confetti, and the coach flies off to the top-right corner.",f:{confetti:1,fly:1}},
+ {t:"Suggested mix",rec:1,d:"1 + 2 + 6: hop, platform dip, shadow and a few paper scraps. Then the hello. Fast enough to flick through, with a moment when it lands.",f:{dip:1,puff:1,shadow:1,intro:1}}
+];
+const COL=["#EDE3D6","#C2714F","#9AA88F","#F0C9A8","#A8968A","#E8C05F"];
+const $=(r,s)=>r.querySelector(s);
+function build(c,i){
+ const el=document.createElement("div");el.className="card";
+ el.innerHTML=`<div class="tag">${c.t}${c.rec?'<span class="rec">my suggestion</span>':""}</div><div class="why">${c.d}</div>
+ <div class="stage"><div class="glow"></div><div class="shadow"></div><img class="plat" src="${IMG}">
+ <div class="coach a"><video class="idle" src="${clip("bramble","idle")}" muted playsinline loop autoplay></video><video class="hello" src="${clip("bramble","hello")}" muted playsinline preload="auto"></video></div>
+ <div class="coach b"><video class="idle" src="${clip("miso","idle")}" muted playsinline loop autoplay></video><video class="hello" src="${clip("miso","hello")}" muted playsinline preload="auto"></video></div>
+ <svg class="ring" viewBox="0 0 340 340"><ellipse cx="170" cy="215" rx="112" ry="108" stroke-dasharray="720" stroke-dashoffset="720"/></svg>
+ <div class="dim"></div><div class="line">Curious. Quietly keeps you honest.</div></div>
+ <button class="btn">Play</button>`;
+ document.getElementById("grid").appendChild(el);
+ const st=$(el,".stage"),A=$(st,".a"),B=$(st,".b"),plat=$(st,".plat"),sh=$(st,".shadow"),ring=$(st,"ellipse"),dim=$(st,".dim"),glow=$(st,".glow"),line=$(st,".line");
+ const va=$(A,".idle"),vb=$(B,".idle"),ha=$(A,".hello"),hb=$(B,".hello");
+ const wave=(v,h)=>{h.currentTime=0;h.style.opacity=1;v.style.opacity=0;h.play()};
+ const set=()=>{[...st.querySelectorAll(".bit")].forEach(b=>b.remove());
+  A.getAnimations().forEach(x=>x.cancel());B.getAnimations().forEach(x=>x.cancel());plat.getAnimations().forEach(x=>x.cancel());
+  [sh,dim,glow,line].forEach(x=>x.getAnimations().forEach(y=>y.cancel()));
+  ring.style.strokeDashoffset=720;ring.style.opacity=1;ring.style.transition="none";
+  A.style.transform="none";A.style.opacity=1;B.style.transform="translate(135px,8px) scale(.72)";B.style.opacity=.55;
+  va.style.opacity=1;vb.style.opacity=1;ha.style.opacity=0;hb.style.opacity=0;va.play();vb.play();sh.style.opacity=c.f.shadow?.0:0};
+ const burst=(n,confetti)=>{for(let k=0;k<n;k++){const b=document.createElement("div");b.className="bit";const s=confetti?9+Math.random()*9:7+Math.random()*8;
+   b.style.cssText+=`left:${confetti?170+(Math.random()-.5)*60:170}px;top:${confetti?40:230}px;width:${s}px;height:${s*(confetti?.6:1)}px;background:${COL[k%COL.length]};clip-path:polygon(${[0,1,2,3,4].map(()=>Math.round(Math.random()*100)+"% "+Math.round(Math.random()*100)+"%").join(",")});`;
+   st.appendChild(b);const ang=confetti?(Math.random()-.5)*60:-Math.PI/2+(Math.random()-.5)*2.2,v=confetti?0:60+Math.random()*60;
+   const dx=confetti?(Math.random()-.5)*300:Math.cos(ang)*v,dy=confetti?280+Math.random()*40:Math.sin(ang)*v-20;
+   b.animate([{transform:"translate(0,0) rotate(0)",opacity:1},{transform:`translate(${dx*.6}px,${confetti?dy*.35:dy}px) rotate(${Math.random()*360}deg)`,opacity:1,offset:.4},{transform:`translate(${dx}px,${dy+(confetti?0:90)}px) rotate(${Math.random()*720}deg)`,opacity:0}],{duration:confetti?1700:1100,delay:confetti?k*18:0,easing:"cubic-bezier(.3,.6,.4,1)",fill:"forwards"})}};
+ const play=()=>{set();const f=c.f;let t=f.wave?1700:0;
+  const ms=(x)=>x;
+  if(f.wave){wave(va,ha)}
+  if(f.spot){dim.animate([{opacity:0},{opacity:1}],{duration:400,fill:"forwards"});glow.animate([{opacity:0,transform:"scale(.6)"},{opacity:1,transform:"scale(1)"}],{duration:600,delay:300,fill:"forwards"})}
+  // outgoing
+  setTimeout(()=>A.animate([{transform:"none",opacity:1},{transform:"translate(-170px,-10px) scale(.72)",opacity:0}],{duration:600,easing:"cubic-bezier(.5,0,.8,.6)",fill:"forwards"}),t);
+  // incoming: arc, squash, settle
+  const dur=f.wave?1100:850;
+  setTimeout(()=>{
+   B.animate(f.hop===0?[]:[{transform:"translate(135px,8px) scale(.72)",opacity:.55,offset:0},{transform:"translate(55px,-90px) scale(.98)",opacity:1,offset:.42,easing:"cubic-bezier(.3,0,.5,1)"},
+     {transform:"translate(0,6px) scale(1.08,.9)",opacity:1,offset:.72},{transform:"translate(0,-9px) scale(.97,1.04)",offset:.86},{transform:"none",opacity:1,offset:1}],{duration:dur,easing:"cubic-bezier(.4,.1,.3,1)",fill:"forwards"});
+   const land=dur*.72;
+   if(f.dip)setTimeout(()=>plat.animate([{transform:"none"},{transform:"translateY(7px) scaleY(.96)"},{transform:"translateY(-2px)"},{transform:"none"}],{duration:520,easing:"ease-out"}),land);
+   if(f.shadow){sh.animate([{opacity:.0,transform:"scale(.4)"},{opacity:.12,transform:"scale(.6)",offset:.5},{opacity:.4,transform:"scale(1)"}],{duration:dur,fill:"forwards",easing:"ease-in"});sh.style.bottom="98px"}
+   if(f.puff)setTimeout(()=>burst(12,false),land);
+   if(f.confetti)setTimeout(()=>burst(26,true),land);
+   if(f.pen)setTimeout(()=>{ring.style.transition="stroke-dashoffset .8s cubic-bezier(.4,.1,.3,1)";ring.style.strokeDashoffset=0;setTimeout(()=>{ring.style.transition="opacity .6s";ring.style.opacity=0},1500)},land+80);
+   if(f.intro||f.wave){setTimeout(()=>wave(vb,hb),land+80)}
+   if(f.intro)setTimeout(()=>line.animate([{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0 0 0)"}],{duration:1300,easing:"linear",fill:"forwards"}),land+250);
+   if(f.fly)setTimeout(()=>B.animate([{transform:"none"},{transform:"translate(-40px,-110px) scale(.9)",offset:.35},{transform:"translate(95px,-230px) scale(.33)"}],{duration:1000,delay:900,easing:"cubic-bezier(.45,0,.2,1)",fill:"forwards"}),land);
+   if(f.spot)setTimeout(()=>{dim.animate([{opacity:1},{opacity:0}],{duration:700,delay:1500,fill:"forwards"});glow.animate([{opacity:1},{opacity:0}],{duration:700,delay:1500,fill:"forwards"})},0);
+  },t+(f.wave?200:120));
+ };
+ $(el,".btn").onclick=play;set();setTimeout(play,600+i*120);
+}
+CARDS.forEach(build);
+</script>
+</body>
+</html>

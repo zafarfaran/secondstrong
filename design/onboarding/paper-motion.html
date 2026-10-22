@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paper look with our animations: preview</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#5D534B;--pen:#A85A3C;--page:#E9E2D8}
+body.dark{--ink:#F1E9DF;--ivory:#211B17;--card:#2A231F;--ink2:#B8AA9D;--pen:#E09A78;--page:#14100E}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:24px 20px 60px;transition:background .3s}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 14px;max-width:720px;line-height:1.45}
+.top{display:flex;gap:10px;align-items:center;margin-bottom:8px}.top button{font:600 13px "Bricolage";border:1px solid #8884;background:none;color:var(--ink);border-radius:16px;height:32px;padding:0 14px;cursor:pointer}
+.row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start;margin-top:14px}.opt{width:340px}.tag{font-weight:800;margin-bottom:4px}.why{font-size:13px;color:var(--ink2);line-height:1.4;margin-bottom:10px;min-height:54px}
+.phone{width:340px;height:640px;border-radius:34px;background:var(--ivory);box-shadow:0 10px 30px #0003;overflow:hidden;position:relative;color:var(--ink);transition:background .3s}
+.phone .bg{position:absolute;left:0;width:100%;transition:opacity .4s}
+.bg.night{opacity:0}body.dark .bg.night{opacity:1}body.dark .bg.day{opacity:0}
+.meta{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2)}
+.title{font-size:31px;font-weight:800;letter-spacing:-.035em;line-height:1.02}.title em{font-family:"Gochi";font-style:normal;font-weight:400;font-size:37px;letter-spacing:0}
+.pad{position:absolute;left:26px;right:26px;top:58px}
+svg.ink{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+svg.ink path,svg.ink ellipse{fill:none;stroke:var(--pen);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.btn{position:absolute;left:24px;right:24px;bottom:22px;height:50px;border-radius:25px;background:var(--ink);color:var(--ivory);font:600 16px "Bricolage";display:flex;align-items:center;justify-content:center}
+.replay{margin-top:8px;font:600 12px "Bricolage";border:1px solid #8884;background:none;border-radius:14px;height:28px;padding:0 12px;color:var(--ink2);cursor:pointer}
+video{position:absolute;pointer-events:none}
+/* coach hills */
+.hills{position:absolute;left:0;right:0;top:210px;height:260px}
+.hill{position:absolute;bottom:0;width:210px;transition:all .5s cubic-bezier(.3,1.2,.4,1);cursor:pointer}.hill img{width:100%;display:block}
+.hill.sel{transform:scale(1.15)}.hill:not(.sel){opacity:.55;transform:scale(.7)}
+.hill video{left:50%;bottom:28px;width:230px;height:230px;margin-left:-115px;opacity:0;transition:opacity .25s}.hill.sel video.on{opacity:1}.hill.sel.playing img.still{opacity:0}
+.hill img.still{transition:opacity .2s}
+.name{position:absolute;left:26px;right:26px;top:500px;display:flex;gap:10px;align-items:baseline;border-bottom:1.5px solid var(--ink);padding-bottom:6px}
+.name b{font-size:24px;letter-spacing:-.02em}.hand{font-family:"Gochi";color:var(--pen)}
+/* stages */
+.tiles{position:absolute;left:20px;right:20px;top:190px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{height:128px;border-radius:20px;border:1.5px solid color-mix(in srgb,var(--ink) 16%,transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-weight:700;font-size:14px;cursor:pointer;position:relative;background:none;color:var(--ink);font-family:inherit}
+.tile img{height:76px}.tile.wide{grid-column:span 2;height:70px;flex-direction:row;gap:12px}.tile.wide img{height:54px}
+.tile.sel{border-color:var(--ink)}
+.ack{position:absolute;left:26px;right:26px;top:520px;font-family:"Gochi";font-size:22px;color:var(--pen);min-height:56px}
+/* loading */
+.steps{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;margin-top:14px}.steps li{display:flex;gap:10px;align-items:center;font-size:14.5px;color:var(--ink2);opacity:0;transform:translateY(6px);transition:all .4s}
+.steps li.on{opacity:1;transform:none}.steps li.done{color:var(--ink)}.steps li i{width:18px;height:18px;border-radius:50%;border:1.5px solid #8886;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:10px;color:transparent;transition:all .3s}
+.steps li.done i{background:var(--ink);border-color:var(--ink);color:var(--ivory)}
+.dot{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--ink);border:2px solid var(--ivory);margin:-7px 0 0 -7px;transform:scale(0);transition:transform .4s cubic-bezier(.3,1.6,.5,1)}.dot.on{transform:scale(1)}
+.big{position:absolute;left:26px;bottom:26px;font-size:46px;font-weight:800;letter-spacing:-.05em;opacity:0;transition:opacity .5s}.big.on{opacity:1}.big small{font-size:18px}
+.big span{font-size:11px;font-weight:600;letter-spacing:.09em;color:var(--ink2);margin-left:8px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<h1>The paper look with our animations</h1>
+<p class="lede">The paper scenes and cut-outs from the new design, with the things we already have kept: the pen line drawing itself, the animated coach, the loading climb. Tap around; use the switch for night. The pen paths and the coach positions here are eyeballed; in the app they would be fitted to the art exactly. Nothing is built yet.</p>
+<div class="top"><button id="mode">Switch to night</button></div>
+
+<div class="row">
+ <div class="opt"><div class="tag">1 · Welcome</div><div class="why">The paper sunrise as the page. Your pen underlines the heading and runs down into the path, and the coach you'll get steps out at the foot of it.</div>
+  <div class="phone" id="p1"><img class="bg day" src="paper/web/welcome-day.jpg" style="bottom:0;height:auto"><img class="bg night" src="paper/web/welcome-night.jpg" style="bottom:0;height:auto">
+   <div class="pad"><div class="meta">Second Strong</div><div class="title" style="margin-top:8px;font-size:44px">Let's build<br><em style="font-size:52px">your week.</em></div></div>
+   <svg class="ink" viewBox="0 0 340 640"><path id="u1" d="M24 172 C 80 188 190 190 300 178"/><path id="r1" d="M322 150 C 335 250 300 330 250 400 C 215 450 150 450 110 500"/></svg>
+   <video id="v1" src="../coach-clips/webm/bramble/hello.webm" muted playsinline style="left:6px;top:408px;width:190px;height:190px;opacity:0;transition:opacity .4s"></video>
+   <div class="btn" style="background:var(--ink)">Begin</div></div>
+  <button class="replay" onclick="run1()">Replay</button></div>
+
+ <div class="opt"><div class="tag">2 · Your coach</div><div class="why">Each coach on a paper hill. Tap one: the pen rings it and the animated coach comes alive on its hill. (Here the still bust is hidden behind the clip; in the app the hills would be separate art.)</div>
+  <div class="phone" id="p2"><div class="pad"><div class="title">Pick your <em>coach.</em></div></div>
+   <div class="hills" id="hills"></div>
+   <svg class="ink" viewBox="0 0 340 640"><path id="u2" d="M26 128 C 80 142 170 144 250 132"/><ellipse id="ring2" cx="170" cy="400" rx="128" ry="104" stroke-dasharray="900" stroke-dashoffset="900"/></svg>
+   <div class="name"><span class="meta">Name</span><b id="nm">Bramble</b></div><div class="btn">Continue</div></div></div>
+
+ <div class="opt"><div class="tag">3 · Where are you</div><div class="why">The stages as the paper moons. Choosing one rings it with the pen, like now, and the coach answers in handwriting.</div>
+  <div class="phone" id="p3"><div class="pad"><div class="title">Where are <em>you?</em></div></div>
+   <div class="tiles" id="tiles"></div>
+   <svg class="ink" viewBox="0 0 340 640"><path id="u3" d="M26 128 C 80 142 190 144 270 132"/><ellipse id="ring3" cx="0" cy="0" rx="10" ry="10" stroke-dasharray="1000" stroke-dashoffset="1000"/></svg>
+   <div class="ack" id="ack">&nbsp;</div><div class="btn" style="opacity:.3" id="c3">Continue</div></div></div>
+
+ <div class="opt"><div class="tag">4 · Building your program</div><div class="why">The paper hills with a flag on top. The pen climbs the ridge to the flag, lighting a milestone per step, and your coach pops up at the flag to cheer.</div>
+  <div class="phone" id="p4"><img class="bg day" src="paper/web/plan-day.jpg" style="top:268px;height:auto"><img class="bg night" src="paper/web/plan-night.jpg" style="top:268px;height:auto">
+   <div class="pad"><div class="meta">A moment</div><div class="title" style="margin-top:6px">Building your <em>program.</em></div><ul class="steps" id="steps"></ul></div>
+   <svg class="ink" viewBox="0 0 340 640"><path id="climb" d="M0 636 C 70 600 110 560 150 520 C 200 470 250 450 290 400 S 300 372 303 352" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/></svg>
+   <div class="dot" style="left:150px;top:520px" id="d1"></div><div class="dot" style="left:250px;top:445px" id="d2"></div>
+   <video id="v4" src="../coach-clips/webm/bramble/cheer.webm" muted playsinline style="left:216px;top:228px;width:150px;height:150px;opacity:0;transition:opacity .3s"></video>
+   <div class="big" id="big">85<small>g</small><span>protein a day</span></div></div>
+  <button class="replay" onclick="run4()">Replay</button></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+let T={};const later=(k,f,ms)=>(T[k]=T[k]||[]).push(setTimeout(f,ms)),clear=k=>(T[k]||[]).forEach(clearTimeout),reset=k=>{clear(k);T[k]=[]};
+const draw=(el,ms,len)=>{el.style.transition="none";el.style.strokeDasharray=len;el.style.strokeDashoffset=len;el.getBoundingClientRect();el.style.transition=`stroke-dashoffset ${ms}ms cubic-bezier(.4,.1,.3,1)`;el.style.strokeDashoffset=0};
+$("#mode").onclick=()=>{document.body.classList.toggle("dark");$("#mode").textContent=document.body.classList.contains("dark")?"Switch to day":"Switch to night"};
+
+/* 1 */
+function run1(){reset("p1");const v=$("#v1");v.style.opacity=0;v.currentTime=0;
+ later("p1",()=>draw($("#u1"),900,400),200);later("p1",()=>draw($("#r1"),1800,900),1200);
+ later("p1",()=>{v.style.opacity=1;v.play()},2700)}
+run1();
+
+/* 2 */
+const coaches=["pebble","fern","wren","bramble","luna","otto","tilly","miso"];let cur=3;
+const hills=$("#hills");coaches.forEach((c,i)=>{const d=document.createElement("div");d.className="hill";d.innerHTML=`<img class="still" src="paper/web/coach-${c}.png"><video src="../coach-clips/webm/${c}/hello.webm" muted playsinline loop></video>`;d.onclick=()=>pick(i);hills.appendChild(d)});
+function layout(){$$(".hill").forEach((h,i)=>{const o=i-cur;h.style.left=`${130+o*118}px`;h.style.marginLeft="-105px";h.style.zIndex=10-Math.abs(o);h.classList.toggle("sel",o===0);h.style.display=Math.abs(o)>1?"none":"block"});
+ $$(".hill video").forEach((v,i)=>{const on=i===cur;v.classList.toggle("on",on);const h=v.parentNode;if(on){v.currentTime=0;v.play();h.classList.add("playing")}else{v.pause();h.classList.remove("playing")}});
+ $("#nm").textContent=coaches[cur][0].toUpperCase()+coaches[cur].slice(1)}
+function pick(i){cur=i;layout();const r=$("#ring2");draw(r,900,900)}
+layout();later("p2",()=>draw($("#u2"),900,300),300);
+
+/* 3 */
+const stages=[["peri","Perimenopause","I'll plan around the harder days."],["meno","Menopause","Noted."],["post","After menopause","Strength matters even more now."],["surg","Surgical","Thank you for telling me. We'll go gently."],["unsure","Not sure","That's fine. We'll work it out together."]];
+const tiles=$("#tiles");stages.forEach(([k,t,a],i)=>{const b=document.createElement("button");b.className="tile"+(i===4?" wide":"");b.innerHTML=`<img src="paper/web/stage-${k}.png"><span>${t}</span>`;
+ b.onclick=()=>{$$(".tile").forEach(x=>x.classList.toggle("sel",x===b));const ph=$("#p3").getBoundingClientRect(),r=b.getBoundingClientRect(),e=$("#ring3");
+  e.setAttribute("cx",r.left-ph.left+r.width/2);e.setAttribute("cy",r.top-ph.top+r.height/2);e.setAttribute("rx",r.width/2+6);e.setAttribute("ry",r.height/2+6);draw(e,800,1000);
+  $("#ack").textContent=a;$("#c3").style.opacity=1};tiles.appendChild(b)});
+later("p3",()=>draw($("#u3"),900,300),300);
+
+/* 4 */
+const steps=["Reading what you told us","Working out your protein","Choosing where to start lifting","Planning around your days","Drafting your first week"];
+function run4(){reset("p4");const ul=$("#steps");ul.innerHTML=steps.map(s=>`<li><i>✓</i>${s}</li>`).join("");const lis=[...ul.children];
+ $$("#p4 .dot").forEach(d=>d.classList.remove("on"));$("#big").classList.remove("on");const v=$("#v4");v.style.opacity=0;v.currentTime=0;
+ draw($("#climb"),6200,1);$("#climb").style.strokeDasharray=1;$("#climb").style.strokeDashoffset=1;$("#climb").getBoundingClientRect();$("#climb").style.transition="stroke-dashoffset 6.2s cubic-bezier(.4,.1,.3,1)";$("#climb").style.strokeDashoffset=0;
+ lis.forEach((li,i)=>{later("p4",()=>li.classList.add("on"),300+i*1250);later("p4",()=>{li.classList.add("done");if(i===1)$("#d1").classList.add("on");if(i===3)$("#d2").classList.add("on")},300+i*1250+1000)});
+ later("p4",()=>{v.style.opacity=1;v.play()},6600);later("p4",()=>$("#big").classList.add("on"),6700)}
+run4();
+</script>
+</body>
+</html>

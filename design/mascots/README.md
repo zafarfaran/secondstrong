@@ -43,3 +43,4 @@ Brows carry most of the acting: lifted for hello and listening, one raised for t
 ## In the app
 
 Native SwiftUI, iPhone first. The coach runs in Rive's iOS runtime: import the SVGs into Rive, rig the named layers, and build one state machine whose inputs match `states.json`.
+

@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Onboarding inputs: height, weight and birthday</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--almond:#EDE3D6;--card:#F6F0E8;--ink2:#5D534B;--pen:#A85A3C}
+*{box-sizing:border-box;margin:0}
+body{background:#E9E2D8;font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:28px 20px 60px}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.lede{color:var(--ink2);margin:6px 0 26px;max-width:640px;line-height:1.45}
+h2{font-size:15px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin:34px 0 14px}
+.row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.opt{width:340px}
+.opt .tag{font-weight:800;margin-bottom:4px}.opt .why{font-size:13px;color:var(--ink2);line-height:1.4;margin-bottom:10px;min-height:54px}
+.phone{width:340px;height:560px;border-radius:34px;background:var(--ivory);box-shadow:0 10px 30px #3b322c26;padding:30px 26px 22px;display:flex;flex-direction:column;overflow:hidden;position:relative;
+ background-image:repeating-linear-gradient(transparent 0 31px,#3b322c0a 31px 32px)}
+.meta{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2)}
+.title{font-size:31px;font-weight:800;letter-spacing:-.035em;margin:6px 0 4px}.title em{font-family:"Gochi";font-style:normal;font-weight:400;font-size:37px;letter-spacing:0}
+.sub{color:var(--ink2);font-size:14.5px;margin-bottom:6px}
+.btn{margin-top:auto;height:52px;border-radius:26px;background:var(--ink);color:var(--ivory);font:600 16px "Bricolage";display:flex;align-items:center;justify-content:center;opacity:.3;transition:opacity .2s;border:0;width:100%}
+.btn.on{opacity:1}
+.skip{text-align:center;color:var(--ink2);font-weight:600;font-size:14px;margin:auto 0 8px}
+.skip + .btn{margin-top:0}
+.read{display:flex;justify-content:space-between;align-items:baseline}
+.num{font-size:44px;font-weight:800;letter-spacing:-.04em;line-height:1}.num small{font-size:18px;letter-spacing:0;color:var(--ink2);font-weight:600;margin-left:3px}
+.hint{font-family:"Gochi";font-size:20px;color:var(--ink2)}
+.seg{display:flex;gap:8px;margin:8px 0 10px}.seg button{white-space:nowrap;font:600 13px "Bricolage";height:30px;padding:0 14px;border-radius:15px;border:1px solid #3b322c40;background:none;color:var(--ink);cursor:pointer}.seg button.on{background:var(--ink);color:var(--ivory);border-color:var(--ink)}
+/* ruler */
+.ruler{position:relative;height:70px;margin:2px -26px 0}
+.ruler .scroll{position:absolute;inset:0;overflow-x:scroll;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab}
+.ruler .scroll::-webkit-scrollbar{display:none}
+.ruler .track{display:flex;height:100%;padding:0 50%;align-items:flex-end}
+.tick{flex:0 0 10px;height:100%;scroll-snap-align:center;position:relative}
+.tick::before{content:"";position:absolute;bottom:16px;left:4px;width:1.5px;height:20px;background:#3b322c55}
+.tick.five::before{height:30px;background:#3b322c99}.tick.ten::before{height:42px;background:var(--ink)}
+.tick .l{position:absolute;bottom:-4px;left:-10px;width:30px;text-align:center;font-size:11px;font-weight:600;color:var(--ink2)}
+.ruler .mark{position:absolute;left:50%;top:2px;bottom:10px;width:3px;margin-left:-1.5px;background:var(--pen);border-radius:2px;pointer-events:none}
+.ruler .fade{position:absolute;top:0;bottom:0;width:70px;pointer-events:none}
+.ruler .fade.l{left:0;background:linear-gradient(90deg,var(--ivory),transparent)}.ruler .fade.r{right:0;background:linear-gradient(270deg,var(--ivory),transparent)}
+.block{margin-top:10px}
+/* stepper */
+.step{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.step .circ{width:60px;height:60px;border-radius:50%;border:1.5px solid var(--ink);background:none;font:500 30px "Bricolage";color:var(--ink);cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:center;transition:transform .12s}
+.step .circ:active{transform:scale(.92);background:var(--ink);color:var(--ivory)}
+.step .num{font-size:54px;text-align:center;min-width:150px}
+.quick{display:flex;gap:8px;justify-content:center;margin-top:10px}.quick button{font:600 13px "Bricolage";border:1px solid #3b322c40;background:none;border-radius:14px;height:28px;padding:0 12px;color:var(--ink2);cursor:pointer}
+/* dial */
+.dialwrap{position:relative;margin:8px auto 0;width:268px;height:176px}
+.dialwrap svg{width:268px;height:176px;touch-action:none;cursor:grab}
+.dialwrap .mid{position:absolute;left:0;right:0;top:62px;text-align:center;pointer-events:none}
+/* wheels */
+.wheels{position:relative;display:flex;height:200px;margin:8px -6px 0;border-radius:18px;background:var(--card);overflow:hidden}
+.wheels::after{content:"";position:absolute;left:10px;right:10px;top:80px;height:40px;border-radius:12px;border:1.5px solid var(--ink);pointer-events:none}
+.wheels::before{content:"";position:absolute;inset:0;background:linear-gradient(var(--card) 0,transparent 38%,transparent 62%,var(--card) 100%);z-index:2;pointer-events:none}
+.wheel{flex:1;overflow-y:scroll;scroll-snap-type:y mandatory;scrollbar-width:none;padding:80px 0}
+.wheel::-webkit-scrollbar{display:none}.wheel div{height:40px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;font-weight:600;font-size:18px;color:var(--ink2)}
+.wheel div.sel{color:var(--ink);font-weight:800}
+.wheel.m{flex:1.7}
+/* cards */
+.cards{display:flex;gap:8px;margin-top:12px}.cards button{flex:1;height:64px;border-radius:18px;border:1.5px solid #3b322c24;background:none;font:600 13px "Bricolage";color:var(--ink2);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.cards button b{font-size:20px;font-weight:800;color:var(--ink)}.cards button.cur{border-color:var(--ink)}.cards button.set b{color:var(--ink)}
+.grid{display:grid;gap:8px;margin-top:14px;max-height:292px;overflow-y:auto;scrollbar-width:none}
+.grid button{height:44px;border-radius:14px;border:1.5px solid #3b322c24;background:none;font:600 15px "Bricolage";color:var(--ink);cursor:pointer}
+.grid button.on{background:var(--ink);color:var(--ivory);border-color:var(--ink)}
+.grid.c3{grid-template-columns:repeat(3,1fr)}.grid.c7{grid-template-columns:repeat(7,1fr)}.grid.c4{grid-template-columns:repeat(4,1fr)}
+.grid button.sm{height:40px;border-radius:12px;padding:0}
+.big{font-size:26px;font-weight:800;letter-spacing:-.02em;text-align:center;margin-top:10px;min-height:36px}
+/* typed */
+.typed{display:flex;gap:12px;justify-content:center;align-items:flex-end;margin-top:26px}
+.typed label{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2)}
+.typed input{font:800 46px "Bricolage";letter-spacing:.02em;text-align:center;border:0;border-bottom:2px solid var(--ink);background:none;color:var(--ink);outline:none;border-radius:0}
+.typed input::placeholder{color:#3b322c26}.typed .d,.typed .m{width:84px}.typed .y{width:128px}.typed{gap:8px}
+.warn{font-family:"Gochi";font-size:20px;color:var(--pen);text-align:center;min-height:26px;margin-top:10px}
+</style>
+</head>
+<body>
+<h1>Height, weight and birthday: design options</h1>
+<p class="lede">Every phone below is live: drag, tap or type. Nothing is built in the app yet. Tell me which one you like for each question, or mix them (for example the ruler for weight and the stepper for height).</p>
+
+<h2>Height and weight</h2>
+<div class="row">
+
+  <div class="opt"><div class="tag">A · Ruler</div><div class="why">Drag a measuring tape under a fixed pen marker. The big number follows. Feels like a physical thing, familiar from fitness apps.</div>
+  <div class="phone" id="pA">
+    <div class="meta">Private to you</div><div class="title">Your <em>numbers.</em></div><div class="sub">They set your protein target, nothing more.</div>
+    <div class="seg"><button class="on" data-u="m">cm · kg</button><button data-u="i">ft · lb</button></div>
+    <div class="block"><div class="read"><span class="meta">Height</span><span class="num" data-read="h"><span class="hint">Drag to set</span></span></div><div class="ruler" data-ruler="h"><div class="scroll"><div class="track"></div></div><div class="mark"></div><div class="fade l"></div><div class="fade r"></div></div></div>
+    <div class="block"><div class="read"><span class="meta">Weight</span><span class="num" data-read="w"><span class="hint">Drag to set</span></span></div><div class="ruler" data-ruler="w"><div class="scroll"><div class="track"></div></div><div class="mark"></div><div class="fade l"></div><div class="fade r"></div></div></div>
+    <div class="skip">Skip for now</div><button class="btn" data-btn>Continue</button>
+  </div></div>
+
+  <div class="opt"><div class="tag">B · Big number with + and −</div><div class="why">One large number, big round buttons. Hold a button to run quickly. Simple, accurate and easy to use one-handed.</div>
+  <div class="phone" id="pB">
+    <div class="meta">Private to you</div><div class="title">Your <em>numbers.</em></div><div class="sub">They set your protein target, nothing more.</div>
+    <div class="seg"><button class="on" data-u="m">cm · kg</button><button data-u="i">ft · lb</button></div>
+    <div class="block"><div class="meta" style="text-align:center">Height</div><div class="step"><button class="circ" data-d="h-">−</button><div class="num" data-read="h">165<small>cm</small></div><button class="circ" data-d="h+">+</button></div></div>
+    <div class="block"><div class="meta" style="text-align:center">Weight</div><div class="step"><button class="circ" data-d="w-">−</button><div class="num" data-read="w">70<small>kg</small></div><button class="circ" data-d="w+">+</button></div></div>
+    <div class="skip">Skip for now</div><button class="btn on" data-btn>Continue</button>
+  </div></div>
+
+  <div class="opt"><div class="tag">C · Dial</div><div class="why">Drag a knob round an arc, one measure at a time (switch between Height and Weight). More playful and in keeping with the hand-drawn feel.</div>
+  <div class="phone" id="pC">
+    <div class="meta">Private to you</div><div class="title">Your <em>numbers.</em></div><div class="sub">They set your protein target, nothing more.</div>
+    <div class="seg"><button class="on" data-t="h">Height</button><button data-t="w">Weight</button><span style="flex:1"></span><button class="on" data-u="m">cm · kg</button><button data-u="i">ft · lb</button></div>
+    <div class="dialwrap"><svg viewBox="0 0 268 176"><path id="arcBg" fill="none" stroke="#3b322c22" stroke-width="12" stroke-linecap="round"/><path id="arcFg" fill="none" stroke="#3B322C" stroke-width="12" stroke-linecap="round"/><circle id="knob" r="17" fill="#FBF8F4" stroke="#A85A3C" stroke-width="3.5"/></svg><div class="mid"><div class="num" data-read="x"><span class="hint">Drag the knob</span></div></div></div>
+    <div class="quick" id="dialSet"><span class="hint" style="font-size:17px">Height: <b id="dh">—</b> · Weight: <b id="dw">—</b></span></div>
+    <div class="skip">Skip for now</div><button class="btn" data-btn>Continue</button>
+  </div></div>
+</div>
+
+<h2>Birthday</h2>
+<div class="row">
+
+  <div class="opt"><div class="tag">A · Three wheels</div><div class="why">Day, month and year wheels in our own style, with a pen-outlined row. The familiar phone way, and it works with a mouse wheel on the Mac.</div>
+  <div class="phone" id="dA">
+    <div class="meta">About you</div><div class="title">Your <em>birthday.</em></div>
+    <div class="big" data-read>Choose your date of birth</div>
+    <div class="wheels"><div class="wheel d"></div><div class="wheel m"></div><div class="wheel y"></div></div>
+    <div class="warn" data-warn></div><button class="btn" data-btn>Continue</button>
+  </div></div>
+
+  <div class="opt"><div class="tag">B · Tap, then pick</div><div class="why">Three big cards: Day, Month, Year. Tap one and a clear grid opens, one choice per tap. No scrolling blind, and nothing is pre-selected.</div>
+  <div class="phone" id="dB">
+    <div class="meta">About you</div><div class="title">Your <em>birthday.</em></div>
+    <div class="cards"><button data-c="d"><span>Day</span><b>–</b></button><button data-c="m"><span>Month</span><b>–</b></button><button data-c="y"><span>Year</span><b>–</b></button></div>
+    <div class="grid c7" data-grid></div>
+    <div class="warn" data-warn></div><button class="btn" data-btn>Continue</button>
+  </div></div>
+
+  <div class="opt"><div class="tag">C · Type it</div><div class="why">Three big fields: DD, MM, YYYY. The cursor jumps on by itself and a number keypad opens on the phone. Quickest for people who know their date.</div>
+  <div class="phone" id="dC">
+    <div class="meta">About you</div><div class="title">Your <em>birthday.</em></div>
+    <div class="typed"><label>Day<input class="d" inputmode="numeric" maxlength="2" placeholder="DD"></label><label>Month<input class="m" inputmode="numeric" maxlength="2" placeholder="MM"></label><label>Year<input class="y" inputmode="numeric" maxlength="4" placeholder="YYYY"></label></div>
+    <div class="big" data-read style="font-size:20px;color:#5D534B;font-weight:400">&nbsp;</div>
+    <div class="warn" data-warn></div><button class="btn" data-btn>Continue</button>
+  </div></div>
+</div>
+
+<script>
+const $=(r,s)=>r.querySelector(s),$$=(r,s)=>[...r.querySelectorAll(s)];
+const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const NOW=new Date(),TY=NOW.getFullYear();
+const dim=(m,y)=>new Date(y,m,0).getDate();
+const adult=(d,m,y)=>{let a=TY-y;if(NOW.getMonth()+1<m||(NOW.getMonth()+1===m&&NOW.getDate()<d))a--;return a>=18};
+
+/* ---------- unit helpers ---------- */
+const fmtH=(cm,imp)=>{if(!imp)return `${cm}<small>cm</small>`;const i=Math.round(cm/2.54);return `${Math.floor(i/12)}′ ${i%12}″`};
+const fmtW=(kg,imp)=>imp?`${Math.round(kg/.45359237)}<small>lb</small>`:`${kg}<small>kg</small>`;
+const RANGE={h:[120,220,1],w:[35,250,.5]};
+
+/* ---------- A: ruler ---------- */
+(()=>{const p=$(document,"#pA");let imp=false;const v={h:null,w:null};
+ const init=(key)=>{const [min,max,st]=RANGE[key];const r=$(p,`[data-ruler=${key}] .scroll`),tr=$(r,".track");tr.innerHTML="";const n=Math.round((max-min)/st);
+  for(let i=0;i<=n;i++){const t=document.createElement("div");t.className="tick"+(i%10===0?" ten":i%5===0?" five":"");if(i%10===0){const l=document.createElement("span");l.className="l";l.textContent=key==="h"?(imp?"":Math.round(min+i*st)):Math.round(min+i*st);t.appendChild(l)}tr.appendChild(t)}
+  const def=key==="h"?165:70;r.scrollLeft=Math.round((def-min)/st)*10;let first=true;
+  r.onscroll=()=>{if(first){first=false;return}const val=min+Math.round(r.scrollLeft/10)*st;v[key]=val;show(key);done()};};
+ const show=(k)=>{const el=$(p,`[data-read=${k}]`);if(v[k]==null)return;el.innerHTML=k==="h"?fmtH(v.h,imp):fmtW(v.w,imp)};
+ const done=()=>$(p,"[data-btn]").classList.toggle("on",v.h!=null&&v.w!=null);
+ $$(p,"[data-u]").forEach(b=>b.onclick=()=>{imp=b.dataset.u==="i";$$(p,"[data-u]").forEach(x=>x.classList.toggle("on",x===b));show("h");show("w");
+  $$(p,"[data-ruler=h] .tick .l").forEach(l=>l.style.visibility=imp?"hidden":"visible")});
+ init("h");init("w");})();
+
+/* ---------- B: stepper ---------- */
+(()=>{const p=$(document,"#pB");let imp=false;const v={h:165,w:70};
+ const show=()=>{$(p,"[data-read=h]").innerHTML=fmtH(v.h,imp);$(p,"[data-read=w]").innerHTML=fmtW(v.w,imp)};
+ const bump=(k,dir)=>{const [min,max,st]=RANGE[k];const s=imp&&k==="h"?2.54:imp?.45359237:st;v[k]=Math.min(max,Math.max(min,+(v[k]+dir*(imp?(k==="h"?2.54:.45359237):st)).toFixed(2)));show()};
+ $$(p,"[data-d]").forEach(b=>{const k=b.dataset.d[0],dir=b.dataset.d[1]==="+"?1:-1;let t,iv;
+  const stop=()=>{clearTimeout(t);clearInterval(iv)};b.onpointerdown=()=>{bump(k,dir);t=setTimeout(()=>iv=setInterval(()=>bump(k,dir),70),380)};["pointerup","pointerleave","pointercancel"].forEach(e=>b.addEventListener(e,stop))});
+ $$(p,"[data-u]").forEach(b=>b.onclick=()=>{imp=b.dataset.u==="i";$$(p,"[data-u]").forEach(x=>x.classList.toggle("on",x===b));show()});show();})();
+
+/* ---------- C: dial ---------- */
+(()=>{const p=$(document,"#pC");let tab="h",imp=false;const v={h:null,w:null};
+ const cx=134,cy=148,R=108,a0=Math.PI*1.0,a1=0;const pt=a=>[cx+R*Math.cos(a),cy-R*Math.sin(a)];
+ const arc=(a,b)=>{const [x1,y1]=pt(a),[x2,y2]=pt(b);return `M${x1} ${y1} A${R} ${R} 0 0 1 ${x2} ${y2}`};
+ const svg=$(p,"svg"),bg=$(p,"#arcBg"),fg=$(p,"#arcFg"),kn=$(p,"#knob");bg.setAttribute("d",arc(Math.PI,0));
+ const frac=()=>{const [min,max]=RANGE[tab];const val=v[tab]??(tab==="h"?165:70);return (val-min)/(max-min)};
+ const draw=()=>{const f=frac(),a=Math.PI-f*Math.PI,[x,y]=pt(a);kn.setAttribute("cx",x);kn.setAttribute("cy",y);fg.setAttribute("d",f<=0.001?"":arc(Math.PI,a));
+  const el=$(p,"[data-read=x]");el.innerHTML=v[tab]==null?'<span class="hint">Drag the knob</span>':(tab==="h"?fmtH(v.h,imp):fmtW(v.w,imp));
+  $(p,"#dh").innerHTML=v.h==null?"—":fmtH(v.h,imp).replace(/<[^>]+>/g,"");$(p,"#dw").innerHTML=v.w==null?"—":fmtW(v.w,imp).replace(/<[^>]+>/g,"");
+  $(p,"[data-btn]").classList.toggle("on",v.h!=null&&v.w!=null)};
+ const move=e=>{const r=svg.getBoundingClientRect(),x=(e.clientX-r.left)*268/r.width-cx,y=cy-(e.clientY-r.top)*176/r.height;let a=Math.atan2(y,x);if(a<0)a=x<0?Math.PI:0;const f=1-a/Math.PI;const [min,max,st]=RANGE[tab];v[tab]=Math.round((min+f*(max-min))/st)*st;draw()};
+ let drag=false;svg.onpointerdown=e=>{drag=true;svg.setPointerCapture(e.pointerId);move(e)};svg.onpointermove=e=>drag&&move(e);svg.onpointerup=()=>drag=false;
+ $$(p,"[data-t]").forEach(b=>b.onclick=()=>{tab=b.dataset.t;$$(p,"[data-t]").forEach(x=>x.classList.toggle("on",x===b));draw()});
+ $$(p,"[data-u]").forEach(b=>b.onclick=()=>{imp=b.dataset.u==="i";$$(p,"[data-u]").forEach(x=>x.classList.toggle("on",x===b));draw()});draw();})();
+
+/* ---------- birthday shared ---------- */
+function readout(d,m,y){return d&&m&&y&&d<=dim(m,y)?`${d} ${MONTHS[m-1]} ${y}`:null}
+function finish(p,d,m,y){const ok=d&&m&&y&&d<=dim(m,y);const r=$(p,"[data-read]");
+ if(r&&p.id!=="dC")r.textContent=ok?readout(d,m,y):"Choose your date of birth";
+ if(r&&p.id==="dC")r.innerHTML=ok?readout(d,m,y):"&nbsp;";
+ const bad=ok&&!adult(d,m,y);$(p,"[data-warn]").textContent=bad?"Second Strong is for adults, 18 and over.":(d&&m&&y&&!ok?"That date doesn't exist.":"");
+ $(p,"[data-btn]").classList.toggle("on",!!ok&&!bad)}
+
+/* ---------- A: wheels ---------- */
+(()=>{const p=$(document,"#dA");const sel={d:null,m:null,y:null};let ready=false;
+ const fill=(el,items,key)=>{el.innerHTML="";items.forEach(([val,label])=>{const c=document.createElement("div");c.textContent=label;c.dataset.v=val;el.appendChild(c)});
+  el.addEventListener("scroll",()=>{const i=Math.min(Math.round(el.scrollTop/40),el.children.length-1),c=el.children[i];[...el.children].forEach(x=>x.classList.toggle("sel",x===c));
+   if(ready){sel[key]=+c.dataset.v;finish(p,sel.d,sel.m,sel.y)}})};
+ const D=$(p,".d"),M=$(p,".m"),Y=$(p,".y");
+ fill(D,Array.from({length:31},(_,i)=>[i+1,i+1]),"d");fill(M,MONTHS.map((n,i)=>[i+1,n]),"m");fill(Y,Array.from({length:TY-1900+1},(_,i)=>[TY-i,TY-i]),"y");
+ Y.scrollTop=[...Y.children].findIndex(c=>c.dataset.v==="1975")*40;
+ setTimeout(()=>{ready=true},400);})();
+
+/* ---------- B: cards + grid ---------- */
+(()=>{const p=$(document,"#dB");const v={d:null,m:null,y:null};let cur=null;const grid=$(p,"[data-grid]");
+ const cards=$$(p,"[data-c]");const refresh=()=>{cards.forEach(c=>{const k=c.dataset.c,b=$(c,"b");b.textContent=v[k]==null?"–":k==="m"?MONTHS[v[k]-1].slice(0,3):v[k];c.classList.toggle("set",v[k]!=null);c.classList.toggle("cur",cur===k)});finish(p,v.d,v.m,v.y)};
+ const open=k=>{cur=k;grid.className="grid "+(k==="d"?"c7":k==="m"?"c3":"c4");grid.innerHTML="";
+  const items=k==="d"?Array.from({length:31},(_,i)=>[i+1,i+1]):k==="m"?MONTHS.map((n,i)=>[i+1,n]):Array.from({length:TY-1920+1},(_,i)=>[TY-i,TY-i]);
+  items.forEach(([val,l])=>{const b=document.createElement("button");b.textContent=l;if(k==="d")b.className="sm";b.classList.toggle("on",v[k]===val);b.onclick=()=>{v[k]=val;refresh();const next=k==="d"?"m":k==="m"?"y":null;next&&v[next]==null?open(next):(cur=null,grid.innerHTML="",refresh())};grid.appendChild(b)});refresh()};
+ cards.forEach(c=>c.onclick=()=>open(c.dataset.c));open("d");grid.querySelector("button");})();
+
+/* ---------- C: typed ---------- */
+(()=>{const p=$(document,"#dC");const d=$(p,".d"),m=$(p,".m"),y=$(p,".y");
+ const num=el=>+el.value||null;const upd=()=>finish(p,num(d),num(m),y.value.length===4?num(y):null);
+ [d,m,y].forEach(el=>el.addEventListener("input",()=>{el.value=el.value.replace(/\D/g,"");upd()}));
+ d.addEventListener("input",()=>{if(d.value.length===2||+d.value>3)m.focus()});m.addEventListener("input",()=>{if(m.value.length===2||+m.value>1)y.focus()});
+ y.addEventListener("keydown",e=>{if(e.key==="Backspace"&&!y.value)m.focus()});m.addEventListener("keydown",e=>{if(e.key==="Backspace"&&!m.value)d.focus()});})();
+</script>
+</body>
+</html>

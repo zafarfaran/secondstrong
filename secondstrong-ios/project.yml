@@ -1,0 +1,32 @@
+name: SecondStrong
+options:
+  bundleIdPrefix: com.secondstrong
+  deploymentTarget:
+    iOS: "17.0"
+packages:
+  SecondStrongKit:
+    path: .
+targets:
+  SecondStrong:
+    type: application
+    platform: iOS
+    sources:
+      - App
+    dependencies:
+      - package: SecondStrongKit
+        product: SSOnboarding
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Second Strong
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+          UIImageName: LaunchMark
+          UIImageRespectsSafeAreaInsets: true
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.secondstrong.app
+        SWIFT_VERSION: "6.0"
+        TARGETED_DEVICE_FAMILY: "1"

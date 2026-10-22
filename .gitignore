@@ -34,3 +34,10 @@ Thumbs.db
 
 # Large archives (GitHub rejects files over 100MB)
 *.zip
+
+# Swift / Xcode (the .xcodeproj is generated from secondstrong-ios/project.yml)
+.build/
+DerivedData/
+*.xcodeproj/
+xcuserdata/
+secondstrong-ios/App/Info.plist

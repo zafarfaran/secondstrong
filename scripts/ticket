@@ -1,0 +1,150 @@
+#!/usr/bin/env bash
+# Internal ticket tracker. Tickets are markdown files in tickets/. See docs/tickets.md.
+set -eu
+cd "$(dirname "$0")/.."
+DIR=tickets
+STATUSES="todo in-progress review done cancelled"
+TYPES="task bug feature chore"
+
+die() { echo "error: $1" >&2; exit 1; }
+
+find_ticket() {
+  local id=$1 f
+  case "$id" in [0-9]*) id=$(printf 'SS-%04d' "$((10#$id))") ;; esac
+  for f in "$DIR/$id"-*.md; do
+    if [ -e "$f" ]; then echo "$f"; return 0; fi
+  done
+  die "no ticket $id (run: scripts/ticket list --all)"
+}
+
+fm_get() { # file key
+  awk -v k="$2" '
+    NR == 1 && $0 != "---" { exit }
+    NR > 1 && $0 == "---" { exit }
+    NR > 1 { i = index($0, ":"); if (substr($0, 1, i - 1) == k) { v = substr($0, i + 1); sub(/^ +/, "", v); print v; exit } }
+  ' "$1"
+}
+
+fm_set() { # file key value
+  awk -v k="$2" -v v="$3" '
+    NR == 1 { print; infm = 1; next }
+    infm && $0 == "---" { infm = 0 }
+    infm { i = index($0, ":"); if (substr($0, 1, i - 1) == k) { print k ": " v; next } }
+    { print }
+  ' "$1" > "$1.tmp" && mv "$1.tmp" "$1"
+}
+
+next_id() {
+  local max=0 f n
+  for f in "$DIR"/SS-*.md; do
+    [ -e "$f" ] || continue
+    n=$(basename "$f" | sed -E 's/^SS-([0-9]+)-.*/\1/')
+    n=$((10#$n))
+    if [ "$n" -gt "$max" ]; then max=$n; fi
+  done
+  printf 'SS-%04d' $((max + 1))
+}
+
+cmd_new() {
+  [ $# -ge 1 ] || die 'usage: ticket new "Title" [-t type] [-d "description"]'
+  local title=$1 type=task desc="TBD" id slug file today
+  shift
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      -t) type=${2:?missing type}; shift 2 ;;
+      -d) desc=${2:?missing description}; shift 2 ;;
+      *) die "unknown option $1" ;;
+    esac
+  done
+  case " $TYPES " in *" $type "*) ;; *) die "type must be one of: $TYPES" ;; esac
+  id=$(next_id)
+  slug=$(echo "$title" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//' | cut -c1-40 | sed -E 's/-+$//')
+  file="$DIR/$id-$slug.md"
+  today=$(date +%F)
+  mkdir -p "$DIR"
+  cat > "$file" <<EOF
+---
+id: $id
+title: $title
+type: $type
+status: todo
+created: $today
+updated: $today
+external:
+---
+
+## Description
+
+$desc
+
+## Acceptance
+
+- [ ] TBD
+
+## Comments
+
+EOF
+  echo "$id  $file"
+}
+
+cmd_list() {
+  local all=0 f st
+  if [ "${1:-}" = "--all" ]; then all=1; fi
+  for f in "$DIR"/SS-*.md; do
+    [ -e "$f" ] || continue
+    st=$(fm_get "$f" status)
+    if [ "$all" -eq 0 ] && { [ "$st" = done ] || [ "$st" = cancelled ]; }; then continue; fi
+    printf '%s  %-11s %s\n' "$(fm_get "$f" id)" "$st" "$(fm_get "$f" title)"
+  done
+}
+
+cmd_comment() {
+  [ $# -ge 2 ] || die 'usage: ticket comment ID "text"'
+  local f who
+  f=$(find_ticket "$1")
+  who=${TICKET_AUTHOR:-$(git config user.name 2>/dev/null || echo unknown)}
+  if [ -n "$(tail -c1 "$f")" ]; then echo >> "$f"; fi
+  printf -- '- %s %s: %s\n' "$(date +%F)" "$who" "$2" >> "$f"
+  fm_set "$f" updated "$(date +%F)"
+}
+
+cmd_status() {
+  [ $# -eq 2 ] || die "usage: ticket status ID <$STATUSES>"
+  case " $STATUSES " in *" $2 "*) ;; *) die "status must be one of: $STATUSES" ;; esac
+  local f old
+  f=$(find_ticket "$1")
+  old=$(fm_get "$f" status)
+  fm_set "$f" status "$2"
+  cmd_comment "$1" "status $old -> $2"
+}
+
+cmd_link() {
+  [ $# -eq 2 ] || die 'usage: ticket link ID EXTERNAL-KEY (e.g. a Jira key)'
+  local f
+  f=$(find_ticket "$1")
+  fm_set "$f" external "$2"
+  cmd_comment "$1" "linked to external ticket $2"
+}
+
+usage() {
+  cat <<EOF
+scripts/ticket new "Title" [-t task|bug|feature|chore] [-d "description"]
+scripts/ticket list [--all]            open tickets by default
+scripts/ticket show ID                 ID may be SS-0007 or 7
+scripts/ticket comment ID "text"       set TICKET_AUTHOR to name the author
+scripts/ticket status ID <todo|in-progress|review|done|cancelled>
+scripts/ticket link ID EXTERNAL-KEY    record the id in an external tracker
+EOF
+}
+
+cmd=${1:-}
+[ $# -gt 0 ] && shift
+case "$cmd" in
+  new) cmd_new "$@" ;;
+  list) cmd_list "$@" ;;
+  show) [ $# -eq 1 ] || die "usage: ticket show ID"; cat "$(find_ticket "$1")" ;;
+  comment) cmd_comment "$@" ;;
+  status) cmd_status "$@" ;;
+  link) cmd_link "$@" ;;
+  *) usage; [ -z "$cmd" ] || exit 1 ;;
+esac
