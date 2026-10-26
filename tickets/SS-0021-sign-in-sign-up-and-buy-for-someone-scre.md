@@ -4,7 +4,7 @@ title: Sign in, sign up and buy-for-someone screens
 type: feature
 status: review
 created: 2026-10-21
-updated: 2026-10-22
+updated: 2026-10-24
 external:
 ---
 
@@ -27,3 +27,6 @@ Account screens (Save your program, Sign in, Check your email) and the For someo
 - 2026-10-22 Faran Zafar: Sign-in sky redone: the baked moon, stars and sun are gone from the picture. Only the hills and coaches remain as art (cut out); the sky is drawn natively in paper style and animated (PaperSky): swaying crescent, twinkling paper stars, drifting clouds, shooting star, fireflies at night; paper sun with rays, clouds, birds by day. Objects kept below the headline.
 - 2026-10-22 Faran Zafar: Removed the birds from the day sky.
 - 2026-10-22 Faran Zafar: Sign-in hills now run to the bottom edge of the screen (removed the 34 pt gap under the picture); the sky and hills move down with it.
+- 2026-10-24 Faran Zafar: Night sky: the shooting star is now a proper meteor (glowing head, tapering tail, second streak, dust; varies per pass). SkySnapshotTests freezes the sky at a chosen moment.
+- 2026-10-24 Faran Zafar: Meteor now crosses the whole sky: enters past the right edge, even speed, leaves past the left edge, fading only at the ends (1.6 s a pass).
+- 2026-10-24 Faran Zafar: Meteor now loops: two lanes (4.8 s and 7.3 s periods, own heights and variation), so the sky always has one crossing and sometimes two.

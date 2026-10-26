@@ -11,7 +11,7 @@ Decisions only a human can make. Remove when answered and recorded elsewhere.
 5. **Spec split.** Approve splitting the spec into files under 600 lines.
 6. **Ticket sync target.** Which external tracker (for example Jira) should
    tickets sync to, and which direction is authoritative? See [tickets](tickets.md).
-7. **Family circle.** Seats and price of the family plan (deferred by the owner), how the one-trial rule applies to a gifted year (which keeps its trial),
+7. **Family circle.** Launch prices are decided and recorded in the family circle doc (solo 9.99, helpers 12.99 then +4.00 each, yearly at eight months). Still open: what a helper can do, currency, maximum helpers, how the one-trial rule applies to a gifted year (which keeps its trial),
    whether a member can invite her own supporter, retention of consent records, and who
    counts as a supporter. See [family circle](design/family-circle.md).
 8. **Gifting through the stores.** Can a subscription be bought for someone else? Apple has no native

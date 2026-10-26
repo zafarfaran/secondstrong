@@ -29,6 +29,8 @@ final class CoachClipPlayer {
     private var sequencer: ClipSequencer?
     private let slots = [Slot(), Slot()]
     private var live = 0
+    private var switching: Task<Void, Never>?
+    private var suspended = false
 
     init(_ coach: Coach) {
         self.coach = coach
@@ -55,6 +57,9 @@ final class CoachClipPlayer {
 
     var currentMood: CoachMood? { sequencer?.mood }
 
+    /// Whether the clip on show has a frame on screen. Used by the tests: the hand-over must never show a blank.
+    var visibleLayerReady: Bool { slots[live].layer.isReadyForDisplay }
+
     func setFrame(_ frame: CGRect) {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
@@ -73,6 +78,7 @@ final class CoachClipPlayer {
 
     /// Releases the decoders; the player is not used again after this.
     func stop() {
+        switching?.cancel()
         for slot in slots {
             slot.player.pause()
             if let observer = slot.observer { slot.player.removeTimeObserver(observer) }
@@ -85,7 +91,7 @@ final class CoachClipPlayer {
     }
 
     private func tick(slot index: Int, time: Double) {
-        guard index == live, var sequencer else { return }
+        guard index == live, !suspended, var sequencer else { return }
         let action = sequencer.tick(at: time)
         self.sequencer = sequencer
         apply(action)
@@ -98,24 +104,48 @@ final class CoachClipPlayer {
         case .seek(let t):
             slots[live].player.seek(to: CMTime(seconds: t, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
         case .play(let mood):
-            let next = 1 - live
-            if slots[next].mood != mood { cue(mood, in: slots[next]) }
-            slots[next].player.play()
-            CATransaction.begin()
-            CATransaction.setDisableActions(true)
-            slots[next].layer.opacity = 1
-            slots[live].layer.opacity = 0
-            CATransaction.commit()
-            slots[live].player.pause()
-            slots[live].mood = nil
-            live = next
+            handOver(to: mood)
         }
+    }
+
+    /// The next clip is cued, paused, on the spare player. The old clip stays on screen until the new one has its first
+    /// frame decoded, then they swap in one step. Showing it earlier is what made the coach blink out.
+    private func handOver(to mood: CoachMood) {
+        let next = 1 - live
+        let fresh = slots[next].mood != mood
+        if fresh { cue(mood, in: slots[next]) }
+        suspended = true
+        switching?.cancel()
+        switching = Task { @MainActor [weak self] in
+            var waited = 0.0
+            if fresh { try? await Task.sleep(for: .milliseconds(30)) }   // a new item needs a moment to clear the old frame's readiness
+            while let self, !self.slots[next].layer.isReadyForDisplay, waited < 0.5 {
+                try? await Task.sleep(for: .milliseconds(8))
+                waited += 0.008
+            }
+            guard !Task.isCancelled, let self else { return }
+            self.show(slot: next)
+        }
+    }
+
+    private func show(slot next: Int) {
+        slots[next].player.play()
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        slots[next].layer.opacity = 1
+        slots[live].layer.opacity = 0
+        CATransaction.commit()
+        slots[live].player.pause()
+        slots[live].mood = nil
+        live = next
+        suspended = false
+        cuePending()
     }
 
     /// While a clip is leaving, the next one is already waiting on the spare player.
     private func cuePending() {
-        guard let sequencer, sequencer.phase != .enter else { return }
-        let target = sequencer.pending ?? (sequencer.phase == .leave ? .idle : nil)
+        guard !suspended, let sequencer, sequencer.phase != .enter else { return }
+        let target = sequencer.pending ?? (sequencer.phase == .leave || sequencer.mood.isIdleVariant ? .idle : nil)
         guard let target, slots[1 - live].mood != target else { return }
         cue(target, in: slots[1 - live])
     }

@@ -84,7 +84,12 @@ const STATES = {
   encourage:  { in: .5, loop: 1.2, out: .5 },
   oops:       { in: .5, loop: 2.0, out: .5 },
   gotit:      { in: .4, loop: 1.6, out: .4 },
-  breathe:    { in: .6, loop: 8.0, out: .6 }    // 4s in, 4s out
+  breathe:    { in: .6, loop: 8.0, out: .6 },   // 4s in, 4s out
+  fall:       { in: .3, loop: .4, out: .7 },    // the app drops the coach down the screen: launch, fall, land
+  /* idle variations: loop-only like idle (they start and end on the neutral frame); the app plays one now and then */
+  idleLook:   { loop: 3.2 },
+  idleYawn:   { loop: 3.0 },
+  idleBounce: { loop: 2.0 }
 };
 
 /* moments inside a clip the app can hang its own UI on (seconds from the clip start) */
@@ -405,6 +410,75 @@ function build(tl, state, S, TAILRIG) {
     tl.to(q(".fx-tick"), { scale: 1.07, duration: .4, ease: "sine.inOut", yoyo: true, repeat: 3 }, A);
     /* out */
     eyes("open", B + .05); brows(B0, B0, B, .3, "power2.out"); ears(0, 0, B, .35); fx("tick", false, B, .25);
+  }
+
+  if (state === "idleLook") {
+    /* a curious look round: tilt and glance left, right, up, then back; the body keeps breathing */
+    breathe(0, L, 2, .025); wag(0, L, 2);
+    tl.to(P, { rotation: -5, duration: .35, ease: "power2.out" }, .2).to(q(".look"), { x: -3, y: .5, duration: .3, ease: "power2.out" }, .2);
+    ears(-7, -2, .25, .3, "power2.out");
+    tl.to(P, { rotation: 5, duration: .45, ease: "sine.inOut" }, 1.0).to(q(".look"), { x: 3, y: 0, duration: .4, ease: "sine.inOut" }, 1.0);
+    ears(2, 7, 1.05, .35, "sine.inOut");
+    tl.to(P, { rotation: 0, duration: .4, ease: "sine.inOut" }, 1.8).to(q(".look"), { x: 0, y: -2.5, duration: .35, ease: "power2.out" }, 1.8);
+    brows({ y: -2.5 }, { y: -2.5 }, 1.85, .25, "power2.out");
+    tl.to(q(".look"), { x: 0, y: 0, duration: .35, ease: "power2.inOut" }, 2.5); brows(B0, B0, 2.5, .3, "power2.out");
+    ears(0, 0, 2.55, .45, "elastic.out(1,.5)"); blink(2.8);
+  }
+
+  if (state === "idleYawn") {
+    /* a sleepy stretch and a wide yawn, then a blink back to normal */
+    wag(0, L, 2, .5);
+    eyes("shut", .35); mouth(true, .55, .35);
+    tl.to(R, { scaleY: 1.08, scaleX: .96, y: -3, svgOrigin: "100 178", duration: .7, ease: "sine.inOut" }, .45).to(R, { scaleY: 1, scaleX: 1, y: 0, duration: .6, ease: "sine.inOut" }, 1.75);
+    ears(-8, 8, .5, .7, "sine.inOut"); ears(0, 0, 1.7, .6, "sine.inOut");
+    tl.to(P, { rotation: -3, duration: .6, ease: "sine.inOut" }, .5).to(P, { rotation: 0, duration: .5, ease: "sine.inOut" }, 1.7);
+    brows({ y: -2 }, { y: -2 }, .5, .5, "sine.inOut"); brows(B0, B0, 1.8, .4, "sine.inOut");
+    mouth(false, 1.75, .3); eyes("open", 2.15); blink(2.6);
+  }
+
+  if (state === "idleBounce") {
+    /* two small happy bounces with squash and stretch, ears bouncing, a smile */
+    wag(0, L, 4, 1);
+    eyes("happy", .05); mouth(true, .08);
+    for (let i = 0; i < 2; i++) {
+      const t0 = .1 + i * .75;
+      tl.to(R, { scaleY: .94, scaleX: 1.05, duration: .1, ease: "power2.in", svgOrigin: "100 178" }, t0)
+        .to(R, { y: -9, scaleY: 1.05, scaleX: .97, duration: .2, ease: "power2.out" }, t0 + .1)
+        .to(R, { y: 0, scaleY: 1.02, scaleX: .985, duration: .17, ease: "power2.in" }, t0 + .3)
+        .to(R, { scaleY: .92, scaleX: 1.07, duration: .07, ease: "power2.out" }, t0 + .47)
+        .to(R, { scaleY: 1, scaleX: 1, duration: .22, ease: "elastic.out(1,.5)" }, t0 + .54);
+      tl.to(SH, { scaleX: .8, opacity: .7, duration: .2, ease: "power2.out", transformOrigin: "50% 50%" }, t0 + .1).to(SH, { scaleX: 1, opacity: 1, duration: .17, ease: "power2.in" }, t0 + .3);
+      ears(9, -9, t0 + .1, .15); ears(-6, 6, t0 + .3, .15); ears(0, 0, t0 + .5, .3, "elastic.out(1,.5)");
+    }
+    eyes("open", 1.65); mouth(false, 1.7);
+  }
+
+  if (state === "fall") {
+    /* in: a quick squat, then stretched out and surprised: arms flung up, wide eyes, an open mouth, ears lifting */
+    tl.to(R, { scaleY: .9, scaleX: 1.07, duration: .08, ease: "power2.in" }, 0)
+      .to(R, { scaleY: 1.16, scaleX: .92, y: -8, duration: .22, ease: "power2.out" }, .08);
+    arm("l", { rotation: -172, scale: 1, opacity: 1 }, .06, .24, "power2.out"); arm("r", { rotation: -172, scale: 1, opacity: 1 }, .08, .24, "power2.out");
+    tl.to(q(".look"), { scale: 1.3, duration: .14, ease: "back.out(3)", transformOrigin: "50% 50%" }, .06);
+    brows({ y: -5 }, { y: -5 }, .06, .2); mouth(true, .08, .08); ears(-24, 24, .06, .2, "power2.out");
+    tl.to(SH, { scaleX: .5, opacity: .25, duration: .25, ease: "power2.out", transformOrigin: "50% 50%" }, .05);
+    /* loop: falling: the body trembles, ears and arms flutter, the tail streams (every motion returns to where it began) */
+    wag(A, L, 4, 1.4);
+    tl.to(R, { y: -11, duration: .1, ease: "sine.inOut", yoyo: true, repeat: 3 }, A);
+    tl.to(q(".arm-l"), { rotation: -179, duration: .1, ease: "sine.inOut", yoyo: true, repeat: 3, transformOrigin: "50% 0%" }, A);
+    tl.to(q(".arm-r"), { rotation: -160, duration: .1, ease: "sine.inOut", yoyo: true, repeat: 3, transformOrigin: "50% 0%" }, A);
+    tl.to(EL, { rotation: -32, duration: .1, ease: "sine.inOut", yoyo: true, repeat: 3, transformOrigin: "70% 90%" }, A);
+    tl.to(ER, { rotation: 32, duration: .1, ease: "sine.inOut", yoyo: true, repeat: 3, transformOrigin: "30% 90%" }, A);
+    /* out: the landing: a hard squash, a rebound hop, a smaller landing, then it settles; arms drop, ears flop, eyes squint */
+    tl.to(R, { y: 0, scaleY: .74, scaleX: 1.24, duration: .07, ease: "power2.in" }, B)
+      .to(R, { scaleY: 1.1, scaleX: .95, y: -12, duration: .16, ease: "power2.out" }, B + .07)
+      .to(R, { scaleY: .9, scaleX: 1.07, y: 0, duration: .12, ease: "power2.in" }, B + .23)
+      .to(R, { scaleY: 1, scaleX: 1, duration: .3, ease: "elastic.out(1,.45)" }, B + .35);
+    tl.to(SH, { scaleX: 1.25, opacity: 1, duration: .07, ease: "power2.in", transformOrigin: "50% 50%" }, B).to(SH, { scaleX: 1, duration: .3, ease: "power2.out" }, B + .1);
+    arm("l", { rotation: -40, scale: 0, opacity: 0 }, B + .08, .3, "power2.in"); arm("r", { rotation: -40, scale: 0, opacity: 0 }, B + .1, .3, "power2.in");
+    ears(18, -18, B, .07, "power2.in"); ears(0, 0, B + .1, .5, "elastic.out(1,.4)");
+    eyes("shut", B); eyes("open", B + .3);
+    tl.to(q(".look"), { scale: 1, duration: .3, ease: "power2.out" }, B + .1);
+    brows(B0, B0, B + .2, .3, "power2.out"); mouth(false, B + .25);
   }
 
   if (state === "breathe") {

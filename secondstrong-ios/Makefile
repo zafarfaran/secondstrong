@@ -1,4 +1,4 @@
-.PHONY: gen build test check preview
+.PHONY: gen build test check preview today
 
 # Regenerate the Xcode project from project.yml (the .xcodeproj is not committed).
 gen:
@@ -21,3 +21,7 @@ check:
 # Phone-sized macOS window running the onboarding. No iOS platform needed.
 preview:
 	swift run OnboardingPreview
+
+# The same window, opened straight on the Today tab.
+today:
+	swift run OnboardingPreview --today

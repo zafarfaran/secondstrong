@@ -4,22 +4,26 @@ import SSDesign
 /// The onboarding flow: one continuous pen line from welcome to the first-week plan.
 public struct OnboardingView: View {
     @State private var run = 0
+    private let onFinish: (() -> Void)?
 
-    public init() {}
+    /// `onFinish` is called when she taps the last button; without it the prototype just starts again.
+    public init(onFinish: (() -> Void)? = nil) { self.onFinish = onFinish }
 
     public var body: some View {
-        OnboardingRun { run += 1 }.id(run)
+        OnboardingRun(onRestart: { run += 1 }, onFinish: onFinish).id(run)
     }
 }
 
 struct OnboardingRun: View {
     let onRestart: () -> Void
+    var onFinish: (() -> Void)?
     @State private var flow: OnboardingFlow
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    init(flow: OnboardingFlow = OnboardingFlow(), onRestart: @escaping () -> Void) {
+    init(flow: OnboardingFlow = OnboardingFlow(), onRestart: @escaping () -> Void, onFinish: (() -> Void)? = nil) {
         _flow = State(initialValue: flow)
         self.onRestart = onRestart
+        self.onFinish = onFinish
     }
 
     var body: some View {
@@ -29,6 +33,7 @@ struct OnboardingRun: View {
                 OnboardingDocument(flow: flow)
                 topBar(safeTop: proxy.safeAreaInsets.top)
                 companion
+                speechBubble
                 ending
                 gate
             }
@@ -40,6 +45,8 @@ struct OnboardingRun: View {
             }
             .onDisappear { flow.stop() }
             .animation(.easeInOut(duration: 0.5), value: flow.signedIn)
+            .simultaneousGesture(DragGesture(minimumDistance: 0).onChanged { _ in flow.noteActivity() })
+            .onChange(of: flow.answers) { _, _ in flow.noteActivity() }
             .sensoryFeedback(.selection, trigger: flow.answers.coach)
             .sensoryFeedback(.selection, trigger: flow.answers.stage)
             .sensoryFeedback(.selection, trigger: flow.answers.goals)
@@ -52,7 +59,7 @@ struct OnboardingRun: View {
     }
 
     private func topBar(safeTop: CGFloat) -> some View {
-        let visible = flow.step > 0 && flow.step < OnboardingFlow.lastStep && flow.stepValue != .building && !flow.ended
+        let visible = flow.step > 0 && flow.step < OnboardingFlow.lastStep && flow.stepValue != .building && !flow.purchased && !flow.ended
         return HStack {
             Button { flow.back() } label: {
                 Image(systemName: "chevron.left")
@@ -83,11 +90,19 @@ struct OnboardingRun: View {
                 .frame(width: OnboardingFlow.showcaseSize, height: OnboardingFlow.showcaseSize)
                 .scaleEffect(flow.companionScale)
                 .position(flow.companionCentre)
-                .opacity(flow.ended || flow.stepValue == .building ? 0 : 1)
+                .opacity(flow.ended || flow.companionHidesOnPage ? 0 : 1)
                 .animation(.easeOut(duration: 0.38), value: flow.ended)
-                .animation(.easeInOut(duration: 0.5), value: flow.stepValue == .building)
+                .animation(.easeInOut(duration: 0.4), value: flow.companionHidesOnPage)
                 .allowsHitTesting(!flow.ended)
                 .onTapGesture { flow.poke() }
+        }
+    }
+
+    @ViewBuilder private var speechBubble: some View {
+        if let speech = flow.speech, flow.companionState == .docked, !flow.companionHidesOnPage, !flow.ended {
+            CoachNote(text: speech.text, screen: flow.screen, safeBottom: flow.safeBottom, lift: flow.hasSkipLink ? 30 : 0, reduceMotion: reduceMotion)
+                .id(speech.id)
+                .transition(.opacity)
         }
     }
 
@@ -114,23 +129,7 @@ struct OnboardingRun: View {
 
     @ViewBuilder private var ending: some View {
         if flow.endVisible {
-            VStack(spacing: 10) {
-                Text("Your first week, on one line.")
-                    .font(SSFont.hand(22))
-                    .foregroundStyle(Palette.pen)
-                Button(action: onRestart) {
-                    Text("Play again")
-                        .font(SSFont.display(15, weight: 600))
-                        .foregroundStyle(Palette.ivory)
-                        .padding(.horizontal, 20)
-                        .frame(height: 44)
-                        .background(Palette.ink, in: Capsule())
-                }
-                .buttonStyle(PressScaleStyle(pressed: 0.97))
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-            .padding(.bottom, 22 + flow.safeBottom)
-            .transition(.move(edge: .bottom).combined(with: .opacity))
+            AllSetScreen(flow: flow, onDone: onFinish ?? onRestart).transition(.opacity)
         }
     }
 }

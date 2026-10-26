@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>After the free trial starts: four directions</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#5D534B;--pen:#A85A3C;--page:#E9E2D8;--apricot:#F0C9A8}
+body.dark{--ink:#F1E9DF;--ivory:#211B17;--card:#2A231F;--ink2:#B8AA9D;--pen:#E09A78;--page:#14100E;--apricot:#8a5a3a}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:24px 20px 60px;transition:background .3s}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:760px;line-height:1.45}
+.top button,.replay{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer}
+.row{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px}.opt{width:340px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:84px;margin-bottom:8px}
+.phone{position:relative;width:340px;height:620px;border-radius:32px;overflow:hidden;background:var(--ivory);box-shadow:0 10px 30px #0003;background-image:repeating-linear-gradient(transparent 0 31px,#8882 31px 32px);transition:background .3s}
+.stage{position:absolute;inset:0}
+.meta{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2)}
+.title{font-size:30px;font-weight:800;letter-spacing:-.035em;line-height:1.04}.title em{font-family:"Gochi";font-style:normal;font-weight:400;font-size:36px;letter-spacing:0}
+.head{position:absolute;left:26px;right:26px;top:64px}
+.btn{position:absolute;left:24px;right:24px;bottom:24px;height:52px;border-radius:26px;background:var(--ink);color:var(--ivory);font:600 16px "Bricolage";display:flex;align-items:center;justify-content:center}
+.hand{font-family:"Gochi"}
+.coach{position:absolute;width:120px;height:120px;pointer-events:none}.coach video{width:120px;height:120px;display:block}
+svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.abs{position:absolute}
+</style>
+</head>
+<body>
+<h1>After the free trial starts: four directions</h1>
+<p class="lede">This replaces the zoomed-out pen line and "Your first week, on one line." It is the last screen, straight after the person taps Start 7-day free trial (and after the helper invite, if they added one). It should confirm that the trial has started, say plainly what happens with the money (the price, the date of the first payment, and how to cancel), and hand them into the app. Fake data: Anna, Miso, a yearly plan at £79.99, trial started 24 October. Press Replay to watch again. Nothing is built in the app.</p>
+<div class="top"><button id="mode">Night</button></div>
+<div class="row" id="row"></div>
+<script>
+const $=(r,s)=>r.querySelector(s);
+document.getElementById("mode").onclick=e=>{document.body.classList.toggle("dark");e.target.textContent=document.body.classList.contains("dark")?"Day":"Night"};
+const NS="http://www.w3.org/2000/svg";
+const el=(tag,attrs={},parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent&&parent.appendChild(e);return e};
+const html=(s)=>{const d=document.createElement("div");d.innerHTML=s.trim();return d.firstChild};
+const draw=(p,ms,delay=0,ease="cubic-bezier(.4,.1,.3,1)")=>{const L=p.getTotalLength();p.style.strokeDasharray=L;return p.animate([{strokeDashoffset:L},{strokeDashoffset:0}],{duration:ms,delay,easing:ease,fill:"both"})};
+const pop=(n,delay,from="scale(.2)",ms=380)=>n.animate([{transform:from,opacity:0},{transform:"none",opacity:1}],{duration:ms,delay,easing:"cubic-bezier(.3,1.6,.5,1)",fill:"both"});
+const fade=(n,delay,ms=400,dy=8)=>n.animate([{opacity:0,transform:`translateY(${dy}px)`},{opacity:1,transform:"none"}],{duration:ms,delay,easing:"ease-out",fill:"both"});
+const coach=(st,clip,x,y,delay,flip)=>{const c=html(`<div class="coach" style="left:${x}px;top:${y}px"><video src="../coach-clips/webm/miso/${clip}.webm" muted playsinline loop autoplay></video></div>`);st.appendChild(c);if(flip)c.style.transform="scaleX(-1)";fade(c,delay,500,16);return c};
+
+
+
+
+const D=[
+ {t:"A · You're all set",d:"The coach cheers in a warm circle while the pen draws a tick on a badge. Three plain lines underneath: free for 7 days, then the price and date, cancel any time. The simplest and the clearest."},
+ {t:"B · Trial ticket",d:"A torn-paper ticket slides up and is stamped TRIAL STARTED. It lists three dates like a boarding pass: today, the reminder, the first payment. Looks like a keepsake and makes the dates hard to miss."},
+ {t:"C · The seven days",d:"The pen draws a line across seven day-dots, with the coach walking along it. Today, a reminder on day 5, the last free day on day 7, then the first payment on the red dot. The old 'one line' idea, but now it explains the trial."},
+ {t:"D · Sunrise sheet",d:"The paper hills and sun fill the top half with the coach on the path. A paper card slides up over them: 'Your trial has started', the three lines and Go to Today. The most scenic, and the card keeps the money text readable."}
+];
+const LINES=[["Free for 7 days","Your trial started today. Nothing to pay now."],["Then £79.99 a year","First payment on 31 October. It renews automatically."],["Cancel any time","In Settings before 31 October and you will not be charged."]];
+const linesHtml=(c)=>LINES.map(([a,b])=>`<div style="display:flex;gap:12px;margin-bottom:12px"><i style="flex:none;width:7px;height:7px;border-radius:50%;background:${c||"var(--pen)"};margin-top:8px"></i><div><div style="font-weight:700;font-size:16px">${a}</div><div style="font-size:14px;color:var(--ink2);line-height:1.35">${b}</div></div></div>`).join("");
+const SHOW={
+0(st){
+ const hero=html(`<div class="abs" style="left:65px;top:34px;width:210px;height:200px"><div class="abs" style="left:10px;top:5px;width:190px;height:190px;border-radius:50%;background:var(--apricot);opacity:.45"></div><video src="../coach-clips/webm/miso/cheer.webm" muted playsinline loop autoplay style="position:absolute;left:5px;top:0;width:200px;height:200px"></video></div>`);st.appendChild(hero);
+ hero.animate([{transform:"translateY(30px) scale(.8)",opacity:0},{transform:"none",opacity:1}],{duration:700,delay:200,easing:"cubic-bezier(.3,1.5,.5,1)",fill:"both"});
+ const badge=html(`<div class="abs" style="left:216px;top:160px;width:46px;height:46px"><svg viewBox="0 0 46 46" style="position:absolute;inset:0"><circle cx="23" cy="23" r="23" fill="var(--ink)"/><path class="ck" d="M12 24 l8 8 l14 -17" fill="none" stroke="var(--ivory)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`);st.appendChild(badge);
+ pop(badge,900,"scale(.3)");draw(badge.querySelector(".ck"),450,1200);
+ const t=html(`<div class="abs" style="left:0;right:0;top:238px;text-align:center;font-size:34px;font-weight:800;letter-spacing:-.04em">You're <span class="hand" style="font-weight:400;font-size:41px;letter-spacing:0">all set.</span></div>`);st.appendChild(t);fade(t,1000);
+ const sub=html(`<div class="abs" style="left:36px;right:36px;top:290px;text-align:center;font-size:15px;color:var(--ink2);line-height:1.4">Your 85g protein target and first session are ready on Today.</div>`);st.appendChild(sub);fade(sub,1250);
+ const l=html(`<div class="abs" style="left:38px;right:38px;top:352px">${linesHtml()}</div>`);st.appendChild(l);[...l.children].forEach((c,i)=>fade(c,1600+i*250));
+ st.appendChild(html(`<div class="btn">Go to Today</div>`));
+},
+1(st){
+ const tk=html(`<div class="abs" style="left:30px;right:30px;top:70px;height:430px;background:#EFE6D6;color:#3B322C;border-radius:6px;box-shadow:0 12px 26px #0004;clip-path:polygon(0 0,100% 0,100% 100%,95% 98%,90% 100%,85% 98%,80% 100%,75% 98%,70% 100%,65% 98%,60% 100%,55% 98%,50% 100%,45% 98%,40% 100%,35% 98%,30% 100%,25% 98%,20% 100%,15% 98%,10% 100%,5% 98%,0 100%)">
+  <div style="padding:24px 24px 0"><div style="font-size:11px;font-weight:700;letter-spacing:.12em;color:#7b6c60">SECOND STRONG · MEMBER</div>
+  <div style="font-size:40px;font-weight:800;letter-spacing:-.04em;line-height:1;margin-top:10px">7 days<br><span class="hand" style="font-weight:400;font-size:46px;letter-spacing:0;color:#A85A3C">free.</span></div>
+  <div style="margin-top:22px;border-top:1.5px dashed #3b322c55;padding-top:16px">
+   <div style="display:flex;justify-content:space-between;padding:6px 0"><div><div style="font-size:11px;color:#7b6c60;font-weight:600;letter-spacing:.08em">TODAY · 24 OCT</div><div style="font-weight:700;font-size:16px">Trial starts</div></div><div style="font-weight:800;font-size:16px">£0</div></div>
+   <div style="display:flex;justify-content:space-between;padding:6px 0"><div><div style="font-size:11px;color:#7b6c60;font-weight:600;letter-spacing:.08em">29 OCT</div><div style="font-weight:700;font-size:16px">We remind you</div></div><div style="font-size:14px;color:#7b6c60">2 days left</div></div>
+   <div style="display:flex;justify-content:space-between;padding:6px 0"><div><div style="font-size:11px;color:#7b6c60;font-weight:600;letter-spacing:.08em">31 OCT</div><div style="font-weight:700;font-size:16px">First payment</div></div><div style="font-weight:800;font-size:16px">£79.99</div></div></div>
+  <div class="hand" style="font-size:20px;color:#A85A3C;margin-top:14px">Cancel any time in Settings.</div></div></div>`);st.appendChild(tk);
+ tk.animate([{transform:"translateY(520px) rotate(5deg)"},{transform:"none"}],{duration:750,delay:150,easing:"cubic-bezier(.2,.9,.3,1.08)",fill:"both"});
+ const stamp=html(`<div class="abs" style="left:156px;top:114px;width:124px;height:124px;transform:rotate(-12deg)"><svg viewBox="0 0 124 124"><circle cx="62" cy="62" r="56" fill="none" stroke="#A85A3C" stroke-width="4.5"/><circle cx="62" cy="62" r="47" fill="none" stroke="#A85A3C" stroke-width="1.6"/><text x="62" y="55" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="12" letter-spacing="2.5" fill="#A85A3C">TRIAL</text><text x="62" y="78" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="16" letter-spacing="1.5" fill="#A85A3C">STARTED</text></svg></div>`);st.appendChild(stamp);
+ stamp.animate([{transform:"rotate(-12deg) scale(2.2)",opacity:0},{transform:"rotate(-12deg) scale(1)",opacity:.92}],{duration:260,delay:1250,easing:"cubic-bezier(.5,0,.9,.4)",fill:"both"});
+ coach(st,"proud",214,436,1900).style.transform="scale(.82)";
+ st.appendChild(html(`<div class="btn">Go to Today</div>`));
+},
+2(st){
+ st.innerHTML=`<div class="head"><div class="meta">Your free trial</div><div class="title" style="margin-top:6px">Seven days,<br><em>on us.</em></div></div>`;
+ const svg=el("svg",{viewBox:"0 0 340 620"},st);
+ const pts=[0,1,2,3,4,5,6].map(i=>[36+i*38,262+(i%2?-10:8)]);pts.push([314,262]);
+ const path=el("path",{d:`M${pts[0]} `+pts.slice(1).map((p,i)=>`Q ${(pts[i][0]+p[0])/2} ${(pts[i][1]+p[1])/2+(i%2?16:-16)} ${p[0]} ${p[1]}`).join(" "),fill:"none",stroke:"var(--pen)","stroke-width":3,"stroke-linecap":"round"},svg);
+ draw(path,2200,500,"ease-in-out");
+ pts.forEach((p,i)=>{const g=el("g",{},svg);const key=i===0||i===4||i===6||i===7;
+  el("circle",{cx:p[0],cy:p[1],r:key?9:6,fill:i===7?"var(--pen)":key?"var(--ink)":"var(--ivory)",stroke:i===7?"var(--pen)":"var(--ink)","stroke-width":2},g);
+  g.style.transformOrigin=`${p[0]}px ${p[1]}px`;pop(g,700+i*250)});
+ [["Today","Trial starts",14,284,900],["Day 5","We remind you",124,190,1900],["Day 7","Last free day",172,286,2400],["31 Oct","£79.99 is taken",248,200,2900]].forEach(([a,b,x,y,d])=>{const n=html(`<div class="abs" style="left:${x}px;top:${y}px;width:90px"><div class="hand" style="font-size:19px;color:var(--pen);line-height:1">${a}</div><div style="font-size:12px;color:var(--ink2);line-height:1.25">${b}</div></div>`);st.appendChild(n);fade(n,d)});
+ const l=html(`<div class="abs" style="left:38px;right:38px;top:392px">${LINES.slice(1).map(([a,b])=>`<div style="display:flex;gap:12px;margin-bottom:12px"><i style="flex:none;width:7px;height:7px;border-radius:50%;background:var(--pen);margin-top:8px"></i><div><div style="font-weight:700;font-size:16px">${a}</div><div style="font-size:14px;color:var(--ink2);line-height:1.35">${b}</div></div></div>`).join("")}</div>`);st.appendChild(l);fade(l,3300);
+ const c=coach(st,"lifting",8,150,500);c.style.transform="scale(.7)";c.style.transformOrigin="0 0";
+ st.appendChild(html(`<div class="btn">Go to Today</div>`));
+},
+3(st){
+ const img=html(`<img src="../../secondstrong-ios/Sources/SSDesign/Resources/Images/paper-welcome.jpg" style="position:absolute;left:0;top:-10px;width:340px;display:block;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)">`);st.appendChild(img);
+ img.animate([{filter:"brightness(.8)"},{filter:"brightness(1.02)"}],{duration:1800,delay:200,fill:"both"});
+ const sheet=html(`<div class="abs" style="left:0;right:0;bottom:0;height:392px;background:var(--ivory);border-radius:28px 28px 0 0;box-shadow:0 -10px 30px #0003;padding:22px 26px 0"><div style="width:40px;height:4px;border-radius:2px;background:#8885;margin:-8px auto 14px"></div><div style="font-size:26px;font-weight:800;letter-spacing:-.035em;line-height:1.05">Your trial has <span class="hand" style="font-weight:400;font-size:31px;letter-spacing:0">started.</span></div><div style="margin-top:16px">${linesHtml()}</div></div>`);st.appendChild(sheet);
+ sheet.animate([{transform:"translateY(330px)"},{transform:"none"}],{duration:800,delay:900,easing:"cubic-bezier(.2,.9,.3,1.05)",fill:"both"});
+ const btn=html(`<div class="btn">Go to Today</div>`);st.appendChild(btn);fade(btn,1700);
+ const c=coach(st,"cheer",110,62,1000);c.style.transform="scale(.95)";
+}};
+function build(d,i){
+ const e=document.createElement("div");e.className="opt";
+ e.innerHTML=`<div class="tag">${d.t}</div><div class="why">${d.d}</div><div class="phone"><div class="stage"></div></div><button class="replay" style="margin-top:8px">Replay</button>`;
+ document.getElementById("row").appendChild(e);
+ const st=$(e,".stage"),run=()=>{st.innerHTML="";SHOW[i](st)};
+ $(e,".replay").onclick=run;setTimeout(run,300+i*150);
+}
+D.forEach(build);
+</script>
+</body>
+</html>

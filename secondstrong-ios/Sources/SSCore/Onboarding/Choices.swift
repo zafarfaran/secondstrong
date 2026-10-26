@@ -78,5 +78,5 @@ public enum Weekday: Int, CaseIterable, Sendable, Identifiable, Comparable {
 }
 
 public enum OnboardingStep: Int, CaseIterable, Sendable {
-    case welcome, consent, coach, stage, goals, birth, safety, body, training, days, building, plan
+    case welcome, consent, coach, stage, goals, birth, safety, body, training, days, activity, goal, building, plan, paywall, invite
 }

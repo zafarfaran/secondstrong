@@ -4,7 +4,7 @@ import SSDesign
 /// Every sign-in screen, in light or dark, for the preview app.
 public struct SignInScreensPreview: View {
     private enum Screen: String, CaseIterable, Identifiable {
-        case door = "Sign in", email = "Email", inbox = "Check your inbox", returning = "Welcome back", expired = "Link expired"
+        case door = "Sign in", email = "Email", inbox = "Check your inbox", returning = "Welcome back", expired = "Link expired", invited = "Invited"
         var id: String { rawValue }
         var stage: AuthStage {
             switch self {
@@ -13,6 +13,7 @@ public struct SignInScreensPreview: View {
             case .inbox: .sent
             case .returning: .returning
             case .expired: .expired
+            case .invited: .invited
             }
         }
     }

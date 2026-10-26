@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Encodes the rendered ProRes 4444 masters (renders/<coach>/<state>.mov, transparent) into delivery formats.
 #   webm/<coach>/  VP9 with alpha, keyframe every 6 frames so segment jumps are instant (browser preview, Android)
-#   hevc/<coach>/  HEVC with alpha for iOS. Needs macOS: Apple's VideoToolbox encoder is the only one that writes
-#                  the alpha layer AVFoundation expects. Run this script on the Mac to produce them.
+#   hevc/<coach>/  HEVC with alpha for iOS. Needs macOS: Apple's avconvert is the only tool that writes
+#                  the alpha layer AVFoundation expects (ffmpeg's hevc_videotoolbox output loses it). Run this script on the Mac to produce them.
 # Skips files that are newer than their master. Usage: bash tools/encode.sh   (from design/coach-clips)
 set -euo pipefail
 for src in renders/*/*.mov; do
@@ -13,7 +13,7 @@ for src in renders/*/*.mov; do
   [[ "$name" == idle && ! "webm/$coach/idle.png" -nt "$src" ]] && ffmpeg -y -loglevel error -i "$src" -frames:v 1 -vf "crop=220:220:90:166,scale=96:96" "webm/$coach/idle.png"   # picker thumbnail
   if [[ "$(uname)" == "Darwin" ]]; then
     mkdir -p "hevc/$coach"
-    ffmpeg -y -loglevel error -i "$src" -c:v hevc_videotoolbox -alpha_quality 0.8 -allow_sw 1 -tag:v hvc1 -q:v 60 "hevc/$coach/$name.mov"
+    avconvert --preset PresetHEVC1920x1080WithAlpha --source "$src" --output "hevc/$coach/$name.mov" --replace >/dev/null 2>&1
   fi
 done
 echo "encoded $(ls renders/*/*.mov | wc -l) clips"

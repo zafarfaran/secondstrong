@@ -8,6 +8,7 @@ enum PenAnchor: Hashable {
     case stage(Stage), goal(Goal)
     case agree, words, birth, body
     case safety(SafetyFlag), experience(Experience), equipment(Equipment)
+    case activity(ActivityLevel), foodGoal(FoodGoal)
     case week, day(Weekday)
     case pnum, bar, wk2, dot(Weekday), note, start
 }

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Goal slider and Begin screen</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#5D534B;--pen:#A85A3C;--page:#E9E2D8;--apricot:#F0C9A8}
+body.dark{--ink:#F1E9DF;--ivory:#211B17;--card:#2A231F;--ink2:#B8AA9D;--pen:#E09A78;--page:#14100E;--apricot:#8a5a3a}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:24px 20px 60px;transition:background .3s}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:760px;line-height:1.45}
+.top button,.replay{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer}
+.row{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px}.opt{width:340px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:84px;margin-bottom:8px}
+.phone{position:relative;width:340px;height:700px;border-radius:32px;overflow:hidden;background:var(--ivory);box-shadow:0 10px 30px #0003;background-image:repeating-linear-gradient(transparent 0 31px,#8882 31px 32px);transition:background .3s}
+.stage{position:absolute;inset:0}
+.meta{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2)}
+.title{font-size:30px;font-weight:800;letter-spacing:-.035em;line-height:1.04}.title em{font-family:"Gochi";font-style:normal;font-weight:400;font-size:36px;letter-spacing:0}
+.head{position:absolute;left:26px;right:26px;top:64px}
+.btn{position:absolute;left:24px;right:24px;bottom:24px;height:52px;border-radius:26px;background:var(--ink);color:var(--ivory);font:600 16px "Bricolage";display:flex;align-items:center;justify-content:center}
+.hand{font-family:"Gochi"}
+.coach{position:absolute;width:120px;height:120px;pointer-events:none}.coach video{width:120px;height:120px;display:block}
+svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.abs{position:absolute}
+</style>
+</head>
+<body>
+<h1>Goal slider with a graph, and a cleaner Begin screen</h1>
+<p class="lede">Row 1: the "What do you want?" screen with a slider and a live graph of how her calories change as she chooses to lose fat, maintain or build. Drag the slider on any phone and they all move. The numbers are Anna's (fake: maintenance 1,810 kcal). The slider is capped (0.4 kg a week to lose, 0.2 to build) and the target never drops below the 1,400 floor, so push the slider all the way to see the floor hold. The graphs show calories only, no weight projection. Row 2: three calmer versions of Begin your program with far fewer words. Nothing is built.</p>
+<div class="top"><button id="mode">Night</button></div>
+<h2 style="font-size:15px;margin:22px 0 0">1 · Goal screen: slider and graph</h2>
+<div class="row" id="row1"></div>
+<h2 style="font-size:15px;margin:30px 0 0">2 · Begin your program: less is more</h2>
+<div class="row" id="row2"></div>
+<script>
+const $=(r,s)=>r.querySelector(s);
+document.getElementById("mode").onclick=e=>{document.body.classList.toggle("dark");e.target.textContent=document.body.classList.contains("dark")?"Day":"Night"};
+const IMG="../../secondstrong-ios/Sources/SSDesign/Resources/Images/";
+const num=n=>Math.round(n).toLocaleString("en-GB");
+const MAINT=1810,FLOOR=1400,PROT=85;
+const S={goal:"cut",kg:0.25};
+const cap=g=>g==="cut"?0.4:0.2;
+const raw=()=>S.goal==="hold"?MAINT:S.goal==="cut"?MAINT-S.kg*1100:MAINT+S.kg*1100;
+const tgt=()=>Math.max(FLOOR,Math.round(raw()/10)*10);
+const clamped=()=>S.goal==="cut"&&Math.round(raw()/10)*10<FLOOR;
+const cta=t=>`<div style="position:absolute;left:20px;right:20px;bottom:20px;height:52px;border-radius:26px;background:var(--ink);color:var(--ivory);font:600 16px Bricolage;display:flex;align-items:center;justify-content:center">${t}</div>`;
+const seg=()=>`<div style="display:flex;background:var(--card);border-radius:20px;padding:3px;margin-top:12px">${[["cut","Lose fat"],["hold","Maintain"],["gain","Build muscle"]].map(([v,t])=>`<button data-a="goal" data-v="${v}" style="flex:1;height:34px;border-radius:17px;border:0;font:600 13px Bricolage;cursor:pointer;${S.goal===v?"background:var(--ink);color:var(--ivory)":"background:none;color:var(--ink2)"}">${t}</button>`).join("")}</div>`;
+const slider=()=>S.goal==="hold"?`<div style="height:62px"></div>`:`<div style="margin-top:6px"><div style="display:flex;justify-content:space-between;align-items:baseline"><b style="font-size:15px">${S.kg.toFixed(2)} kg a week</b><span style="font-size:12px;color:var(--ink2)">${clamped()?"Kept above "+num(FLOOR):"Slower"+"  ←→  "+"Faster"}</span></div><input data-a="kg" type="range" min="0.05" max="${cap(S.goal)}" step="0.05" value="${Math.min(S.kg,cap(S.goal))}" style="width:100%;accent-color:#A85A3C;margin-top:4px"></div>`;
+const diff=()=>tgt()-MAINT;
+const sign=n=>(n>0?"+":n<0?"−":"")+num(Math.abs(n));
+// chart A: bars
+const chartA=()=>{const y=k=>238-(k-1100)/1400*215;const t=tgt(),m=MAINT;
+ return `<svg viewBox="0 0 300 262" style="width:100%;height:262px;display:block">
+  <line x1="10" x2="290" y1="${y(FLOOR)}" y2="${y(FLOOR)}" stroke="var(--pen)" stroke-dasharray="4 4" stroke-width="1.5"/><text x="12" y="${y(FLOOR)-5}" text-anchor="start" font-size="10.5" fill="var(--pen)" font-family="Bricolage" font-weight="600">safe floor ${num(FLOOR)}</text>
+  <rect x="60" y="${y(m)}" width="80" height="${238-y(m)}" rx="12" fill="none" stroke="var(--ink)" stroke-width="2"/><text x="100" y="${y(m)-8}" text-anchor="middle" font-size="16" font-weight="800" fill="var(--ink)" font-family="Bricolage">${num(m)}</text><text x="100" y="256" text-anchor="middle" font-size="11" fill="var(--ink2)" font-family="Bricolage" font-weight="600">maintenance</text>
+  <rect x="170" y="${y(t)}" width="80" height="${238-y(t)}" rx="12" fill="${S.goal==="gain"?"var(--pen)":"var(--ink)"}" style="transition:all .15s"/><text x="210" y="${y(t)-8}" text-anchor="middle" font-size="16" font-weight="800" fill="var(--ink)" font-family="Bricolage">${num(t)}</text><text x="210" y="256" text-anchor="middle" font-size="11" fill="var(--ink2)" font-family="Bricolage" font-weight="600">your target</text>
+  ${diff()?`<text x="155" y="${(y(t)+y(m))/2+4}" text-anchor="middle" font-size="13" font-weight="800" fill="var(--pen)" font-family="Bricolage">${sign(diff())}</text>`:""}</svg>`};
+// chart B: gauge
+const chartB=()=>{const cx=150,cy=165,r=110,lo=1100,hi=2500,ang=k=>Math.PI*(1-(k-lo)/(hi-lo));const pt=(k,rr)=>[cx+rr*Math.cos(ang(k)),cy-rr*Math.sin(ang(k))];
+ const arc=(a,b,rr)=>{const [x1,y1]=pt(a,rr),[x2,y2]=pt(b,rr);return `M${x1} ${y1} A${rr} ${rr} 0 0 1 ${x2} ${y2}`};
+ const t=tgt(),[tx,ty]=pt(t,r),[mx,my]=pt(MAINT,r),[fx,fy]=pt(FLOOR,r);
+ return `<svg viewBox="0 0 300 190" style="width:100%;height:190px;display:block;margin-top:34px"><path d="${arc(lo,hi,r)}" fill="none" stroke="#8883" stroke-width="16" stroke-linecap="round"/>
+  <path d="${arc(Math.min(t,MAINT),Math.max(t,MAINT),r)}" fill="none" stroke="var(--apricot)" stroke-width="16"/>
+  <circle cx="${fx}" cy="${fy}" r="4" fill="var(--pen)"/><line x1="${mx}" y1="${my}" x2="${cx+(r-26)*Math.cos(ang(MAINT))}" y2="${cy-(r-26)*Math.sin(ang(MAINT))}" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="${tx}" cy="${ty}" r="11" fill="${S.goal==="gain"?"var(--pen)":"var(--ink)"}" stroke="var(--ivory)" stroke-width="3"/>
+  <text x="150" y="148" text-anchor="middle" font-size="40" font-weight="800" fill="var(--ink)" font-family="Bricolage" letter-spacing="-1.5">${num(t)}</text><text x="150" y="168" text-anchor="middle" font-size="12" fill="var(--ink2)" font-family="Bricolage" font-weight="600">kcal a day · maintenance ${num(MAINT)}</text></svg>`};
+// chart C: a week of calories
+const chartC=()=>{const t=tgt(),X=i=>20+i*43,Y=k=>224-(k-1100)/1400*196;const week=Math.abs(diff())*7;
+ return `<svg viewBox="0 0 300 262" style="width:100%;height:262px;display:block">
+  <line x1="12" x2="288" y1="${Y(FLOOR)}" y2="${Y(FLOOR)}" stroke="var(--pen)" stroke-dasharray="4 4" stroke-width="1.3"/><text x="288" y="${Y(FLOOR)-4}" text-anchor="end" font-size="10" fill="var(--pen)" font-family="Bricolage" font-weight="600">floor</text>
+  <path d="M${X(0)} ${Y(MAINT)} L${X(6)} ${Y(MAINT)} L${X(6)} ${Y(t)} L${X(0)} ${Y(t)} Z" fill="var(--apricot)" opacity=".75"/>
+  <line x1="${X(0)}" x2="${X(6)}" y1="${Y(MAINT)}" y2="${Y(MAINT)}" stroke="var(--ink)" stroke-width="2" stroke-dasharray="6 5"/><text x="${X(0)}" y="${Y(MAINT)-7}" font-size="11" fill="var(--ink2)" font-family="Bricolage" font-weight="600">maintenance ${num(MAINT)}</text>
+  <path d="M${X(0)} ${Y(t)} L${X(6)} ${Y(t)}" stroke="${S.goal==="gain"?"var(--pen)":"var(--ink)"}" stroke-width="4" stroke-linecap="round" style="transition:all .15s"/>
+  ${[0,1,2,3,4,5,6].map(i=>`<circle cx="${X(i)}" cy="${Y(t)}" r="4" fill="${S.goal==="gain"?"var(--pen)":"var(--ink)"}"/><text x="${X(i)}" y="254" text-anchor="middle" font-size="10.5" fill="var(--ink2)" font-family="Bricolage" font-weight="600">${"MTWTFSS"[i]}</text>`).join("")}
+  <text x="150" y="${(Y(t)+Y(MAINT))/2+(S.goal==="cut"?-2:2)+4}" text-anchor="middle" font-size="12.5" font-weight="800" fill="var(--ink)" font-family="Bricolage">${diff()?`${sign(diff())} a day`:"steady"}</text></svg>
+  <div style="text-align:center;font-size:12.5px;color:var(--ink2);margin-top:-2px">${diff()?`${num(week)} kcal a week ≈ ${S.kg.toFixed(2)} kg`:"Same as you use"}</div>`};
+const GOALVIEW=(chart,label)=>()=>`<div class="pad"><div class="title" style="font-size:27px">What do you<br><em style="font-size:32px">want?</em></div>${seg()}<div style="margin-top:12px">${chart()}</div>${slider()}<div style="font-size:12px;color:var(--ink2);margin-top:4px;min-height:16px">${S.goal==="hold"?"":"An estimate."}</div>${cta("Continue")}</div>`;
+// begin screens
+const dots=()=>`<div style="display:flex;justify-content:space-between;margin-top:6px">${"MTWTFSS".split("").map((d,i)=>`<div style="text-align:center;flex:1;font-size:11px;font-weight:600;color:var(--ink2)">${d}<div style="margin:8px auto 0;width:13px;height:13px;border-radius:50%;background:${[0,2,4].includes(i)?"var(--ink)":"transparent"};border:1.5px solid ${[0,2,4].includes(i)?"var(--ink)":"#8884"}"></div></div>`).join("")}</div>`;
+const BEGIN={
+0:()=>`<div class="pad"><div class="meta">Saturday 24 October</div><div class="title" style="margin-top:6px;font-size:32px">Begin your <em>program.</em></div>
+ <div style="display:flex;gap:10px;margin-top:34px"><div style="flex:1"><div style="font-size:60px;font-weight:800;letter-spacing:-.05em;line-height:1">${PROT}<span style="font-size:22px">g</span></div><div class="meta" style="margin-top:4px">protein</div></div>
+ <div style="flex:1"><div style="font-size:60px;font-weight:800;letter-spacing:-.05em;line-height:1">${num(tgt()).replace(",",",")}</div><div class="meta" style="margin-top:4px">kcal a day</div></div></div>
+ <div style="margin-top:40px">${dots()}</div>
+ <div class="hand" style="font-size:24px;color:var(--pen);margin-top:34px">Mon first. Easy does it.</div>
+ <div style="position:absolute;left:0;right:0;bottom:0;height:200px;background:url(${IMG}paper-plan.jpg) bottom/cover"></div>${cta("Begin")}</div>`,
+1:()=>`<div class="pad"><div class="meta">Saturday 24 October</div><div class="title" style="margin-top:6px;font-size:32px">Begin your <em>program.</em></div>
+ <div style="margin-top:22px;background:#EFE6D6;color:#3B322C;border-radius:6px;padding:8px 18px 14px;box-shadow:0 8px 18px #0003;transform:rotate(-1deg);clip-path:polygon(0 0,100% 0,100% 100%,95% 97%,90% 100%,85% 97%,80% 100%,75% 97%,70% 100%,65% 97%,60% 100%,55% 97%,50% 100%,45% 97%,40% 100%,35% 97%,30% 100%,25% 97%,20% 100%,15% 97%,10% 100%,5% 97%,0 100%)">
+ ${[["Protein",PROT+"g a day"],["Calories",num(tgt())+" a day"],["Lifting","3 days a week"]].map(([a,b])=>`<div style="display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-bottom:1.5px dashed #3b322c33"><span style="font-size:11px;font-weight:700;letter-spacing:.09em;color:#7b6c60">${a.toUpperCase()}</span><b style="font-size:21px;letter-spacing:-.02em">${b}</b></div>`).join("")}</div>
+ <div class="abs" style="right:10px;top:36px"><video src="../coach-clips/webm/miso/proud.webm" muted playsinline loop autoplay style="width:90px;height:90px"></video></div>
+ <div class="hand" style="font-size:24px;color:var(--pen);margin-top:20px">Mon first. Easy does it.</div>
+ <div style="position:absolute;left:0;right:0;bottom:0;height:190px;background:url(${IMG}paper-plan.jpg) bottom/cover;-webkit-mask-image:linear-gradient(transparent,#000 30%);mask-image:linear-gradient(transparent,#000 30%)"></div>${cta("Begin")}</div>`,
+2:()=>{const R=60,C=2*Math.PI*R;return `<div class="pad"><div class="meta">Saturday 24 October</div><div class="title" style="margin-top:6px;font-size:32px">Begin your <em>program.</em></div>
+ <div style="display:flex;align-items:center;gap:18px;margin-top:26px"><div style="position:relative;width:150px;height:150px;flex:none"><svg viewBox="0 0 150 150" style="position:absolute;inset:0"><circle cx="75" cy="75" r="${R}" fill="none" stroke="#8883" stroke-width="14"/><circle cx="75" cy="75" r="${R}" fill="none" stroke="var(--ink)" stroke-width="14" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*0.0}" transform="rotate(-90 75 75)"/></svg><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><b style="font-size:30px;letter-spacing:-.04em">${num(tgt())}</b><span style="font-size:11px;color:var(--ink2);font-weight:600">kcal a day</span></div></div>
+ <div><div style="font-size:44px;font-weight:800;letter-spacing:-.04em;line-height:1">${PROT}<span style="font-size:18px">g</span></div><div class="meta">protein</div><div style="height:8px;border-radius:4px;background:#8883;margin-top:8px;width:110px"><div style="width:100%;height:100%;border-radius:4px;background:var(--pen)"></div></div></div></div>
+ <div style="margin-top:34px">${dots()}</div>
+ <div class="hand" style="font-size:24px;color:var(--pen);margin-top:30px">Mon first. Easy does it.</div>
+ <div style="position:absolute;left:0;right:0;bottom:0;height:190px;background:url(${IMG}paper-plan.jpg) bottom/cover;-webkit-mask-image:linear-gradient(transparent,#000 30%);mask-image:linear-gradient(transparent,#000 30%)"></div>${cta("Begin")}</div>`}
+};
+const items=[
+ ["A · Bars",GOALVIEW(chartA),"Her maintenance next to her target, with the gap between them and the safe floor as a dashed line. The simplest to read."],
+ ["B · Dial",GOALVIEW(chartB),"A gauge: the dark tick is maintenance, the dot is her target and slides as she drags. Big number in the middle."],
+ ["C · A week of calories",GOALVIEW(chartC),"Seven days, maintenance dashed, her target solid, the gap shaded. It shows where the weekly total comes from and what it means in kilos."]
+];
+const items2=[
+ ["A · Two big numbers",BEGIN[0],"Protein and calories, large, then the training days. One coach line, the hills, Begin. Nothing else."],
+ ["B · Program ticket",BEGIN[1],"One paper ticket with three rows (protein, calories, lifting) and the coach. Quiet and tidy."],
+ ["C · Ring and week",BEGIN[2],"The calorie ring with protein beside it, then the week. The most like the app's Today screen."]
+];
+const stages=[];
+function mount(rowId,list){const row=document.getElementById(rowId);list.forEach(([t,fn,d],i)=>{const e=document.createElement("div");e.className="opt";e.innerHTML=`<div class="tag">${t}</div><div class="why" style="min-height:58px">${d}</div><div class="phone"><div class="stage"></div></div>`;row.appendChild(e);stages.push([fn,e.querySelector(".stage")])})}
+mount("row1",items);mount("row2",items2);
+function render(){stages.forEach(([fn,st])=>{st.innerHTML=fn();st.querySelectorAll("[data-a]").forEach(b=>{const h=()=>{const a=b.dataset.a;if(a==="goal"){S.goal=b.dataset.v;S.kg=Math.min(S.kg,cap(S.goal))}if(a==="kg")S.kg=+b.value;render()};if(b.type==="range")b.oninput=h;else b.onclick=h})})}
+render();
+</script>
+<style>.pad{position:absolute;inset:0;padding:54px 20px 20px}.pad>*{position:relative}.pad>.abs,.pad>[style*="position:absolute"]{position:absolute}.pad svg{position:relative;inset:auto}.pad [style*="position:absolute"] svg{position:absolute;inset:0}</style>
+</body>
+</html>

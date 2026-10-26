@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Food timeline</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#7A6E64;--pen:#A85A3C;--page:#E4DCD1;--line:#3b322c1c;--track:#3b322c14;--paper:#FFFDF8}
+body.dark{--ink:#F1E9DF;--ivory:#1B1613;--card:#26201C;--ink2:#A89C90;--pen:#E09A78;--page:#0F0C0A;--line:#f1e9df1c;--track:#f1e9df18;--paper:#2A231E}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:26px 24px 70px}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:900px;line-height:1.5;font-size:14.5px}
+.top button,.rs{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer;margin-right:6px}
+.row{display:flex;gap:26px;flex-wrap:wrap;margin-top:22px}.opt{width:330px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:112px;margin-bottom:12px}
+.device{zoom:.8;width:426px;height:898px;border-radius:64px;background:linear-gradient(145deg,#3a3a3d,#17171a);padding:12px;position:relative;box-shadow:inset 0 0 0 2px #55555a,inset 0 0 0 5px #0a0a0b}
+.screen{position:relative;width:402px;height:874px;border-radius:52px;overflow:hidden;background:var(--ivory)}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:126px;height:37px;border-radius:24px;background:#000;z-index:60}
+.hand{font-family:"Gochi"}.meta{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.abs{position:absolute}.mv{position:absolute;pointer-events:none}.mv video{width:100%;height:100%;display:block}
+.nocal .kcal{display:none!important}
+.fab{position:absolute;right:22px;bottom:112px;width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--ivory);display:flex;align-items:center;justify-content:center;z-index:45;cursor:pointer;transition:transform .15s}
+.fab:active{transform:scale(.9)}.fab svg,.bar svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.bar{position:absolute;left:34px;right:34px;bottom:30px;height:64px;border-radius:32px;background:var(--ivory);box-shadow:0 0 0 1px var(--line);display:flex;align-items:center;z-index:44}
+.bar .ind{position:absolute;top:8px;height:48px;border-radius:24px;background:var(--card);width:20%;left:0}
+.bar i{flex:1;display:flex;justify-content:center;position:relative;z-index:2;color:var(--ink2)}.bar i.on{color:var(--ink)}.bar svg{width:25px;height:25px}
+.week{display:flex;justify-content:space-between}.day{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--ink2);width:48px}
+.day .w{position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center}.day .n{position:absolute;font-size:14px;font-weight:700;color:var(--ink)}
+.meal{display:flex;align-items:center;gap:13px;padding:10px;border-radius:20px;background:var(--card);margin-bottom:9px;animation:slidein .5s cubic-bezier(.2,.9,.3,1.2) both}
+.meal b{font-size:15.5px;display:block}.meal small{color:var(--ink2);font-size:12.5px}.meal .r{margin-left:auto;text-align:right;font-weight:800;font-size:15px}
+@keyframes slidein{from{opacity:0;transform:translateY(22px) scale(.96)}to{opacity:1;transform:none}}
+.plate{width:56px;height:56px;flex:none}
+.pop{animation:pop .45s cubic-bezier(.2,1.6,.4,1)}@keyframes pop{0%{transform:scale(.6)}100%{transform:scale(1)}}
+.num{font-weight:800;letter-spacing:-.05em;line-height:1}
+.bump{animation:bump .5s ease}@keyframes bump{40%{transform:scale(1.12)}}
+.stampa{animation:stamp .5s cubic-bezier(.2,1.3,.4,1) both}@keyframes stamp{0%{opacity:0;transform:rotate(-8deg) scale(1.9)}100%{opacity:1;transform:rotate(-6deg) scale(1)}}
+.wave{position:absolute;left:0;width:200%;height:30px;bottom:100%;animation:wv 3.2s linear infinite}.wave.b{animation-duration:5s;animation-direction:reverse;opacity:.55}
+@keyframes wv{to{transform:translateX(-50%)}}
+.drop{position:absolute;animation:dropin .7s cubic-bezier(.5,0,.9,.5) both;z-index:30}@keyframes dropin{from{transform:translateY(-120px) scale(1.3);opacity:1}to{transform:translateY(90px) scale(.5);opacity:0}}
+.tape{position:absolute;top:-9px;left:50%;width:54px;height:18px;margin-left:-27px;background:#e9d8a6aa;transform:rotate(-3deg)}
+.menu{position:absolute;right:22px;bottom:178px;background:var(--ivory);border-radius:22px;box-shadow:0 0 0 1px var(--line);padding:6px;z-index:50;width:210px;animation:slidein .25s both}
+.menu div{display:flex;gap:12px;align-items:center;padding:11px 12px;font-weight:600;font-size:15px;border-radius:14px;cursor:pointer}.menu div:hover{background:var(--card)}
+.menu svg{width:20px;height:20px;fill:none;stroke:var(--pen);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.pad{position:absolute;left:0;right:0;top:0;bottom:0;padding:62px 22px 0;overflow:hidden}
+.scroll{position:absolute;left:0;right:0;bottom:0;overflow-y:auto;scrollbar-width:none;padding:0 22px 190px}.scroll::-webkit-scrollbar{display:none}
+.wk{display:flex;justify-content:space-between}
+.wd{display:flex;flex-direction:column;align-items:center;gap:7px;width:44px;font-size:11px;font-weight:700;color:var(--ink2);letter-spacing:.04em}
+.wd .c{width:40px;height:40px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:14.5px;font-weight:700;color:var(--ink);position:relative}
+.wd.sel .c{background:var(--ink);color:var(--ivory)}.wd.sel{color:var(--ink)}.wd .c svg{position:absolute;inset:0}
+.sum{background:var(--card);border-radius:28px;padding:18px 20px;display:flex;gap:18px;align-items:center}
+.macro{display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:700;color:var(--ink2);margin-top:7px}.macro i{flex:1;height:4px;border-radius:2px;background:var(--track);display:block;overflow:hidden}.macro i b{display:block;height:100%;background:var(--ink);border-radius:2px;transition:width .9s cubic-bezier(.3,.8,.3,1)}
+.tlw{position:relative;margin-top:22px;padding-left:58px}
+.tlw:before{content:"";position:absolute;left:46px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.it{position:relative;margin-bottom:12px}.it .tm{position:absolute;left:-58px;top:22px;width:36px;font-size:12px;font-weight:700;color:var(--ink2);text-align:right}
+.it .dt{position:absolute;left:-16px;top:25px;width:10px;height:10px;border-radius:50%;background:var(--ivory);border:2.5px solid var(--pen)}
+.mc{display:flex;gap:14px;align-items:center;padding:12px;border-radius:24px;background:var(--card)}
+.mc b{display:block;font-size:16px;letter-spacing:-.01em;line-height:1.2}.mc small{color:var(--ink2);font-size:12.5px;display:block;margin-top:3px}
+.pp{margin-left:auto;font-weight:800;font-size:13.5px;padding:6px 11px;border-radius:14px;background:var(--ivory);flex:none}
+.nt{display:flex;gap:11px;align-items:flex-start;margin:0 0 12px -2px;position:relative}
+.nt .av{width:42px;height:42px;border-radius:50%;background:var(--card);overflow:hidden;position:relative;flex:none}.nt .av video{position:absolute;left:-3px;top:-3px;width:48px;height:48px}
+.nt .tx{font-size:14.5px;line-height:1.35;padding-top:2px}.nt .tx .h{font-family:"Gochi";font-size:21px;color:var(--pen);line-height:1;display:block;margin-bottom:2px}
+.ghost{display:flex;align-items:center;gap:12px;padding:14px;border-radius:24px;border:1.5px dashed var(--ink2);color:var(--ink2);font-weight:700;font-size:14.5px}
+.fade{animation:fu .5s cubic-bezier(.2,.8,.3,1) both}@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero2{position:absolute;left:0;right:0;top:0;height:230px;overflow:hidden}.hero2 img{width:100%;height:100%;object-fit:cover;object-position:50% 100%}
+</style>
+</head>
+<body>
+<h1>Food timeline, refined</h1>
+<p class="lede">Your pick, the day as a timeline, made calmer and cleaner: one summary card instead of two, thinner lines, bigger meal cards, and Miso as a small friendly note-giver rather than a big character. Movement is kept to what helps: numbers count up, the ring fills, the new meal slides in and Miso comments. Two takes: A is the quietest, B adds a slim paper-hill band with Miso on top. <b>Tap the + to log the next meal</b>; Reset starts again. Calories are optional, so the switch hides them. Food pictures are placeholders. No glows. Fake data. Nothing is built.</p>
+<div class="top"><button id="mode">Night</button><button id="cal">Calories: on</button></div>
+<div class="row" id="row"></div>
+<script>
+const $=(s,r=document)=>r.querySelector(s);
+const CL="../coach-clips/webm/miso/";
+const PT=85,KT=1540;
+const MEALS=[["Greek yoghurt, berries","8:05",310,24,"berry"],["Coffee, oat milk","8:40",60,2,"cup"],["Eggs on toast, cottage cheese","12:40",480,28,"egg"],["Almonds, handful","15:30",240,10,"nuts"],["Chicken, rice, greens","18:40",560,31,"bowl"]];
+const plate=(k,s=56)=>{const C={berry:["#C98B5E","#8C3F5C"],cup:["#8E9E86","#F2E7D3"],egg:["#D9A47A","#F6D46B"],nuts:["#A58FB5","#B07A4E"],bowl:["#7E9FB0","#7DAA6A"]}[k];
+ return `<svg class="plate" width="${s}" height="${s}" viewBox="0 0 56 56"><rect width="56" height="56" rx="15" fill="${C[0]}"/><circle cx="28" cy="29" r="17" fill="#FFF8EC"/><circle cx="28" cy="29" r="12" fill="none" stroke="#e6d8c0" stroke-width="1.5"/>${k==="berry"?'<circle cx="23" cy="28" r="4" fill="#8C3F5C"/><circle cx="31" cy="26" r="4" fill="#B2476B"/><circle cx="28" cy="33" r="4" fill="#8C3F5C"/>':k==="cup"?'<path d="M19 26h18v6a7 7 0 01-7 7h-4a7 7 0 01-7-7z" fill="#A87752"/>':k==="egg"?'<ellipse cx="28" cy="29" rx="9" ry="7" fill="#fff"/><circle cx="28" cy="29" r="4" fill="#F2B63A"/>':k==="nuts"?'<ellipse cx="23" cy="29" rx="4" ry="6" fill="#B07A4E" transform="rotate(-25 23 29)"/><ellipse cx="31" cy="28" rx="4" ry="6" fill="#9A6A42" transform="rotate(20 31 28)"/><ellipse cx="28" cy="34" rx="4" ry="5.5" fill="#B07A4E"/>':'<path d="M18 30a10 10 0 0020 0z" fill="#F4E3BD"/><circle cx="24" cy="27" r="3.5" fill="#7DAA6A"/><circle cx="32" cy="27" r="3.5" fill="#E58C5A"/>'}</svg>`};
+
+const DAYS=["M","T","W","T","F","S","S"],PAST=[.94,1,.82,.9,0,0,0];
+function ring(size,sw,id,col){const r=(size-sw)/2,c=2*Math.PI*r;return `<svg width="${size}" height="${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--track)" stroke-width="${sw}"/><circle id="${id}" data-c="${c}" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${col||"var(--pen)"}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c}" style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1s cubic-bezier(.3,.8,.3,1)"/></svg>`}
+function setRing(root,id,f){const e=$("#"+id,root);if(e)e.style.strokeDashoffset=(+e.dataset.c)*(1-Math.min(1,f))}
+function count(el,to){const from=+el.dataset.v||0;el.dataset.v=to;const t0=performance.now();(function f(n){const k=Math.max(0,Math.min(1,(n-t0)/800)),q=1-Math.pow(1-k,3);el.textContent=Math.round(from+(to-from)*q);if(k<1)requestAnimationFrame(f)})(t0)}
+function clip(root,name,after){const v=$(".nt video",root);if(!v)return;v.loop=!after;v.src=CL+name+".webm";v.play().catch(()=>{});v.onended=after?()=>clip(root,after):null}
+const tot=n=>MEALS.slice(0,n).reduce((a,m)=>[a[0]+m[3],a[1]+m[2]],[0,0]);
+const NAV={food:'<path d="M6 3v7a3 3 0 006 0V3M9 3v18M18 3c-2.2 2-3.2 5-3.2 8H18v10"/>',train:'<path d="M3 9.5v5M6.2 7v10M17.8 7v10M21 9.5v5M6.2 12h11.6"/>',today:'<path d="M4 12l8-7 8 7M6 10.5V20h12v-9.5"/>',coach:'<path d="M4.5 5.5h15v10.5H10l-5.5 4z"/>',progress:'<path d="M4 20v-9M10 20V4M16 20v-6M22 20H2"/>'};
+const navbar=`<div class="bar"><div class="ind"></div>${Object.keys(NAV).map(k=>`<i class="${k==="food"?"on":""}"><svg viewBox="0 0 24 24">${NAV[k]}</svg></i>`).join("")}</div>`;
+const plus=`<div class="fab"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>`;
+const noteText=(t,n)=>n>=MEALS.length?"You made it. Protein done for today.":t>=60?`${PT-t}g to go. Dinner will do it.`:t>=40?"Halfway there. Lunch carried you.":"Good start. Add protein at lunch and you are close.";
+const week=()=>`<div class="wk">${DAYS.map((d,i)=>`<div class="wd ${i===3?"sel":""}">${d}<div class="c">${i===3?"":ring(40,3,"w"+i,"var(--ink2)")}<span style="position:relative">${26+i>31?26+i-31:26+i}</span></div></div>`).join("")}</div>`;
+const STARTN=2;
+function summary(){return `<div class="sum"><div style="position:relative;width:96px;height:96px;flex:none">${ring(96,9,"rg")}<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><span class="num" id="big" style="font-size:30px">0</span><span style="font-size:11px;font-weight:700;color:var(--ink2)">of ${PT}g</span></div></div>
+ <div style="flex:1"><div class="hand" id="togo" style="font-size:25px;color:var(--pen);line-height:1"></div><div class="kcal" style="font-size:13px;color:var(--ink2);font-weight:600;margin:5px 0 4px"><span id="kc">0</span> of ${KT} kcal</div>
+ <div class="macro">Carbs<i><b id="m1" style="width:0"></b></i></div><div class="macro" style="margin-top:5px">Fat<i><b id="m2" style="width:0"></b></i></div></div></div>`}
+function timeline(n,fresh){const t=tot(n)[0];let h="";
+ MEALS.slice(0,n).forEach((m,i)=>{const isNew=fresh&&i===n-1;
+  h+=`<div class="it ${isNew?"fade":""}"><div class="tm">${m[1]}</div><div class="dt"></div><div class="mc">${plate(m[4],64)}<div><b>${m[0]}</b><small class="kcal">${m[2]} kcal</small></div><div class="pp">${m[3]}g</div></div></div>`});
+ h+=`<div class="nt fade"><div class="av"><video src="${CL}idle.webm" muted playsinline loop autoplay></video></div><div class="tx"><span class="h">Miso</span>${noteText(t,n)}</div></div>`;
+ if(n<MEALS.length){const when=n<3?"1 pm":n<4?"3 pm":"6:30 pm",what=n<3?"Lunch":n<4?"Snack":"Dinner";
+  h+=`<div class="it"><div class="dt" style="border-color:var(--ink2)"></div><div class="tm">${when.replace(" pm","")}</div><div class="ghost"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>${what}, around ${when}</div></div>`}
+ return h}
+const VARS=[
+{name:"A · Quiet timeline",why:"The calmest take. A selected-day pill in the week strip, one summary card (ring, what is left, thin carbs and fat bars), then the day down a line. Miso is a small face by her one note, always about the meal you just logged. A dashed card shows what comes next.",
+ build:()=>`<div class="pad"><div class="meta">Thursday 29 October</div><div style="font-size:34px;font-weight:800;letter-spacing:-.04em;line-height:1.1">Food</div><div style="margin-top:14px">${week()}</div><div style="margin-top:16px">${summary()}</div></div><div class="scroll" style="top:352px"><div class="tlw" id="tl"></div></div>`},
+{name:"B · With a paper-hill band",why:"The same timeline, with a slim band of the Today hills at the top: Miso sits on them. A little more personality, still calm.",
+ build:()=>`<div class="hero2"><img src="${document.body.classList.contains("dark")?"art/today-morning-night.jpg":"art/today-morning-day.jpg"}"><div class="abs meta" style="left:24px;top:60px">Thursday 29 October</div><div class="abs" style="left:24px;top:76px;font-size:34px;font-weight:800;letter-spacing:-.04em;line-height:1.1">Food</div><div class="mv" style="right:6px;top:40px;width:170px;height:170px"><video src="${CL}idle.webm" muted playsinline loop autoplay></video></div></div>
+ <div class="abs" style="left:0;right:0;top:206px;bottom:0;background:var(--ivory);border-radius:28px 28px 0 0;padding:18px 22px 0;overflow:hidden">${week()}<div style="margin-top:14px">${summary()}</div></div><div class="scroll" style="top:478px"><div class="tlw" id="tl" style="margin-top:14px"></div></div>`}
+];
+VARS.forEach((c)=>{
+ const e=document.createElement("div");e.className="opt";e.innerHTML=`<div class="tag">${c.name}</div><div class="why">${c.why}</div><div class="device"><div class="screen"><div class="island"></div>${c.build()}${plus}${navbar}</div></div><button class="rs" style="margin-top:10px">Reset</button>`;
+ $("#row").appendChild(e);const root=$(".screen",e);let n=STARTN;
+ function draw(fresh){const[t,k]=tot(n);$("#tl",root).innerHTML=timeline(n,fresh);count($("#big",root),t);count($("#kc",root),k);setRing(root,"rg",t/PT);
+  $("#togo",root).textContent=t>=PT?"goal done":`${PT-t}g to go`;
+  $("#m1",root).style.width=Math.min(100,n*18/1.7)+"%";$("#m2",root).style.width=Math.min(100,n*9/.85)+"%";
+  [0,1,2,3].forEach(i=>setRing(root,"w"+i,PAST[i]));
+  if(fresh){clip(root,"thinking");setTimeout(()=>clip(root,n>=MEALS.length?"cheer":"wow","idle"),1100);const s=$(".scroll",root);s.scrollTo({top:s.scrollHeight,behavior:"smooth"})}}
+ setTimeout(()=>draw(false),250);
+ $(".fab",root).onclick=()=>{n=n>=MEALS.length?STARTN:n+1;draw(n>STARTN)};
+ $(".rs",e).onclick=()=>{n=STARTN;draw(false)};
+});
+$("#mode").onclick=ev=>{document.body.classList.toggle("dark");ev.target.textContent=document.body.classList.contains("dark")?"Day":"Night"};
+$("#cal").onclick=ev=>{document.body.classList.toggle("nocal");ev.target.textContent="Calories: "+(document.body.classList.contains("nocal")?"off":"on")};
+</script></body></html>

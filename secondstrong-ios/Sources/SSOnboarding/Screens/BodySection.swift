@@ -2,7 +2,7 @@ import SwiftUI
 import SSCore
 import SSDesign
 
-/// Height and weight for the protein target, set with sliders. Skippable; not asked when the safety screen says so.
+/// Height and weight for the protein and calorie targets, set with sliders. Skippable; not asked when the safety screen says so.
 struct BodySection: View {
     let flow: OnboardingFlow
     @State private var imperial = false
@@ -14,7 +14,7 @@ struct BodySection: View {
             MetaLabel("Private to you")
             SectionTitle("Your", emphasis: "numbers.", index: OnboardingStep.body.rawValue)
             if flow.answers.asksForBody {
-                Text("They set your protein target, nothing more.")
+                Text("Only used to build your plan.")
                     .font(SSFont.display(16, weight: 400))
                     .foregroundStyle(Palette.ink2)
                 units
@@ -31,7 +31,7 @@ struct BodySection: View {
                 .padding(.top, 14)
                 .penAnchor(.body)
             } else {
-                Text("No numbers needed. We'll start with a steady target.")
+                Text("No numbers needed.")
                     .font(SSFont.hand(24))
                     .foregroundStyle(Palette.pen)
                     .padding(.top, 8)

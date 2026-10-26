@@ -1,0 +1,998 @@
+{
+  "scripts/build-coach-clips.sh": {
+    "mtime": 1792571355.3956556,
+    "seen": 1792617344.578414,
+    "ast_hash": "fc44707acff47dd7e0a32b46ee94a52b",
+    "semantic_hash": "fc44707acff47dd7e0a32b46ee94a52b"
+  },
+  "scripts/check-harness.sh": {
+    "mtime": 1792533291.9005044,
+    "seen": 1792617344.5784152,
+    "ast_hash": "efeb3db4d3c4edcdc8d4dc85ab51cb52",
+    "semantic_hash": "efeb3db4d3c4edcdc8d4dc85ab51cb52"
+  },
+  "scripts/ticket": {
+    "mtime": 1792533291.5843153,
+    "seen": 1792617344.578416,
+    "ast_hash": "0597dea483174f25fd878de92787a13d",
+    "semantic_hash": "0597dea483174f25fd878de92787a13d"
+  },
+  "secondstrong-ios/App/SecondStrongApp.swift": {
+    "mtime": 1792532675.858889,
+    "seen": 1792617344.5784168,
+    "ast_hash": "94a5d3d9a4b636899790193466423cb0",
+    "semantic_hash": "94a5d3d9a4b636899790193466423cb0"
+  },
+  "secondstrong-ios/Package.swift": {
+    "mtime": 1792571325.1436784,
+    "seen": 1792617344.578418,
+    "ast_hash": "14bf24fff907e0e6e1b3242fa7ff553b",
+    "semantic_hash": "14bf24fff907e0e6e1b3242fa7ff553b"
+  },
+  "secondstrong-ios/Preview/MascotGallery.swift": {
+    "mtime": 1792571189.4392793,
+    "seen": 1792617344.578419,
+    "ast_hash": "6410122a64fb52f9a8a9e4cc696a69dd",
+    "semantic_hash": "6410122a64fb52f9a8a9e4cc696a69dd"
+  },
+  "secondstrong-ios/Preview/PreviewApp.swift": {
+    "mtime": 1792615825.0155864,
+    "seen": 1792617344.57842,
+    "ast_hash": "9a58a1ea26e35850cddbea12e6c4567e",
+    "semantic_hash": "9a58a1ea26e35850cddbea12e6c4567e"
+  },
+  "secondstrong-ios/Sources/SSCore/Coach/ClipSequencer.swift": {
+    "mtime": 1792571144.8925087,
+    "seen": 1792617344.5784261,
+    "ast_hash": "2e5c6224b1e3f518ac386466eebe11a7",
+    "semantic_hash": "2e5c6224b1e3f518ac386466eebe11a7"
+  },
+  "secondstrong-ios/Sources/SSCore/Coach/Coach.swift": {
+    "mtime": 1792571144.881994,
+    "seen": 1792617344.5784268,
+    "ast_hash": "5bcccbad70c89de9870e1e853ee40d18",
+    "semantic_hash": "5bcccbad70c89de9870e1e853ee40d18"
+  },
+  "secondstrong-ios/Sources/SSCore/Coach/CoachMood.swift": {
+    "mtime": 1792571144.8865674,
+    "seen": 1792617344.5784278,
+    "ast_hash": "365e1bbc1650ed57991faefdcd3ccceb",
+    "semantic_hash": "365e1bbc1650ed57991faefdcd3ccceb"
+  },
+  "secondstrong-ios/Sources/SSCore/Geometry/EllipticalArc.swift": {
+    "mtime": 1792533879.4958622,
+    "seen": 1792617344.5784278,
+    "ast_hash": "9f733528ee8e1866c456a6514c8822d1",
+    "semantic_hash": "9f733528ee8e1866c456a6514c8822d1"
+  },
+  "secondstrong-ios/Sources/SSCore/Geometry/PathSegment.swift": {
+    "mtime": 1792534071.9396868,
+    "seen": 1792617344.578429,
+    "ast_hash": "8f07fffae1659f2a0de99e864bd0cbf3",
+    "semantic_hash": "8f07fffae1659f2a0de99e864bd0cbf3"
+  },
+  "secondstrong-ios/Sources/SSCore/Geometry/SVGPath.swift": {
+    "mtime": 1792533879.5125995,
+    "seen": 1792617344.578429,
+    "ast_hash": "59d21a039d5a122350973f5ef8287ece",
+    "semantic_hash": "59d21a039d5a122350973f5ef8287ece"
+  },
+  "secondstrong-ios/Sources/SSCore/Onboarding/BirthDate.swift": {
+    "mtime": 1792578174.5748937,
+    "seen": 1792617344.57843,
+    "ast_hash": "29a9c0ab2a6ea0c6c2728b13ff3ab4cf",
+    "semantic_hash": "29a9c0ab2a6ea0c6c2728b13ff3ab4cf"
+  },
+  "secondstrong-ios/Sources/SSCore/Onboarding/BodyMeasures.swift": {
+    "mtime": 1792577013.1219158,
+    "seen": 1792617344.57843,
+    "ast_hash": "507d390f605cfb004274d752a43d4bda",
+    "semantic_hash": "507d390f605cfb004274d752a43d4bda"
+  },
+  "secondstrong-ios/Sources/SSCore/Onboarding/Choices.swift": {
+    "mtime": 1792615437.2236571,
+    "seen": 1792617344.57843,
+    "ast_hash": "6f8616f508a680b4a94afae75499cd38",
+    "semantic_hash": "6f8616f508a680b4a94afae75499cd38"
+  },
+  "secondstrong-ios/Sources/SSCore/Onboarding/EmailAddress.swift": {
+    "mtime": 1792605185.8457112,
+    "seen": 1792617344.578431,
+    "ast_hash": "83dc2bd48b6feb909a3a3a7e25f32e5e",
+    "semantic_hash": "83dc2bd48b6feb909a3a3a7e25f32e5e"
+  },
+  "secondstrong-ios/Sources/SSCore/Onboarding/FirstWeekPlan.swift": {
+    "mtime": 1792577013.2967243,
+    "seen": 1792617344.578431,
+    "ast_hash": "67ea4f112fc8d10279b37ca0a671a350",
+    "semantic_hash": "67ea4f112fc8d10279b37ca0a671a350"
+  },
+  "secondstrong-ios/Sources/SSCore/Onboarding/HealthChoices.swift": {
+    "mtime": 1792577013.1157176,
+    "seen": 1792617344.578432,
+    "ast_hash": "c499fab4e319338d77ee8688749b548b",
+    "semantic_hash": "c499fab4e319338d77ee8688749b548b"
+  },
+  "secondstrong-ios/Sources/SSCore/Onboarding/OnboardingAnswers.swift": {
+    "mtime": 1792615437.2256417,
+    "seen": 1792617344.578432,
+    "ast_hash": "3b889d8c29fe4772905d28ca98f0f5f6",
+    "semantic_hash": "3b889d8c29fe4772905d28ca98f0f5f6"
+  },
+  "secondstrong-ios/Sources/SSCore/RGB.swift": {
+    "mtime": 1792532675.7381768,
+    "seen": 1792617344.578433,
+    "ast_hash": "4ae7237680925da89b72d6198251cc7e",
+    "semantic_hash": "4ae7237680925da89b72d6198251cc7e"
+  },
+  "secondstrong-ios/Sources/SSDesign/BundledImage.swift": {
+    "mtime": 1792615437.0662487,
+    "seen": 1792617344.578433,
+    "ast_hash": "e488b28512f364ae8fb3826ef34d408f",
+    "semantic_hash": "e488b28512f364ae8fb3826ef34d408f"
+  },
+  "secondstrong-ios/Sources/SSDesign/CoachClipPlayer.swift": {
+    "mtime": 1792571606.9519298,
+    "seen": 1792617344.578434,
+    "ast_hash": "9415397e0fcf9a0e42c92f6aa94cc07f",
+    "semantic_hash": "9415397e0fcf9a0e42c92f6aa94cc07f"
+  },
+  "secondstrong-ios/Sources/SSDesign/CoachClips.swift": {
+    "mtime": 1792571601.335554,
+    "seen": 1792617344.578434,
+    "ast_hash": "46353a5f346b2b0dbe7f35b6b1d08449",
+    "semantic_hash": "46353a5f346b2b0dbe7f35b6b1d08449"
+  },
+  "secondstrong-ios/Sources/SSDesign/CoachOutlines.swift": {
+    "mtime": 1792571179.3771605,
+    "seen": 1792617344.5784352,
+    "ast_hash": "da2b173aa2bed61dc33fa6ba385bdc9c",
+    "semantic_hash": "da2b173aa2bed61dc33fa6ba385bdc9c"
+  },
+  "secondstrong-ios/Sources/SSDesign/CoachView.swift": {
+    "mtime": 1792571601.339248,
+    "seen": 1792617344.5784352,
+    "ast_hash": "3c199a20ce65e01b54d0fa4626aade25",
+    "semantic_hash": "3c199a20ce65e01b54d0fa4626aade25"
+  },
+  "secondstrong-ios/Sources/SSDesign/Components.swift": {
+    "mtime": 1792537422.989439,
+    "seen": 1792617344.5784361,
+    "ast_hash": "fef457979f35b2e6a8502e06a0e7e2f7",
+    "semantic_hash": "fef457979f35b2e6a8502e06a0e7e2f7"
+  },
+  "secondstrong-ios/Sources/SSDesign/Glyphs.swift": {
+    "mtime": 1792615767.153898,
+    "seen": 1792617344.5784361,
+    "ast_hash": "1c4af21f46611527ee927b5ca2f28bfd",
+    "semantic_hash": "1c4af21f46611527ee927b5ca2f28bfd"
+  },
+  "secondstrong-ios/Sources/SSDesign/Palette.swift": {
+    "mtime": 1792615767.1534913,
+    "seen": 1792617344.578437,
+    "ast_hash": "b2092274afce871899d52853ece41086",
+    "semantic_hash": "b2092274afce871899d52853ece41086"
+  },
+  "secondstrong-ios/Sources/SSDesign/RulerPicker.swift": {
+    "mtime": 1792578889.7061765,
+    "seen": 1792617344.578437,
+    "ast_hash": "892a89c778cf62bd8e616a396431fd5c",
+    "semantic_hash": "892a89c778cf62bd8e616a396431fd5c"
+  },
+  "secondstrong-ios/Sources/SSDesign/SSFont.swift": {
+    "mtime": 1792537639.4800017,
+    "seen": 1792617344.5784378,
+    "ast_hash": "f4bc4c6a53ad19bdfce985705c3dceda",
+    "semantic_hash": "f4bc4c6a53ad19bdfce985705c3dceda"
+  },
+  "secondstrong-ios/Sources/SSDesign/SegmentShape.swift": {
+    "mtime": 1792533986.435087,
+    "seen": 1792617344.5784378,
+    "ast_hash": "ecddd40ea0742bb776dd7826e373f7b1",
+    "semantic_hash": "ecddd40ea0742bb776dd7826e373f7b1"
+  },
+  "secondstrong-ios/Sources/SSDesign/StageGlyphs.swift": {
+    "mtime": 1792533937.2086315,
+    "seen": 1792617344.5784378,
+    "ast_hash": "c9cd7d83ac6191bdc6edb0b58d596cfe",
+    "semantic_hash": "c9cd7d83ac6191bdc6edb0b58d596cfe"
+  },
+  "secondstrong-ios/Sources/SSDesign/WheelPicker.swift": {
+    "mtime": 1792578889.7064083,
+    "seen": 1792617344.578439,
+    "ast_hash": "b87eff5d3fc72ddf328656bb034f0cf9",
+    "semantic_hash": "b87eff5d3fc72ddf328656bb034f0cf9"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Auth/AuthDoor.swift": {
+    "mtime": 1792615804.779826,
+    "seen": 1792617344.578439,
+    "ast_hash": "ac52ff3f56e0ce0a2d855469516c80ed",
+    "semantic_hash": "ac52ff3f56e0ce0a2d855469516c80ed"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Auth/AuthEmailScreen.swift": {
+    "mtime": 1792615465.5152793,
+    "seen": 1792617344.57844,
+    "ast_hash": "871f9105745a15e53807f6a5fc77fac6",
+    "semantic_hash": "871f9105745a15e53807f6a5fc77fac6"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Auth/AuthExpiredScreen.swift": {
+    "mtime": 1792615804.9400554,
+    "seen": 1792617344.57844,
+    "ast_hash": "8bbdbad74d975acb3fc28af0f573d82f",
+    "semantic_hash": "8bbdbad74d975acb3fc28af0f573d82f"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Auth/AuthGate.swift": {
+    "mtime": 1792615804.7743459,
+    "seen": 1792617344.578441,
+    "ast_hash": "d2dc3c9f6ff357d8fb96e138da7f146d",
+    "semantic_hash": "d2dc3c9f6ff357d8fb96e138da7f146d"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Auth/AuthInboxScreen.swift": {
+    "mtime": 1792615804.9273643,
+    "seen": 1792617344.578441,
+    "ast_hash": "31c36c07787ebe73889488d97c082500",
+    "semantic_hash": "31c36c07787ebe73889488d97c082500"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Auth/AuthReturningScreen.swift": {
+    "mtime": 1792615804.9353096,
+    "seen": 1792617344.578442,
+    "ast_hash": "968abc835304c62eec3bd6995b6ba442",
+    "semantic_hash": "968abc835304c62eec3bd6995b6ba442"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/LoadingScreenPreview.swift": {
+    "mtime": 1792580358.0094674,
+    "seen": 1792617344.578442,
+    "ast_hash": "1b0db2aea9dc06098ae625fa9d2dbd29",
+    "semantic_hash": "1b0db2aea9dc06098ae625fa9d2dbd29"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/OnboardingDocument.swift": {
+    "mtime": 1792615437.228517,
+    "seen": 1792617344.578443,
+    "ast_hash": "334d11a1bb185dcb01bb907944b9eb31",
+    "semantic_hash": "334d11a1bb185dcb01bb907944b9eb31"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/OnboardingFlow+Drawing.swift": {
+    "mtime": 1792615465.4995894,
+    "seen": 1792617344.578443,
+    "ast_hash": "76f08967b2aabc508d5751467e18d83a",
+    "semantic_hash": "76f08967b2aabc508d5751467e18d83a"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/OnboardingFlow.swift": {
+    "mtime": 1792615824.8554304,
+    "seen": 1792617344.578444,
+    "ast_hash": "8191b017496fd724ac99d853c14eda09",
+    "semantic_hash": "8191b017496fd724ac99d853c14eda09"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/OnboardingView.swift": {
+    "mtime": 1792616093.1176887,
+    "seen": 1792617344.578444,
+    "ast_hash": "cc09c9d1d146c114c0c9ea9cba0d8f6a",
+    "semantic_hash": "cc09c9d1d146c114c0c9ea9cba0d8f6a"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Pen/InkStroke.swift": {
+    "mtime": 1792615987.749061,
+    "seen": 1792617344.578445,
+    "ast_hash": "58c8eb65fb96510a238be7d902e22f41",
+    "semantic_hash": "58c8eb65fb96510a238be7d902e22f41"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Pen/PenAnchors.swift": {
+    "mtime": 1792577061.804826,
+    "seen": 1792617344.578445,
+    "ast_hash": "8cc66ba77db247708e55322af7b7e195",
+    "semantic_hash": "8cc66ba77db247708e55322af7b7e195"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Pen/PenPlanner.swift": {
+    "mtime": 1792534121.7327204,
+    "seen": 1792617344.578445,
+    "ast_hash": "e83f154343ef21a54643998fc3b319b6",
+    "semantic_hash": "e83f154343ef21a54643998fc3b319b6"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Screens/BirthSection.swift": {
+    "mtime": 1792578724.9068372,
+    "seen": 1792617344.5784461,
+    "ast_hash": "ddf767e5bf732f07d536f316d79fde54",
+    "semantic_hash": "ddf767e5bf732f07d536f316d79fde54"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Screens/BodySection.swift": {
+    "mtime": 1792578725.0720387,
+    "seen": 1792617344.5784461,
+    "ast_hash": "11b4151ec28c2ee0e5cf50c5ca2f81de",
+    "semantic_hash": "11b4151ec28c2ee0e5cf50c5ca2f81de"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Screens/BuildingSection.swift": {
+    "mtime": 1792581118.8911912,
+    "seen": 1792617344.578447,
+    "ast_hash": "3f5e3517863ceb44c46bd49d2b4b884a",
+    "semantic_hash": "3f5e3517863ceb44c46bd49d2b4b884a"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Screens/CoachSection.swift": {
+    "mtime": 1792577052.4617872,
+    "seen": 1792617344.578447,
+    "ast_hash": "4ccdccefde8e92c941fe6ab8b1a58407",
+    "semantic_hash": "4ccdccefde8e92c941fe6ab8b1a58407"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Screens/ConsentSection.swift": {
+    "mtime": 1792578044.9008555,
+    "seen": 1792617344.5784478,
+    "ast_hash": "e5620550f98dc6770d1a905b91bd425b",
+    "semantic_hash": "e5620550f98dc6770d1a905b91bd425b"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Screens/DaysSection.swift": {
+    "mtime": 1792577052.4627137,
+    "seen": 1792617344.5784478,
+    "ast_hash": "209e48730ccc0232d818fcd6ef61cb99",
+    "semantic_hash": "209e48730ccc0232d818fcd6ef61cb99"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Screens/GoalsSection.swift": {
+    "mtime": 1792579563.0526161,
+    "seen": 1792617344.5784478,
+    "ast_hash": "26b5a54cb378817b93d360b62953617b",
+    "semantic_hash": "26b5a54cb378817b93d360b62953617b"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Screens/PlanSection.swift": {
+    "mtime": 1792577122.4778004,
+    "seen": 1792617344.578449,
+    "ast_hash": "2b8f7b1a89695f6f8a886f8855086689",
+    "semantic_hash": "2b8f7b1a89695f6f8a886f8855086689"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Screens/SafetySection.swift": {
+    "mtime": 1792577104.1522067,
+    "seen": 1792617344.578449,
+    "ast_hash": "7dfbc30a3959452d068e54339202bc48",
+    "semantic_hash": "7dfbc30a3959452d068e54339202bc48"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Screens/SectionFrame.swift": {
+    "mtime": 1792537588.1092803,
+    "seen": 1792617344.57845,
+    "ast_hash": "7664ffae97374f24bc18689cca6cdd12",
+    "semantic_hash": "7664ffae97374f24bc18689cca6cdd12"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Screens/SketchTile.swift": {
+    "mtime": 1792577104.1285045,
+    "seen": 1792617344.57845,
+    "ast_hash": "105a9b248d7df4ea6f9e5707e98ed900",
+    "semantic_hash": "105a9b248d7df4ea6f9e5707e98ed900"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Screens/StageSection.swift": {
+    "mtime": 1792577052.4620771,
+    "seen": 1792617344.57845,
+    "ast_hash": "089e95132de432bdfc5a79d4493d231d",
+    "semantic_hash": "089e95132de432bdfc5a79d4493d231d"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Screens/TrainingSection.swift": {
+    "mtime": 1792577104.1563256,
+    "seen": 1792617344.578451,
+    "ast_hash": "fcd469c81380cd476bb5b907ebef2f94",
+    "semantic_hash": "fcd469c81380cd476bb5b907ebef2f94"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/Screens/WelcomeSection.swift": {
+    "mtime": 1792615573.3608317,
+    "seen": 1792617344.578451,
+    "ast_hash": "5417361c6dc2a6d1cf9a4476cb16f8d8",
+    "semantic_hash": "5417361c6dc2a6d1cf9a4476cb16f8d8"
+  },
+  "secondstrong-ios/Sources/SSOnboarding/SignInScreensPreview.swift": {
+    "mtime": 1792615838.7720425,
+    "seen": 1792617344.5784519,
+    "ast_hash": "855cb07c67d539562314c0db05022bee",
+    "semantic_hash": "855cb07c67d539562314c0db05022bee"
+  },
+  "secondstrong-ios/Tests/SSCoreTests/ClipSequencerTests.swift": {
+    "mtime": 1792571189.2748163,
+    "seen": 1792617344.5784519,
+    "ast_hash": "060c30cb0429f3d5e49ab518687f5e08",
+    "semantic_hash": "060c30cb0429f3d5e49ab518687f5e08"
+  },
+  "secondstrong-ios/Tests/SSCoreTests/EmailAddressTests.swift": {
+    "mtime": 1792605185.8515866,
+    "seen": 1792617344.578453,
+    "ast_hash": "d55e4343486847cf3cf0e1af16e5dd40",
+    "semantic_hash": "d55e4343486847cf3cf0e1af16e5dd40"
+  },
+  "secondstrong-ios/Tests/SSCoreTests/FirstWeekPlanTests.swift": {
+    "mtime": 1792533903.170249,
+    "seen": 1792617344.578453,
+    "ast_hash": "4a92b9ab63757c04ebb26b9808cdd9d9",
+    "semantic_hash": "4a92b9ab63757c04ebb26b9808cdd9d9"
+  },
+  "secondstrong-ios/Tests/SSCoreTests/OnboardingAnswersTests.swift": {
+    "mtime": 1792579563.194559,
+    "seen": 1792617344.578453,
+    "ast_hash": "990086e0d247913c15e4c3a557bbd739",
+    "semantic_hash": "990086e0d247913c15e4c3a557bbd739"
+  },
+  "secondstrong-ios/Tests/SSCoreTests/OnboardingQuestionsTests.swift": {
+    "mtime": 1792579563.194888,
+    "seen": 1792617344.578454,
+    "ast_hash": "99839bd54e45c3b69d5832491e836cc4",
+    "semantic_hash": "99839bd54e45c3b69d5832491e836cc4"
+  },
+  "secondstrong-ios/Tests/SSCoreTests/RGBTests.swift": {
+    "mtime": 1792532675.8478866,
+    "seen": 1792617344.578454,
+    "ast_hash": "9e86fd1b332f2c784288b7955eaa18b5",
+    "semantic_hash": "9e86fd1b332f2c784288b7955eaa18b5"
+  },
+  "secondstrong-ios/Tests/SSCoreTests/SVGPathTests.swift": {
+    "mtime": 1792533879.5280025,
+    "seen": 1792617344.578455,
+    "ast_hash": "334d4e7d92759a834a8866e3b16b7632",
+    "semantic_hash": "334d4e7d92759a834a8866e3b16b7632"
+  },
+  "secondstrong-ios/Tests/SSDesignTests/CoachClipPlayerTests.swift": {
+    "mtime": 1792571623.475493,
+    "seen": 1792617344.578455,
+    "ast_hash": "b2d3a79212854e68f8a42b9e79f3b754",
+    "semantic_hash": "b2d3a79212854e68f8a42b9e79f3b754"
+  },
+  "secondstrong-ios/Tests/SSOnboardingTests/AuthFlowTests.swift": {
+    "mtime": 1792615482.8105414,
+    "seen": 1792617344.5784562,
+    "ast_hash": "0d1f57b1d970e0b727140f63615bba1d",
+    "semantic_hash": "0d1f57b1d970e0b727140f63615bba1d"
+  },
+  "secondstrong-ios/Tests/SSOnboardingTests/PenPlannerTests.swift": {
+    "mtime": 1792534133.518899,
+    "seen": 1792617344.5784562,
+    "ast_hash": "5d943f50f5f10b875e05a1f70405c327",
+    "semantic_hash": "5d943f50f5f10b875e05a1f70405c327"
+  },
+  "secondstrong-ios/Tests/SSOnboardingTests/PlaythroughSnapshotTests.swift": {
+    "mtime": 1792615891.8920572,
+    "seen": 1792617344.5784562,
+    "ast_hash": "e1d63c7d661ae13f39c7b89d74d304c7",
+    "semantic_hash": "e1d63c7d661ae13f39c7b89d74d304c7"
+  },
+  "secondstrong-ios/Tests/SSOnboardingTests/SignInScreensSnapshotTests.swift": {
+    "mtime": 1792616008.0151448,
+    "seen": 1792617344.578457,
+    "ast_hash": "610395c0103e7c6fdfffc0e3e6256598",
+    "semantic_hash": "610395c0103e7c6fdfffc0e3e6256598"
+  },
+  "secondstrong-waitlist/index.ts": {
+    "mtime": 1792532058.02983,
+    "seen": 1792617344.578457,
+    "ast_hash": "6fdc2b9ce7c00b9a4f46a8c27f4048d3",
+    "semantic_hash": "6fdc2b9ce7c00b9a4f46a8c27f4048d3"
+  },
+  "secondstrong-waitlist/schema.sql": {
+    "mtime": 1792532058.0299902,
+    "seen": 1792617344.578458,
+    "ast_hash": "1c2700fa72da7c04cacf9f73449eae4b",
+    "semantic_hash": "1c2700fa72da7c04cacf9f73449eae4b"
+  },
+  "secondstrong-web/eslint.config.mjs": {
+    "mtime": 1792532058.030762,
+    "seen": 1792617344.578458,
+    "ast_hash": "2c1f41710e6a38e5f4758a2886c3105e",
+    "semantic_hash": "2c1f41710e6a38e5f4758a2886c3105e"
+  },
+  "secondstrong-web/next.config.ts": {
+    "mtime": 1792532058.0308459,
+    "seen": 1792617344.5784588,
+    "ast_hash": "2a690df7d2b3fe801335b3dbe5a4148a",
+    "semantic_hash": "2a690df7d2b3fe801335b3dbe5a4148a"
+  },
+  "secondstrong-web/package.json": {
+    "mtime": 1792532058.0311818,
+    "seen": 1792617344.5784588,
+    "ast_hash": "d4cc600461d232313648d7fd7895c287",
+    "semantic_hash": "d4cc600461d232313648d7fd7895c287"
+  },
+  "secondstrong-web/scripts/resize-test.mjs": {
+    "mtime": 1792532058.0387728,
+    "seen": 1792617344.57846,
+    "ast_hash": "11178f5789cb537073b3f90325fb6db0",
+    "semantic_hash": "11178f5789cb537073b3f90325fb6db0"
+  },
+  "secondstrong-web/src/app/layout.tsx": {
+    "mtime": 1792532058.0408373,
+    "seen": 1792617344.57846,
+    "ast_hash": "103287d406c9b0b16bb151611d4ddcf4",
+    "semantic_hash": "103287d406c9b0b16bb151611d4ddcf4"
+  },
+  "secondstrong-web/src/app/page.tsx": {
+    "mtime": 1792532058.0409513,
+    "seen": 1792617344.57846,
+    "ast_hash": "1e0d60c12656312af7e586cb10213086",
+    "semantic_hash": "1e0d60c12656312af7e586cb10213086"
+  },
+  "secondstrong-web/src/app/privacy/page.tsx": {
+    "mtime": 1792532058.04112,
+    "seen": 1792617344.578461,
+    "ast_hash": "e0d194d07f5f981bbeb42bd331987dd3",
+    "semantic_hash": "e0d194d07f5f981bbeb42bd331987dd3"
+  },
+  "secondstrong-web/src/app/terms/page.tsx": {
+    "mtime": 1792532058.0412824,
+    "seen": 1792617344.578461,
+    "ast_hash": "60920c7361938a5f18f742d9a2d284e5",
+    "semantic_hash": "60920c7361938a5f18f742d9a2d284e5"
+  },
+  "secondstrong-web/src/components/HomePage.tsx": {
+    "mtime": 1792532058.0414546,
+    "seen": 1792617344.578462,
+    "ast_hash": "d8d6ca663fe3eec34306d28c70426def",
+    "semantic_hash": "d8d6ca663fe3eec34306d28c70426def"
+  },
+  "secondstrong-web/src/components/legal/LegalPage.tsx": {
+    "mtime": 1792532058.0416796,
+    "seen": 1792617344.578462,
+    "ast_hash": "405d708a1c015726d7c70e5d062e9f57",
+    "semantic_hash": "405d708a1c015726d7c70e5d062e9f57"
+  },
+  "secondstrong-web/src/components/line/PageLine.tsx": {
+    "mtime": 1792532058.0420353,
+    "seen": 1792617344.578463,
+    "ast_hash": "a97d27c395f7b5969f271b7e9f33dd1a",
+    "semantic_hash": "a97d27c395f7b5969f271b7e9f33dd1a"
+  },
+  "secondstrong-web/src/components/sections/Closing.tsx": {
+    "mtime": 1792532058.0423107,
+    "seen": 1792617344.578463,
+    "ast_hash": "9c00731bb9fb3473b8bdf1c1a5150f10",
+    "semantic_hash": "9c00731bb9fb3473b8bdf1c1a5150f10"
+  },
+  "secondstrong-web/src/components/sections/Day.tsx": {
+    "mtime": 1792532058.0425007,
+    "seen": 1792617344.578464,
+    "ast_hash": "90c4ed8d1a8dcfc6bf407afb6b18078d",
+    "semantic_hash": "90c4ed8d1a8dcfc6bf407afb6b18078d"
+  },
+  "secondstrong-web/src/components/sections/Facts.tsx": {
+    "mtime": 1792532058.0427961,
+    "seen": 1792617344.578464,
+    "ast_hash": "c836ff01e5de2cfed434b8fb14201f53",
+    "semantic_hash": "c836ff01e5de2cfed434b8fb14201f53"
+  },
+  "secondstrong-web/src/components/sections/Features.tsx": {
+    "mtime": 1792532058.0429888,
+    "seen": 1792617344.578465,
+    "ast_hash": "18b91a9bd3e082cf4c9cdae54a40a35e",
+    "semantic_hash": "18b91a9bd3e082cf4c9cdae54a40a35e"
+  },
+  "secondstrong-web/src/components/sections/Header.tsx": {
+    "mtime": 1792532058.0432413,
+    "seen": 1792617344.578465,
+    "ast_hash": "62887b98ee59b96f119f03c780978cc0",
+    "semantic_hash": "62887b98ee59b96f119f03c780978cc0"
+  },
+  "secondstrong-web/src/components/sections/Hero.tsx": {
+    "mtime": 1792532058.0434043,
+    "seen": 1792617344.578465,
+    "ast_hash": "5c6b2662c098972612b0d62e1b62d434",
+    "semantic_hash": "5c6b2662c098972612b0d62e1b62d434"
+  },
+  "secondstrong-web/src/components/sections/Info.tsx": {
+    "mtime": 1792532058.043532,
+    "seen": 1792617344.578466,
+    "ast_hash": "7e3234879357eea04df8730d8520142b",
+    "semantic_hash": "7e3234879357eea04df8730d8520142b"
+  },
+  "secondstrong-web/src/components/sections/Story.tsx": {
+    "mtime": 1792532058.043653,
+    "seen": 1792617344.578466,
+    "ast_hash": "4ab30e120c250dd1df4687d99badc542",
+    "semantic_hash": "4ab30e120c250dd1df4687d99badc542"
+  },
+  "secondstrong-web/src/components/sections/Waitlist.tsx": {
+    "mtime": 1792532058.0438166,
+    "seen": 1792617344.5784671,
+    "ast_hash": "33ffa9f1a8c24489b30df163be22a6ff",
+    "semantic_hash": "33ffa9f1a8c24489b30df163be22a6ff"
+  },
+  "secondstrong-web/src/components/ui/CountUp.tsx": {
+    "mtime": 1792532058.0440998,
+    "seen": 1792617344.5784671,
+    "ast_hash": "626b0535798a88d05a091ccb9cdbe786",
+    "semantic_hash": "626b0535798a88d05a091ccb9cdbe786"
+  },
+  "secondstrong-web/src/components/ui/Draw.tsx": {
+    "mtime": 1792532058.0442243,
+    "seen": 1792617344.578468,
+    "ast_hash": "ddfa6cdf8009e13585a7b86bbdcb5693",
+    "semantic_hash": "ddfa6cdf8009e13585a7b86bbdcb5693"
+  },
+  "secondstrong-web/src/components/ui/Emoji.tsx": {
+    "mtime": 1792532058.044368,
+    "seen": 1792617344.578468,
+    "ast_hash": "0e60349982490988456971477103ed23",
+    "semantic_hash": "0e60349982490988456971477103ed23"
+  },
+  "secondstrong-web/src/components/ui/HitSection.tsx": {
+    "mtime": 1792532058.044481,
+    "seen": 1792617344.578469,
+    "ast_hash": "038e5b58522cc7315315ce3b05f14b2e",
+    "semantic_hash": "038e5b58522cc7315315ce3b05f14b2e"
+  },
+  "secondstrong-web/src/components/ui/Wordmark.tsx": {
+    "mtime": 1792532058.0445766,
+    "seen": 1792617344.578469,
+    "ast_hash": "1abcc30b154deccb620246d3a7349e14",
+    "semantic_hash": "1abcc30b154deccb620246d3a7349e14"
+  },
+  "secondstrong-web/src/content/legal.ts": {
+    "mtime": 1792532058.044788,
+    "seen": 1792617344.578469,
+    "ast_hash": "79f4ed3b8b011e8626a8fd5d3d36da32",
+    "semantic_hash": "79f4ed3b8b011e8626a8fd5d3d36da32"
+  },
+  "secondstrong-web/src/content/site.ts": {
+    "mtime": 1792532058.0449252,
+    "seen": 1792617344.57847,
+    "ast_hash": "396d15b3865ad3c8e748a8615475f1b6",
+    "semantic_hash": "396d15b3865ad3c8e748a8615475f1b6"
+  },
+  "secondstrong-web/src/lib/line/geometry.ts": {
+    "mtime": 1792532058.045334,
+    "seen": 1792617344.57847,
+    "ast_hash": "133f598d17397182c8f751b5e64985fa",
+    "semantic_hash": "133f598d17397182c8f751b5e64985fa"
+  },
+  "secondstrong-web/src/lib/line/measure.ts": {
+    "mtime": 1792532058.0454922,
+    "seen": 1792617344.578471,
+    "ast_hash": "92d8e22544853edf3d2184762290d936",
+    "semantic_hash": "92d8e22544853edf3d2184762290d936"
+  },
+  "secondstrong-web/src/lib/line/path.ts": {
+    "mtime": 1792532058.0455894,
+    "seen": 1792617344.578471,
+    "ast_hash": "6691259aa268a2d8dfce7ed3252cbbca",
+    "semantic_hash": "6691259aa268a2d8dfce7ed3252cbbca"
+  },
+  "secondstrong-web/src/lib/line/route.ts": {
+    "mtime": 1792532058.0457823,
+    "seen": 1792617344.578472,
+    "ast_hash": "48b3cd9f6f54727929541560d9c922ca",
+    "semantic_hash": "48b3cd9f6f54727929541560d9c922ca"
+  },
+  "secondstrong-web/src/lib/line/trace.ts": {
+    "mtime": 1792532058.045899,
+    "seen": 1792617344.578472,
+    "ast_hash": "5a88803d59aeccb9958c351c72d1fca2",
+    "semantic_hash": "5a88803d59aeccb9958c351c72d1fca2"
+  },
+  "secondstrong-web/src/lib/motion/MotionProvider.tsx": {
+    "mtime": 1792532058.0460823,
+    "seen": 1792617344.578472,
+    "ast_hash": "2f8be0ac6c0057908af147704438fa3c",
+    "semantic_hash": "2f8be0ac6c0057908af147704438fa3c"
+  },
+  "secondstrong-web/src/lib/motion/boot.ts": {
+    "mtime": 1792532058.0461822,
+    "seen": 1792617344.5784729,
+    "ast_hash": "965f231be1decd09bbee892c3af82d13",
+    "semantic_hash": "965f231be1decd09bbee892c3af82d13"
+  },
+  "secondstrong-web/src/lib/motion/frame.ts": {
+    "mtime": 1792532058.046337,
+    "seen": 1792617344.5784729,
+    "ast_hash": "e0a005de36d6c66cfaa8266d8b1d9649",
+    "semantic_hash": "e0a005de36d6c66cfaa8266d8b1d9649"
+  },
+  "secondstrong-web/src/lib/motion/hits.ts": {
+    "mtime": 1792532058.046458,
+    "seen": 1792617344.578474,
+    "ast_hash": "853d4de88ad78b79f160a0390704104d",
+    "semantic_hash": "853d4de88ad78b79f160a0390704104d"
+  },
+  "secondstrong-web/src/lib/motion/reveal.ts": {
+    "mtime": 1792532058.0465791,
+    "seen": 1792617344.578474,
+    "ast_hash": "c0ca44cb84949f8a946a386a14f1bd1e",
+    "semantic_hash": "c0ca44cb84949f8a946a386a14f1bd1e"
+  },
+  "secondstrong-web/src/lib/motion/schedule.ts": {
+    "mtime": 1792532058.0466912,
+    "seen": 1792617344.578474,
+    "ast_hash": "8934f08cf6e70948e7e3f51ac8bb5803",
+    "semantic_hash": "8934f08cf6e70948e7e3f51ac8bb5803"
+  },
+  "secondstrong-web/src/lib/motion/scrub.ts": {
+    "mtime": 1792532058.0468295,
+    "seen": 1792617344.578475,
+    "ast_hash": "3173223f44fba214a08eacd99b0eb26b",
+    "semantic_hash": "3173223f44fba214a08eacd99b0eb26b"
+  },
+  "secondstrong-web/src/lib/motion/slams.ts": {
+    "mtime": 1792532058.0470395,
+    "seen": 1792617344.578475,
+    "ast_hash": "6e0b1c893039f57825df0a124dc94cdc",
+    "semantic_hash": "6e0b1c893039f57825df0a124dc94cdc"
+  },
+  "secondstrong-web/src/lib/turnstile.ts": {
+    "mtime": 1792532058.047165,
+    "seen": 1792617344.578476,
+    "ast_hash": "23e3e982f429b2094ee25c9c1df6bf80",
+    "semantic_hash": "23e3e982f429b2094ee25c9c1df6bf80"
+  },
+  "secondstrong-web/src/lib/waitlist.ts": {
+    "mtime": 1792532058.0472937,
+    "seen": 1792617344.578476,
+    "ast_hash": "bcbc7ad0804fcff24723dce2067d517a",
+    "semantic_hash": "bcbc7ad0804fcff24723dce2067d517a"
+  },
+  "secondstrong-web/tsconfig.json": {
+    "mtime": 1792532058.0478466,
+    "seen": 1792617344.5784771,
+    "ast_hash": "ee17fd1c97c735e9f3564e3f5251f125",
+    "semantic_hash": "ee17fd1c97c735e9f3564e3f5251f125"
+  },
+  "AGENTS.md": {
+    "mtime": 1792533391.8774323,
+    "seen": 1792617344.5784771,
+    "ast_hash": "e802adad43e9070a36fc0c0bd889887c",
+    "semantic_hash": "e802adad43e9070a36fc0c0bd889887c"
+  },
+  "CLAUDE.md": {
+    "mtime": 1792532738.072119,
+    "seen": 1792617344.5784771,
+    "ast_hash": "5c27369b226fcf2be8a6cfe52224e767",
+    "semantic_hash": "5c27369b226fcf2be8a6cfe52224e767"
+  },
+  "docs/architecture/ios.md": {
+    "mtime": 1792571355.3833096,
+    "seen": 1792617344.578478,
+    "ast_hash": "c31384e8bfb1f8c82d77fab1b7e09f4e",
+    "semantic_hash": "c31384e8bfb1f8c82d77fab1b7e09f4e"
+  },
+  "docs/business/data-handling.md": {
+    "mtime": 1792532816.0784538,
+    "seen": 1792617344.578478,
+    "ast_hash": "13cb0554373a6bd283074023a52028fb",
+    "semantic_hash": "13cb0554373a6bd283074023a52028fb"
+  },
+  "docs/business/overview.md": {
+    "mtime": 1792533391.8776898,
+    "seen": 1792617344.578479,
+    "ast_hash": "4d001019bc7e53811022cad5f01ffe9f",
+    "semantic_hash": "4d001019bc7e53811022cad5f01ffe9f"
+  },
+  "docs/business/spec-map.md": {
+    "mtime": 1792533314.1002474,
+    "seen": 1792617344.578479,
+    "ast_hash": "25a98120f0b48c210e670bd5adfb2d59",
+    "semantic_hash": "25a98120f0b48c210e670bd5adfb2d59"
+  },
+  "docs/decisions/0001-repo-as-system-of-record.md": {
+    "mtime": 1792533314.100493,
+    "seen": 1792617344.5784802,
+    "ast_hash": "1ba44994213936ffe3daec583b00d06a",
+    "semantic_hash": "1ba44994213936ffe3daec583b00d06a"
+  },
+  "docs/decisions/0002-swiftpm-modules-and-xcodegen.md": {
+    "mtime": 1792532816.1359816,
+    "seen": 1792617344.5784802,
+    "ast_hash": "23b977a59ea83d119ef91c6924bf669a",
+    "semantic_hash": "23b977a59ea83d119ef91c6924bf669a"
+  },
+  "docs/decisions/0003-tickets-as-files.md": {
+    "mtime": 1792533326.1219587,
+    "seen": 1792617344.578481,
+    "ast_hash": "fcfca5a99e14cc2d64c05fcf9fd0bfb3",
+    "semantic_hash": "fcfca5a99e14cc2d64c05fcf9fd0bfb3"
+  },
+  "docs/exec-plans/active/0001-onboarding-v1.md": {
+    "mtime": 1792571355.3844018,
+    "seen": 1792617344.578481,
+    "ast_hash": "cf0341558d62f138619a5e743e74bb0c",
+    "semantic_hash": "cf0341558d62f138619a5e743e74bb0c"
+  },
+  "docs/exec-plans/tech-debt.md": {
+    "mtime": 1792571355.383821,
+    "seen": 1792617344.578481,
+    "ast_hash": "96bed7268b0d2026f72d7e883f0ae04c",
+    "semantic_hash": "96bed7268b0d2026f72d7e883f0ae04c"
+  },
+  "docs/golden-principles.md": {
+    "mtime": 1792533326.1106777,
+    "seen": 1792617344.578482,
+    "ast_hash": "065918f1c5b44480a84d4c0191e960e3",
+    "semantic_hash": "065918f1c5b44480a84d4c0191e960e3"
+  },
+  "docs/harness.md": {
+    "mtime": 1792533314.099486,
+    "seen": 1792617344.578482,
+    "ast_hash": "8c7fbfb5159f05384b28fd942d456b9a",
+    "semantic_hash": "8c7fbfb5159f05384b28fd942d456b9a"
+  },
+  "docs/index.md": {
+    "mtime": 1792577225.0693016,
+    "seen": 1792617344.5784829,
+    "ast_hash": "d56cfe6393c30ef53dbe706ef7bad6d0",
+    "semantic_hash": "d56cfe6393c30ef53dbe706ef7bad6d0"
+  },
+  "docs/open-questions.md": {
+    "mtime": 1792603684.840287,
+    "seen": 1792617344.5784829,
+    "ast_hash": "30c042215311a6667380f1b65feb3f06",
+    "semantic_hash": "30c042215311a6667380f1b65feb3f06"
+  },
+  "docs/quality.md": {
+    "mtime": 1792571355.3835526,
+    "seen": 1792617344.578484,
+    "ast_hash": "9bfa166cf2a3a9e330bfc7ee5f16d7f4",
+    "semantic_hash": "9bfa166cf2a3a9e330bfc7ee5f16d7f4"
+  },
+  "docs/tickets.md": {
+    "mtime": 1792533334.4237506,
+    "seen": 1792617344.578484,
+    "ast_hash": "65c4e0cad81d69e6ff2a2ee8559c5370",
+    "semantic_hash": "65c4e0cad81d69e6ff2a2ee8559c5370"
+  },
+  "keel-health-pricing-and-features-spec.md": {
+    "mtime": 1792532058.0296237,
+    "seen": 1792617344.578485,
+    "ast_hash": "4ef5d8b81cee7edfeae73caf771e2fff",
+    "semantic_hash": "4ef5d8b81cee7edfeae73caf771e2fff"
+  },
+  "secondstrong-ios/AGENTS.md": {
+    "mtime": 1792535021.5439606,
+    "seen": 1792617344.578485,
+    "ast_hash": "2d80858210abab17f84ef28b9bb1a964",
+    "semantic_hash": "2d80858210abab17f84ef28b9bb1a964"
+  },
+  "secondstrong-ios/CLAUDE.md": {
+    "mtime": 1792532738.1032403,
+    "seen": 1792617344.578485,
+    "ast_hash": "5c27369b226fcf2be8a6cfe52224e767",
+    "semantic_hash": "5c27369b226fcf2be8a6cfe52224e767"
+  },
+  "secondstrong-ios/project.yml": {
+    "mtime": 1792532675.870708,
+    "seen": 1792617344.578486,
+    "ast_hash": "3c8e635c6b963ae0f107afb489190586",
+    "semantic_hash": "3c8e635c6b963ae0f107afb489190586"
+  },
+  "secondstrong-web/AGENTS.md": {
+    "mtime": 1792532058.030305,
+    "seen": 1792617344.578486,
+    "ast_hash": "01e8142356e15c3404e0d84c48187cd0",
+    "semantic_hash": "01e8142356e15c3404e0d84c48187cd0"
+  },
+  "secondstrong-web/CLAUDE.md": {
+    "mtime": 1792532058.0303822,
+    "seen": 1792617344.5784872,
+    "ast_hash": "5c27369b226fcf2be8a6cfe52224e767",
+    "semantic_hash": "5c27369b226fcf2be8a6cfe52224e767"
+  },
+  "secondstrong-web/README.md": {
+    "mtime": 1792532058.030672,
+    "seen": 1792617344.5784872,
+    "ast_hash": "4c54fdf8073286f5a8a5c97e6ddb18ea",
+    "semantic_hash": "4c54fdf8073286f5a8a5c97e6ddb18ea"
+  },
+  "tickets/SS-0001-scaffold-ios-project-and-repo-harness.md": {
+    "mtime": 1792533391.9496088,
+    "seen": 1792617344.578488,
+    "ast_hash": "3bb3e90b1cb41fbe3a939258ffa6cc61",
+    "semantic_hash": "3bb3e90b1cb41fbe3a939258ffa6cc61"
+  },
+  "tickets/SS-0002-onboarding-v1.md": {
+    "mtime": 1792534834.4370937,
+    "seen": 1792617344.578488,
+    "ast_hash": "284a19472657e6a1fea093888bce9f1a",
+    "semantic_hash": "284a19472657e6a1fea093888bce9f1a"
+  },
+  "tickets/SS-0003-svg-path-parser-and-path-length-sscore.md": {
+    "mtime": 1792533919.0509186,
+    "seen": 1792617344.578489,
+    "ast_hash": "2b986a2e137f622da4917a1df03f2cb1",
+    "semantic_hash": "2b986a2e137f622da4917a1df03f2cb1"
+  },
+  "tickets/SS-0004-onboarding-model-and-plan-logic-sscore.md": {
+    "mtime": 1792533919.1155252,
+    "seen": 1792617344.578489,
+    "ast_hash": "43b24c6827b94860f15591c67adee85e",
+    "semantic_hash": "43b24c6827b94860f15591c67adee85e"
+  },
+  "tickets/SS-0005-design-tokens-fonts-and-art-assets.md": {
+    "mtime": 1792534206.5252786,
+    "seen": 1792617344.578489,
+    "ast_hash": "485ccb3a1d6e54ba3404e87c5bd5afcd",
+    "semantic_hash": "485ccb3a1d6e54ba3404e87c5bd5afcd"
+  },
+  "tickets/SS-0006-pen-line-engine.md": {
+    "mtime": 1792534834.3555179,
+    "seen": 1792617344.57849,
+    "ast_hash": "1dc9fa55e75a14dbeb291f04ccda77ff",
+    "semantic_hash": "1dc9fa55e75a14dbeb291f04ccda77ff"
+  },
+  "tickets/SS-0007-six-onboarding-screens-and-flow-controll.md": {
+    "mtime": 1792534834.4130368,
+    "seen": 1792617344.57849,
+    "ast_hash": "23498b0f74092af52332e9ec4601f5b9",
+    "semantic_hash": "23498b0f74092af52332e9ec4601f5b9"
+  },
+  "tickets/SS-0008-macos-preview-runner-for-onboarding.md": {
+    "mtime": 1792535781.193832,
+    "seen": 1792617344.578491,
+    "ast_hash": "6b90b574118442676c7569b4374285e5",
+    "semantic_hash": "6b90b574118442676c7569b4374285e5"
+  },
+  "tickets/SS-0009-native-mascot-rig-with-all-nine-expressi.md": {
+    "mtime": 1792536132.8330424,
+    "seen": 1792617344.578491,
+    "ast_hash": "3002389018eb8affaac196f197bb8b1d",
+    "semantic_hash": "3002389018eb8affaac196f197bb8b1d"
+  },
+  "tickets/SS-0010-swipeable-coach-carousel-drop-step-count.md": {
+    "mtime": 1792537061.1422958,
+    "seen": 1792617344.578492,
+    "ast_hash": "eb78778af487585463ca47438a7064cb",
+    "semantic_hash": "eb78778af487585463ca47438a7064cb"
+  },
+  "tickets/SS-0011-two-typefaces-only-handwriting-headings.md": {
+    "mtime": 1792537639.5038872,
+    "seen": 1792617344.578492,
+    "ast_hash": "7598d3d107dd8ef05c7ba3a889776abb",
+    "semantic_hash": "7598d3d107dd8ef05c7ba3a889776abb"
+  },
+  "tickets/SS-0012-play-the-new-coach-clips-add-miso-smooth.md": {
+    "mtime": 1792571632.3178782,
+    "seen": 1792617344.5784929,
+    "ast_hash": "e8a386c230baf0ffaa071c900f2d2aad",
+    "semantic_hash": "e8a386c230baf0ffaa071c900f2d2aad"
+  },
+  "tickets/SS-0013-family-circle-circle-consent-family-plan.md": {
+    "mtime": 1792574185.174566,
+    "seen": 1792617344.5784929,
+    "ast_hash": "4b405d8bc8f113eea6b4b54f4604ac69",
+    "semantic_hash": "4b405d8bc8f113eea6b4b54f4604ac69"
+  },
+  "tickets/SS-0014-family-circle-guides-to-understand-her.md": {
+    "mtime": 1792574178.1969314,
+    "seen": 1792617344.5784938,
+    "ast_hash": "de0b06108594149e63074c10610de407",
+    "semantic_hash": "de0b06108594149e63074c10610de407"
+  },
+  "tickets/SS-0015-family-circle-do-small-things-for-her.md": {
+    "mtime": 1792574178.274017,
+    "seen": 1792617344.5784938,
+    "ast_hash": "8af8315171bffcc2c83a24abc7652d3d",
+    "semantic_hash": "8af8315171bffcc2c83a24abc7652d3d"
+  },
+  "tickets/SS-0016-family-circle-train-alongside-her.md": {
+    "mtime": 1792574178.35256,
+    "seen": 1792617344.5784938,
+    "ast_hash": "6e27625e16defdd706212ffb3746467b",
+    "semantic_hash": "6e27625e16defdd706212ffb3746467b"
+  },
+  "tickets/SS-0017-family-circle-practical-help-shopping-li.md": {
+    "mtime": 1792574178.4351418,
+    "seen": 1792617344.578495,
+    "ast_hash": "90eaf792cf783c8787cdf5c088464fc2",
+    "semantic_hash": "90eaf792cf783c8787cdf5c088464fc2"
+  },
+  "tickets/SS-0018-family-circle-legal-and-data-protection.md": {
+    "mtime": 1792574178.5223806,
+    "seen": 1792617344.578495,
+    "ast_hash": "1aae01ed52aaff3f60b53cc09e5a3d9d",
+    "semantic_hash": "1aae01ed52aaff3f60b53cc09e5a3d9d"
+  },
+  "tickets/SS-0019-onboarding-questions-v1-consent-birth-ye.md": {
+    "mtime": 1792579653.3349507,
+    "seen": 1792617344.578496,
+    "ast_hash": "6fd73ab6fd19cf53fbfb3f07502b69da",
+    "semantic_hash": "6fd73ab6fd19cf53fbfb3f07502b69da"
+  },
+  "tickets/SS-0020-program-draft-loading-animation-begin-sc.md": {
+    "mtime": 1792581127.8558376,
+    "seen": 1792617344.578496,
+    "ast_hash": "7aa45456d6fbc03d8dd22a248c6801a9",
+    "semantic_hash": "7aa45456d6fbc03d8dd22a248c6801a9"
+  },
+  "tickets/SS-0021-sign-in-sign-up-and-buy-for-someone-scre.md": {
+    "mtime": 1792615990.106428,
+    "seen": 1792617344.578497,
+    "ast_hash": "4b915dd863c834cca4608e1dc10c7ed3",
+    "semantic_hash": "4b915dd863c834cca4608e1dc10c7ed3"
+  },
+  "tickets/SS-0022-paper-onboarding-look-with-our-animation.md": {
+    "mtime": 1792617274.7747555,
+    "seen": 1792617344.578497,
+    "ast_hash": "3a40c496073395e45f1c012dfadf4ccb",
+    "semantic_hash": "3a40c496073395e45f1c012dfadf4ccb"
+  }
+}

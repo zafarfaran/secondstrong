@@ -12,7 +12,7 @@ SSCore        pure Foundation: models, rules, parsing, quiz logic
 SSDesign      palette, type, reusable SwiftUI components (imports SSCore)
   ^
 SS<Feature>   one module per feature (imports SSCore, SSDesign)
-              today: SSOnboarding
+              today: SSOnboarding, SSToday
   ^
 App/          composition root: wires features, owns app lifecycle
 ```
@@ -36,17 +36,18 @@ in SSCore; views bind to those, not to strings.
 - **SSDesign:** palette, bundled fonts (`SSFont`), the coach clips (`CoachView`,
   `CoachClipPlayer`), shapes from SVG data, pill button. Images are plain PNGs in
   `Resources/Images`, not an asset catalog, so they load under `swift test` too.
+- **SSToday:** the Today, Food and Coach tabs and the floating tab bar (`MainTabsView`), see [today](../design/today.md) and [food](../design/food.md).
 - **SSOnboarding:** `PenPlanner` (pure line geometry), `OnboardingFlow`
   (controller), one view per screen, `OnboardingDocument` (pages plus ink).
 
 ## Coach clips
 
-Coaches are transparent video, not layers: 16 states per coach for eight coaches, rendered
+Coaches are transparent video, not layers: 20 states per coach for eight coaches, rendered
 from the mascot board (`design/coach-clips/`). The app plays HEVC-with-alpha `.mov` files in
 `SSDesign/Resources/Clips/<coach>/<state>.mov` through `AVPlayerLayer`. Each state has an in,
 a loop and an out (`manifest.json`); `ClipSequencer` in SSCore is the pure rule for when to
 loop, leave and hand over, and `CoachClipPlayer` follows it with two players taking turns so
-the next clip is already cued. Idle gives way at once; other states finish their loop first.
+the next clip is already cued. A clip is only shown once its first frame is decoded; until then the old one stays on screen, so the coach never blinks out between clips. Idle gives way at once; other states finish their loop first.
 `CoachView` frames the 400 px clip over the mascot grid (-20,-50 to 220,190), so callers
 size it like the old 200 grid and the pen outlines still line up. Reduce Motion shows the poster.
 

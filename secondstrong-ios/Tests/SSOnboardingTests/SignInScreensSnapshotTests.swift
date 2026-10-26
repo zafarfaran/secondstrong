@@ -6,7 +6,7 @@ import SSDesign
 @testable import SSOnboarding
 
 /// Saves every sign-in screen, light and dark. Set SS_SNAPSHOT_DIR to run it:
-/// One screen per process (several windows crash): SS_SCREEN=door|email|inbox|returning|expired SS_DARK=1.
+/// One screen per process (several windows crash): SS_SCREEN=door|email|inbox|returning|expired|invited SS_DARK=1.
 /// SS_SNAPSHOT_DIR=/tmp/shots swift test --filter SignInScreens
 @MainActor @Suite(.serialized) struct SignInScreensSnapshotTests {
     private let directory = ProcessInfo.processInfo.environment["SS_SNAPSHOT_DIR"]
@@ -17,7 +17,7 @@ import SSDesign
         try FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true)
         _ = NSApplication.shared
         NSApp.setActivationPolicy(.accessory)
-        let stages: [String: AuthStage] = ["door": .choose, "email": .email, "inbox": .sent, "returning": .returning, "expired": .expired]
+        let stages: [String: AuthStage] = ["door": .choose, "email": .email, "inbox": .sent, "returning": .returning, "expired": .expired, "invited": .invited]
         let env = ProcessInfo.processInfo.environment
         let name = env["SS_SCREEN"] ?? "door"
         let dark = env["SS_DARK"] == "1"

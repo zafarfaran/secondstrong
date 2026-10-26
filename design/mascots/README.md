@@ -28,7 +28,7 @@ The colours live only inside the coach. App pages stay Sketchbook ivory and ink 
 Each coach is drawn the same way, so they read as one family:
 
 1. Base form filled with a radial gradient, lit from the top left.
-2. A soft form shadow and a key highlight, clipped inside the body.
+2. A soft form shadow, clipped inside the body. No broad white sheen: it looked like a glow.
 3. A small specular highlight on the top-left edge.
 4. Features: blurred blush, glossy eyes with two highlights, brows, mouth.
 

@@ -8,6 +8,7 @@ struct PaperSky: View {
     let dark: Bool
     let hillsTop: CGFloat
     let reduceMotion: Bool
+    var fixedTime: Double?
 
     private struct Star { let x, y, size, phase, speed: Double; let flash: Bool }
 
@@ -29,7 +30,7 @@ struct PaperSky: View {
     var body: some View {
         TimelineView(.animation(paused: reduceMotion)) { context in
             Canvas { gc, size in
-                let t = reduceMotion ? 1.6 : context.date.timeIntervalSinceReferenceDate
+                let t = fixedTime ?? (reduceMotion ? 1.6 : context.date.timeIntervalSinceReferenceDate)
                 dark ? night(&gc, size, t) : day(&gc, size, t)
                 motes(&gc, size, t)
             }
@@ -96,19 +97,66 @@ struct PaperSky: View {
             }
         }
 
-        // a paper star shoots across every so often
-        let cycle = t.truncatingRemainder(dividingBy: 12)
-        let q = (cycle - 4) / 1.0
-        if q > 0, q < 1 {
-            let head = CGPoint(x: w * (1.02 - 0.5 * q), y: hillsTop * (0.06 + 0.30 * q))
-            let tail = CGPoint(x: head.x + w * 0.20, y: head.y - hillsTop * 0.07)
-            var line = Path(); line.move(to: head); line.addLine(to: tail)
-            gc.stroke(line, with: .linearGradient(Gradient(colors: [Color(red: 1, green: 0.93, blue: 0.7).opacity(0.9 * sin(q * .pi)), .clear]), startPoint: head, endPoint: tail),
-                      style: StrokeStyle(lineWidth: 2.4, lineCap: .round))
+        // two lanes on different rhythms, so the sky never goes quiet for long and now and then holds two at once
+        meteor(&gc, w, t, period: 4.8, phase: 0.3, lane: 0)
+        meteor(&gc, w, t, period: 7.3, phase: 2.6, lane: 1)
+    }
+
+    /// A meteor now and then, across the whole sky: it comes in past the right edge, crosses at an even speed and
+    /// leaves past the left edge, fading only at the very ends. A white-hot head with a soft glow, a long tapering
+    /// tail, a thinner streak beside it and a little dust. Each pass differs a little in height, angle and length.
+    private func meteor(_ gc: inout GraphicsContext, _ w: Double, _ t: Double, period: Double, phase: Double, lane: Int) {
+        let n = Int(t / period)
+        let seed = n + lane * 1000
+        let q = (t - Double(n) * period - phase) / 1.6
+        guard q > 0, q < 1 else { return }
+        let angle = 0.20 + 0.12 * hash(seed, 43)                              // how steeply it falls, in radians
+        let length = w * (0.22 + 0.12 * hash(seed, 45))
+        let startX = w + 24, endX = -(length + 40)                          // off the right edge, off the left edge
+        let head = CGPoint(x: startX + (endX - startX) * q,
+                           y: hillsTop * ((lane == 0 ? 0.05 : 0.20) + 0.12 * hash(seed, 42)) + (startX - endX) * q * tan(angle))
+        let fade = min(1, q / 0.08, (1 - q) / 0.14)
+        let back = CGPoint(x: cos(angle), y: -sin(angle))                    // from the head back along the tail
+        let side = CGPoint(x: sin(angle), y: cos(angle))
+        func point(_ along: Double, _ across: Double) -> CGPoint {
+            CGPoint(x: head.x + back.x * along + side.x * across, y: head.y + back.y * along + side.y * across)
+        }
+        func tail(_ len: Double, _ halfWidth: Double, _ across: Double, _ alpha: Double) {
+            var p = Path()
+            p.move(to: point(0, across + halfWidth))
+            p.addLine(to: point(len, across))
+            p.addLine(to: point(0, across - halfWidth))
+            p.closeSubpath()
             gc.drawLayer { layer in
-                layer.opacity = sin(q * .pi)
-                layer.fill(paperStar(at: head, radius: w * 0.02, rotation: q * 4), with: .color(Color(red: 0.95, green: 0.82, blue: 0.45)))
+                layer.blendMode = .plusLighter
+                layer.fill(p, with: .linearGradient(Gradient(stops: [
+                    .init(color: Color(red: 1, green: 0.98, blue: 0.92).opacity(alpha * fade), location: 0),
+                    .init(color: Color(red: 1, green: 0.86, blue: 0.58).opacity(0.38 * alpha * fade), location: 0.45),
+                    .init(color: .clear, location: 1),
+                ]), startPoint: point(0, across), endPoint: point(len, across)))
             }
+        }
+        tail(length, 2.0, 0, 1)
+        tail(length * 0.62, 0.9, 3.4, 0.5)
+        for j in 0..<7 {                                                      // dust that drifts off the tail and twinkles out
+            let along = length * (Double(j) + 1 + 0.6 * hash(seed * 10 + j, 46)) / 8.5
+            let across = (hash(seed * 10 + j, 47) - 0.5) * 9
+            let size = 1.0 + 1.4 * hash(seed * 10 + j, 48)
+            let alpha = fade * (1 - along / length) * (0.45 + 0.55 * sin(t * 18 + Double(j) * 2))
+            let c = point(along, across)
+            gc.drawLayer { layer in
+                layer.blendMode = .plusLighter
+                layer.fill(Path(ellipseIn: CGRect(x: c.x - size, y: c.y - size, width: size * 2, height: size * 2)),
+                           with: .color(Color(red: 1, green: 0.92, blue: 0.7).opacity(max(alpha, 0))))
+            }
+        }
+        gc.drawLayer { layer in
+            layer.blendMode = .plusLighter
+            layer.fill(Path(ellipseIn: CGRect(x: head.x - 12, y: head.y - 12, width: 24, height: 24)),
+                       with: .radialGradient(Gradient(colors: [Color(red: 1, green: 0.9, blue: 0.68).opacity(0.55 * fade), .clear]),
+                                             center: head, startRadius: 0, endRadius: 12))
+            layer.fill(Path(ellipseIn: CGRect(x: head.x - 2.4, y: head.y - 2.4, width: 4.8, height: 4.8)),
+                       with: .color(Color(red: 1, green: 0.99, blue: 0.95).opacity(fade)))
         }
     }
 

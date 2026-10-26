@@ -27,6 +27,53 @@ import SSCore
         #expect(corner == 0)
     }
 
+    @Test func theHandOverNeverShowsABlank() async throws {
+        let player = CoachClipPlayer(.fern)
+        let host = CALayer()
+        host.addSublayer(player.root)
+        player.setFrame(CGRect(x: 0, y: 0, width: 200, height: 200))
+        await wait(0.8)
+        for mood in [CoachMood.hello, .idleLook, .cheer, .idle] {
+            player.request(mood)
+            for _ in 0..<12 {
+                await wait(0.04)
+                #expect(player.visibleLayerReady, "\(mood)")
+            }
+        }
+        player.stop()
+    }
+
+    @Test func theFallLandsAndReturnsToIdle() async throws {
+        let player = CoachClipPlayer(.miso)
+        let host = CALayer()
+        host.addSublayer(player.root)
+        player.setFrame(CGRect(x: 0, y: 0, width: 200, height: 200))
+        await wait(0.8)
+        player.request(.fall)
+        #expect(player.currentMood == .fall)
+        await wait(0.35)
+        player.request(.idle)
+        await wait(2.6)
+        #expect(player.currentMood == .idle)
+        player.stop()
+    }
+
+    @Test func anIdleMovePlaysOnceAndGoesBackToIdle() async throws {
+        let player = CoachClipPlayer(.otto)
+        let host = CALayer()
+        host.addSublayer(player.root)
+        player.setFrame(CGRect(x: 0, y: 0, width: 200, height: 200))
+        await wait(0.8)
+        player.request(.idleBounce)
+        #expect(player.currentMood == .idleBounce)
+        await wait(1.0)
+        player.request(.idle)
+        #expect(player.currentMood == .idleBounce)
+        await wait(1.6)
+        #expect(player.currentMood == .idle)
+        player.stop()
+    }
+
     @Test func playsAStateAndReturnsToIdle() async throws {
         let player = CoachClipPlayer(.bramble)
         var firstFrame = false

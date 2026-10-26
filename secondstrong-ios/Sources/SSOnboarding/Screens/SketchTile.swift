@@ -39,6 +39,8 @@ struct ChoiceRow: View {
     let selected: Bool
     let label: String
     var height: CGFloat = 44
+    var detail: String?
+    var icon: Image?
     let action: () -> Void
 
     var body: some View {
@@ -49,10 +51,17 @@ struct ChoiceRow: View {
                     .background(Circle().fill(selected ? Palette.ink : .clear).padding(4))
                     .frame(width: 20, height: 20)
                     .animation(.spring(duration: 0.3, bounce: 0.4), value: selected)
-                Text(label)
-                    .font(SSFont.display(15, weight: 600))
-                    .foregroundStyle(Palette.ink)
-                    .multilineTextAlignment(.leading)
+                if let icon { icon.resizable().scaledToFit().frame(width: 38, height: 38) }
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(label)
+                        .font(SSFont.display(15, weight: 600))
+                        .foregroundStyle(Palette.ink)
+                        .multilineTextAlignment(.leading)
+                    if let detail {
+                        Text(detail).font(SSFont.display(12.5, weight: 400)).foregroundStyle(Palette.ink2)
+                            .multilineTextAlignment(.leading)
+                    }
+                }
                 Spacer(minLength: 0)
             }
             .padding(.horizontal, 14)

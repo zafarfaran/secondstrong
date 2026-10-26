@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Onboarding: your numbers</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#5D534B;--pen:#A85A3C;--page:#E9E2D8;--apricot:#F0C9A8}
+body.dark{--ink:#F1E9DF;--ivory:#211B17;--card:#2A231F;--ink2:#B8AA9D;--pen:#E09A78;--page:#14100E;--apricot:#8a5a3a}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:24px 20px 60px;transition:background .3s}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:760px;line-height:1.45}
+.top button,.replay{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer}
+.row{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px}.opt{width:340px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:84px;margin-bottom:8px}
+.phone{position:relative;width:340px;height:700px;border-radius:32px;overflow:hidden;background:var(--ivory);box-shadow:0 10px 30px #0003;background-image:repeating-linear-gradient(transparent 0 31px,#8882 31px 32px);transition:background .3s}
+.stage{position:absolute;inset:0}
+.meta{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2)}
+.title{font-size:30px;font-weight:800;letter-spacing:-.035em;line-height:1.04}.title em{font-family:"Gochi";font-style:normal;font-weight:400;font-size:36px;letter-spacing:0}
+.head{position:absolute;left:26px;right:26px;top:64px}
+.btn{position:absolute;left:24px;right:24px;bottom:24px;height:52px;border-radius:26px;background:var(--ink);color:var(--ivory);font:600 16px "Bricolage";display:flex;align-items:center;justify-content:center}
+.hand{font-family:"Gochi"}
+.coach{position:absolute;width:120px;height:120px;pointer-events:none}.coach video{width:120px;height:120px;display:block}
+svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.abs{position:absolute}
+</style>
+</head>
+<body>
+<h1>Onboarding: working out your numbers</h1>
+<p class="lede">Modelled on how MacroFactor's setup works: after the body questions we ask how active her day is, what she wants, how she wants to see food, and then we work out her maintenance and daily target ourselves and show them. Everything is interactive and shared: change the activity on the first phone, or the goal and pace on the second, and the reveal on the last phone recalculates. Her answers so far are fake (Anna, 54, 165 cm, 70 kg, strength training three days a week). The formula is Mifflin-St Jeor for a woman plus a modest allowance for activity; every factor, the floor and the paces are drafts for a clinician and a nutrition adviser. The switch below shows the safety branch. Nothing is built in the app.</p>
+<div class="top"><button id="mode">Night</button> <label style="font-size:13px;margin-left:10px"><input type="checkbox" id="safe"> She screened positive, is pregnant or breastfeeding (safety branch)</label></div>
+<div class="row" id="row"></div>
+<script>
+const $=(r,s)=>r.querySelector(s);
+document.getElementById("mode").onclick=e=>{document.body.classList.toggle("dark");e.target.textContent=document.body.classList.contains("dark")?"Day":"Night"};
+const num=n=>Math.round(n).toLocaleString("en-GB");
+const AGE=54,CM=165,KG=70,SESS=3,FLOOR=1400,KCAL=7700;
+const ACT=[["sit","Mostly sitting","Desk, driving, mostly seated","1.20"],["some","On my feet some of the day","Housework, school run, a short walk","1.30"],["most","On my feet most of the day","Teaching, nursing, retail, lots of walking","1.40"],["hard","Physical work","Lifting, carrying, on the move all day","1.50"]];
+const S={act:"some",goal:"cut",pace:"steady",food:"cal",safe:false};
+const bmr=()=>10*KG+6.25*CM-5*AGE-161;
+const maint=()=>Math.round(bmr()*(+ACT.find(a=>a[0]===S.act)[3]+0.03*SESS)/10)*10;
+const RATE={cut:{gentle:.15,steady:.25,quicker:.4},gain:{gentle:.05,steady:.1,quicker:.2}};
+const rate=()=>S.goal==="hold"?0:RATE[S.goal][S.pace];
+const rawTarget=()=>{const m=maint(),r=rate();return S.goal==="cut"?m-r*KCAL/7:S.goal==="gain"?m+r*KCAL/7:m};
+const target=()=>Math.max(FLOOR,Math.round(rawTarget()/10)*10);
+const D=[
+ {t:"1 · How active is your day?",d:"Everyday movement, separate from training (we already know her three strength days, and add those on top). Plain examples under each answer, so she picks without guessing."},
+ {t:"2 · What do you want?",d:"The goal and a pace. 'Lose fat gently' is the cut, 'Build muscle' is the bulk, 'Maintain' holds. Paces are slow and capped; the quicker one is still gentle."},
+ {t:"3 · How would you like to see food?",d:"Offered here, in onboarding, as the spec asks. Choosing protein and habits only hides every calorie number on the next screen and in the app."},
+ {t:"4 · Your numbers",d:"Her maintenance, worked out from her own answers, then her target and protein. It says it will get sharper as she logs, because the app learns from her real weight trend each week."}
+];
+const cta=t=>`<div style="position:absolute;left:20px;right:20px;bottom:20px;height:52px;border-radius:26px;background:var(--ink);color:var(--ivory);font:600 16px Bricolage;display:flex;align-items:center;justify-content:center">${t}</div>`;
+const head2=(m,t,sub)=>`<div class="meta">${m}</div><div class="title" style="margin-top:6px;font-size:28px">${t}</div>${sub?`<div style="font-size:14px;color:var(--ink2);margin-top:8px;line-height:1.4">${sub}</div>`:""}`;
+const VIEW={
+0(){return `<div class="pad">${head2("About your day","How active is<br><em>your day?</em>","Not counting your training. We add that on top.")}
+ <div style="margin-top:16px">${ACT.map(([v,t,d])=>`<button data-a="act" data-v="${v}" style="width:100%;text-align:left;border:1.5px solid ${S.act===v?"var(--ink)":"#8884"};background:${S.act===v?"var(--ink)":"none"};color:${S.act===v?"var(--ivory)":"var(--ink)"};border-radius:20px;padding:12px 16px;margin-bottom:9px;cursor:pointer;font-family:Bricolage"><b style="font-size:15.5px">${t}</b><div style="font-size:12.5px;opacity:.75;margin-top:2px">${d}</div></button>`).join("")}</div>${cta("Continue")}</div>`},
+1(){const g=S.goal,paces=g==="hold"?"":`<div class="meta" style="margin:14px 0 6px">How quickly?</div><div style="display:flex;gap:8px">${["gentle","steady","quicker"].map(p=>`<button data-a="pace" data-v="${p}" style="flex:1;border:1.5px solid ${S.pace===p?"var(--ink)":"#8884"};background:${S.pace===p?"var(--card)":"none"};color:var(--ink);border-radius:16px;padding:10px 6px;cursor:pointer;font-family:Bricolage"><b style="font-size:14px;text-transform:capitalize">${p}</b><div style="font-size:12px;color:var(--ink2)">${RATE[g][p]} kg a week</div></button>`).join("")}</div><div style="font-size:12.5px;color:var(--ink2);margin-top:8px">${g==="cut"?"We never go faster than 0.4 kg a week, and never below a safe daily minimum.":"Slow and steady, with your strength training doing the building."}</div>`;
+ return `<div class="pad">${head2("Your goal","What do you<br><em>want?</em>")}
+ <div style="margin-top:16px">${[["cut","Lose fat gently","Eat a little less than you use, keep your muscle."],["hold","Maintain","Stay where you are and get stronger."],["gain","Build muscle","Eat a little more than you use and lift."]].map(([v,t,d])=>`<button data-a="goal" data-v="${v}" style="width:100%;text-align:left;border:1.5px solid ${g===v?"var(--ink)":"#8884"};background:${g===v?"var(--ink)":"none"};color:${g===v?"var(--ivory)":"var(--ink)"};border-radius:20px;padding:12px 16px;margin-bottom:9px;cursor:pointer;font-family:Bricolage"><b style="font-size:15.5px">${t}</b><div style="font-size:12.5px;opacity:.75;margin-top:2px">${d}</div></button>`).join("")}</div>${paces}${cta("Continue")}</div>`},
+2(){const c=S.food;const card=(v,t,d)=>`<button data-a="food" data-v="${v}" style="width:100%;text-align:left;border:1.5px solid ${c===v?"var(--ink)":"#8884"};background:${c===v?"var(--card)":"none"};color:var(--ink);border-radius:20px;padding:14px 16px;margin-bottom:9px;cursor:pointer;font-family:Bricolage"><b style="font-size:16px">${t}</b><div style="font-size:13px;color:var(--ink2);margin-top:3px;line-height:1.35">${d}</div></button>`;
+ return `<div class="pad">${head2("Food","How would you like<br>to <em>see food?</em>")}
+ <div style="margin-top:16px">${card("cal","Protein and calories","A calorie target and your protein, kept up to date each week.")}${card("free","Protein and habits only","No calorie numbers anywhere. Switch any time in Settings.")}</div>
+ <div class="hand" style="font-size:19px;color:var(--pen)">Either is a good way to do this.</div>${cta("Continue")}</div>`},
+3(){const safe=S.safe||S.food==="free",m=maint(),raw=rawTarget(),t=target(),clamped=S.goal==="cut"&&raw<FLOOR;
+ const fat=Math.round(t*.3/9),prot=85,carb=Math.round((t-prot*4-fat*9)/4);
+ if(safe)return `<div class="pad">${head2("Your plan","Your <em>numbers.</em>","Built around protein and your habits, with no calorie numbers.")}
+  <div style="margin-top:16px;border-radius:22px;border:2px solid var(--ink);padding:16px 18px"><div class="meta">Your protein</div><div style="font-size:46px;font-weight:800;letter-spacing:-.04em;line-height:1;margin-top:4px">85<span style="font-size:18px;color:var(--ink2)">g a day</span></div><div style="font-size:13px;color:var(--ink2);margin-top:6px">Spread across your meals. Your coach helps you get there.</div></div>
+  <div style="margin-top:12px;border-radius:22px;background:var(--card);padding:14px 18px;font-size:14px;line-height:1.4">Strength training <b>Mon, Wed, Fri</b>.<br>Habits we'll build together: protein, training, movement, rest.</div>
+  <div style="font-size:12.5px;color:var(--ink2);margin-top:12px;line-height:1.4">${S.safe?"We start here because it's the kindest way to begin. You can talk to us about it any time.":"You chose to hide calories. You can change this any time in Settings."}</div>${cta("Begin your program")}</div>`;
+ return `<div class="pad">${head2("Your plan","Your <em>numbers.</em>")}
+  <div style="margin-top:12px;border-radius:22px;background:var(--card);padding:14px 18px"><div class="meta">Your maintenance, estimated</div>
+   <div style="font-size:40px;font-weight:800;letter-spacing:-.04em;line-height:1;margin-top:4px">About ${num(m)}<span style="font-size:15px;color:var(--ink2);font-weight:600"> kcal</span></div>
+   <div style="font-size:12.5px;color:var(--ink2);margin-top:5px;line-height:1.35">What keeps your weight steady, from your age, height, weight and how active you are. Likely between ${num(m-120)} and ${num(m+120)}.</div></div>
+  <div style="margin-top:10px;border-radius:22px;border:2px solid var(--ink);padding:14px 18px"><div class="meta">Your daily target</div>
+   <div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:42px;font-weight:800;letter-spacing:-.04em">${num(t)}</span><span style="color:var(--ink2);font-weight:600">kcal</span><span style="margin-left:auto;font-weight:700">85g protein</span></div>
+   <div style="font-size:12.5px;color:var(--ink2);margin-top:3px;line-height:1.35">${S.goal==="hold"?"Eating at maintenance.":S.goal==="cut"?`About ${rate()} kg a week, gently.`:`About ${rate()} kg a week, with strength training.`}${clamped?" We keep you above "+num(FLOOR)+" a day, so this is the slowest safe pace.":""}</div>
+   <div style="display:flex;gap:6px;margin-top:8px;font-size:12.5px"><span style="flex:1;background:var(--card);border-radius:12px;padding:6px 8px">Protein <b>85g</b></span><span style="flex:1;background:var(--card);border-radius:12px;padding:6px 8px">Carbs <b>${carb}g</b></span><span style="flex:1;background:var(--card);border-radius:12px;padding:6px 8px">Fat <b>${fat}g</b></span></div></div>
+  <div class="hand" style="font-size:18px;color:var(--pen);margin-top:10px;line-height:1.1">It gets sharper as you log: we learn from your real weight trend every week.</div>
+  <div style="font-size:11.5px;color:var(--ink2);margin-top:6px;line-height:1.3">An estimate, not a promise. Check with your GP first if you have a health condition.</div>${cta("Begin your program")}</div>`}
+};
+const stages=[];
+function render(){stages.forEach(([i,st])=>{st.innerHTML=VIEW[i]();st.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{const a=b.dataset.a,v=b.dataset.v;if(a==="act")S.act=v;if(a==="goal")S.goal=v;if(a==="pace")S.pace=v;if(a==="food")S.food=v;render()})})}
+D.forEach((d,i)=>{const e=document.createElement("div");e.className="opt";e.innerHTML=`<div class="tag">${d.t}</div><div class="why" style="min-height:96px">${d.d}</div><div class="phone"><div class="stage"></div></div>`;document.getElementById("row").appendChild(e);stages.push([i,e.querySelector(".stage")])});
+document.getElementById("safe").onchange=e=>{S.safe=e.target.checked;render()};
+render();
+</script>
+<style>.pad{position:absolute;inset:0;padding:54px 20px 20px}</style>
+</body>
+</html>

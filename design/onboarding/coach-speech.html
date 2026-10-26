@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coach messages: six looks</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#5D534B;--pen:#A85A3C;--page:#E9E2D8}
+body.dark{--ink:#F1E9DF;--ivory:#211B17;--card:#2A231F;--ink2:#B8AA9D;--pen:#E09A78;--page:#14100E}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:24px 20px 60px;transition:background .3s}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:740px;line-height:1.45}
+.top button,.replay{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer}
+.row{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px}.opt{width:340px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:54px;margin-bottom:8px}
+.phone{position:relative;width:340px;height:600px;border-radius:32px;overflow:hidden;background:var(--ivory);box-shadow:0 10px 30px #0003;background-image:repeating-linear-gradient(transparent 0 31px,#8882 31px 32px);transition:background .3s}
+.page{position:absolute;inset:0;padding:78px 26px 0}
+.meta{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2)}
+.page h2{font-size:28px;font-weight:800;letter-spacing:-.035em;line-height:1.04;margin-top:6px}.page h2 em{font-family:"Gochi";font-style:normal;font-weight:400;font-size:34px;letter-spacing:0}
+.chips{display:flex;flex-direction:column;gap:9px;margin-top:20px}.chip{height:42px;border-radius:21px;border:1.5px solid #8884;display:flex;align-items:center;padding:0 16px;font-weight:600;font-size:14.5px;width:78%}
+.chip.sel{background:var(--ink);color:var(--ivory);border-color:var(--ink)}
+.btn{position:absolute;left:24px;right:24px;bottom:24px;height:52px;border-radius:26px;background:var(--ink);color:var(--ivory);font:600 16px "Bricolage";display:flex;align-items:center;justify-content:center}
+.coach{position:absolute;right:6px;bottom:84px;width:132px;height:132px;z-index:3;pointer-events:none}.coach video{width:132px;height:132px;display:block}
+.say{position:absolute;z-index:4;pointer-events:none}
+svg.over{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;overflow:visible}
+.hand{font-family:"Gochi"}
+</style>
+</head>
+<body>
+<h1>Coach messages: six looks</h1>
+<p class="lede">The same short lines in six styles, over a real screen with the coach in the corner. Each message stays up until you press Next line under the phone (it moves on by itself only after a long pause). Short is the point: a few words, not a paragraph. Nothing is built in the app yet.</p>
+<div class="top"><button id="mode">Night</button></div>
+<div class="row" id="row"></div>
+
+<script>
+const $=(r,s)=>r.querySelector(s);
+document.getElementById("mode").onclick=e=>{document.body.classList.toggle("dark");e.target.textContent=document.body.classList.contains("dark")?"Day":"Night"};
+const LINES=["Pick what matters most.","Muscles grow while you rest.","Spread your protein through the day.","Small steps count."];
+const D=[
+ {t:"A · Handwritten note",d:"No box. A line of handwriting in pen colour that writes itself, with a little hand-drawn arrow curling down to the coach. Feels like the pen line speaking."},
+ {t:"B · Pen-drawn bubble",d:"The pen draws a loose, wobbly bubble round the words, in the same terracotta line as everything else. Nothing filled in, so it never hides the page."},
+ {t:"C · Paper tag",d:"A small torn-paper note, slightly tilted, with a strip of tape. The paper look from the sign-in, a little shadow, a few words."},
+ {t:"D · Ink pill",d:"A small solid capsule in the app's own button style, a few words in the bold face. Crisp, modern, and the least likely to look cutesy."},
+ {t:"E · Marker words",d:"Just the words, bold, with a highlighter stroke behind them in apricot and three dots rising from the coach. Quiet and editorial."},
+ {t:"F · Margin note",d:"The coach's line sits low on the left, written on the page like a note in a margin with a pen underline. Out of the coach's way, close to the question."}
+];
+function build(d,i){
+ const el=document.createElement("div");el.className="opt";
+ el.innerHTML=`<div class="tag">${d.t}</div><div class="why">${d.d}</div><div class="phone"><div class="page"><div class="meta">Up to three</div><h2>What would you<br><em>like to achieve?</em></h2><div class="chips"><div class="chip sel">Feel stronger</div><div class="chip">Have more energy</div><div class="chip sel">Sleep better</div><div class="chip">Move without aches</div><div class="chip">Build healthy habits</div></div></div><div class="btn">Continue</div><div class="coach"><video src="../coach-clips/webm/miso/suggest.webm" muted playsinline loop autoplay></video></div><div class="layer"></div></div><button class="replay" style="margin-top:8px">Next line</button>`;
+ document.getElementById("row").appendChild(el);
+ const layer=$(el,".layer"),phone=$(el,".phone");let k=0,timers=[];
+ const clear=()=>{timers.forEach(clearTimeout);timers=[];layer.innerHTML=""};
+ const later=(f,ms)=>timers.push(setTimeout(f,ms));
+ const wipe=(node,ms,delay=0)=>node.animate([{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0 0 0)"}],{duration:ms,delay,easing:"linear",fill:"both"});
+ const draw=(path,ms,delay=0)=>{const L=path.getTotalLength();path.style.strokeDasharray=L;path.animate([{strokeDashoffset:L},{strokeDashoffset:0}],{duration:ms,delay,easing:"cubic-bezier(.4,.1,.3,1)",fill:"both"})};
+ const SHOW={
+  0(text){ // handwritten note + arrow
+   layer.innerHTML=`<div class="say hand" style="right:128px;bottom:206px;font-size:25px;color:var(--pen);text-align:right;max-width:170px;line-height:1.05;transform:rotate(-2deg)">${text}</div>
+    <svg class="over" viewBox="0 0 340 600"><path class="ar" d="M262 372 C 284 380 296 400 288 424" fill="none" stroke="var(--pen)" stroke-width="2.4" stroke-linecap="round"/><path class="ah" d="M281 414 L288 426 L297 416" fill="none" stroke="var(--pen)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+   wipe($(layer,".say"),700+text.length*18);draw($(layer,".ar"),500,600);draw($(layer,".ah"),200,1000);},
+  1(text){ // pen-drawn bubble
+   layer.innerHTML=`<svg class="over" viewBox="0 0 340 600"><path class="bb" d="M70 398 C 70 372 92 364 120 365 L 236 363 C 268 362 290 372 290 398 C 290 424 270 434 242 434 L 214 435 C 204 446 196 452 184 456 C 188 446 188 440 186 436 L 118 436 C 90 436 70 426 70 398 Z" fill="none" stroke="var(--pen)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="say hand" style="left:84px;width:192px;top:371px;height:60px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:21px;line-height:1.05;color:var(--ink)">${text}</div>`;
+   draw($(layer,".bb"),900);wipe($(layer,".say"),600+text.length*14,500);},
+  2(text){ // paper tag
+   layer.innerHTML=`<div class="say" style="right:112px;bottom:218px;width:176px;transform:rotate(-2.5deg)"><div style="position:absolute;left:62px;top:-9px;width:50px;height:16px;background:#e8c05f66;transform:rotate(3deg);border-radius:2px"></div>
+    <div style="background:#EFE6D6;color:#3B322C;padding:14px 14px 13px;font-family:Gochi;font-size:20px;line-height:1.08;text-align:center;box-shadow:0 5px 10px #0003;clip-path:polygon(0 3%,6% 0,14% 2%,24% 0,35% 3%,47% 0,58% 2%,70% 0,82% 3%,92% 0,100% 2%,100% 96%,93% 100%,81% 97%,69% 100%,57% 97%,45% 100%,33% 98%,21% 100%,10% 97%,0 100%)">${text}</div></div>`;
+   $(layer,".say").animate([{transform:"rotate(-8deg) scale(.6) translateY(14px)",opacity:0},{transform:"rotate(-2.5deg) scale(1)",opacity:1}],{duration:420,easing:"cubic-bezier(.3,1.5,.5,1)",fill:"both"});},
+  3(text){ // ink pill
+   layer.innerHTML=`<div class="say" style="right:16px;bottom:226px;transform-origin:90% 100%"><div style="background:var(--ink);color:var(--ivory);font:600 15px Bricolage;padding:10px 16px;border-radius:20px;white-space:nowrap">${text}</div><div style="position:absolute;right:42px;bottom:-6px;width:14px;height:14px;background:var(--ink);transform:rotate(45deg);border-radius:3px;z-index:-1"></div></div>`;
+   $(layer,".say").animate([{transform:"scale(.4)",opacity:0},{transform:"scale(1)",opacity:1}],{duration:380,easing:"cubic-bezier(.3,1.6,.5,1)",fill:"both"});},
+  4(text){ // marker words
+   layer.innerHTML=`<div class="say" style="right:18px;bottom:238px;max-width:210px;text-align:right;font:800 21px/1.12 Bricolage;letter-spacing:-.02em"><span style="background:linear-gradient(transparent 55%,#F0C9A8bb 55%,#F0C9A8bb 90%,transparent 90%);padding:0 3px;-webkit-box-decoration-break:clone;box-decoration-break:clone">${text}</span></div>
+    <div class="say" style="right:96px;bottom:222px"><i style="display:block;width:6px;height:6px;border-radius:50%;background:var(--ink2);margin:0 0 4px 0"></i></div>
+    <div class="say" style="right:84px;bottom:212px"><i style="display:block;width:9px;height:9px;border-radius:50%;background:var(--ink2)"></i></div>
+    <div class="say" style="right:70px;bottom:198px"><i style="display:block;width:12px;height:12px;border-radius:50%;background:var(--ink2)"></i></div>`;
+   [...layer.children].forEach((n,j)=>n.animate([{opacity:0,transform:"translateY(8px)"},{opacity:1,transform:"none"}],{duration:300,delay:j===0?260:(3-j)*110,fill:"both"}));},
+  5(text){ // margin note
+   layer.innerHTML=`<div class="say hand" style="left:26px;bottom:100px;font-size:25px;color:var(--pen);line-height:1.05;max-width:170px;transform:rotate(-1.5deg)">${text}</div>
+    <svg class="over" viewBox="0 0 340 600"><path class="ul" d="M24 ${566} C 70 572 120 570 168 562" fill="none" stroke="var(--pen)" stroke-width="2.4" stroke-linecap="round"/></svg>`;
+   wipe($(layer,".say"),700+text.length*18);draw($(layer,".ul"),500,500+text.length*10);}
+ };
+ const cycle=()=>{clear();const text=LINES[k%LINES.length];k++;SHOW[i](text);later(cycle,14000)};
+ $(el,".replay").onclick=()=>cycle();
+ setTimeout(cycle,500+i*150);
+}
+D.forEach(build);
+</script>
+</body>
+</html>

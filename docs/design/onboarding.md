@@ -24,7 +24,7 @@ The HTML prototype used four; Newsreader italic and IBM Plex Mono were dropped o
 ## Status
 
 The six-screen prototype flow is ported to SwiftUI (ticket SS-0002): welcome,
-coach, stage, goals, days, plan, then the zoom-out ending. It matches the HTML
+coach, stage, goals, days, plan, then the "You're all set" ending. It matches the HTML
 prototype closely in type and line route. Questions beyond these four come later.
 
 Changes from the HTML prototype, by request (2026-10-20): no "N of 4" counters (the

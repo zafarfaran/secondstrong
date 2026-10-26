@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Today dashboard: four approaches</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#7A6E64;--pen:#A85A3C;--page:#E4DCD1;--line:#3b322c1c;--apricot:#F0C9A8}
+body.dark{--ink:#F1E9DF;--ivory:#1B1613;--card:#26201C;--ink2:#A89C90;--pen:#E09A78;--page:#0F0C0A;--line:#f1e9df1c;--apricot:#8a5a3a}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:26px 24px 70px;transition:background .3s}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:820px;line-height:1.5;font-size:14.5px}
+.top button{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer;margin-right:6px}
+.row{display:flex;gap:30px;flex-wrap:wrap;margin-top:22px}.opt{width:340px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:74px;margin-bottom:12px}
+.device{zoom:.82;width:426px;height:898px;border-radius:64px;background:linear-gradient(145deg,#3a3a3d,#17171a);padding:12px;box-shadow:0 30px 60px -18px #000a,inset 0 0 0 2px #55555a,inset 0 0 0 5px #0a0a0b;position:relative}
+.device:before,.device:after{content:"";position:absolute;width:4px;background:#2a2a2d;border-radius:2px}
+.device:before{left:-3px;top:150px;height:64px;box-shadow:0 90px 0 #2a2a2d}.device:after{right:-3px;top:210px;height:100px}
+.screen{position:relative;width:402px;height:874px;border-radius:52px;overflow:hidden;background:var(--ivory);color:var(--ink);transition:background .3s}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:126px;height:37px;border-radius:24px;background:#000;z-index:50}
+.sb{position:absolute;top:0;left:0;right:0;height:54px;display:flex;justify-content:space-between;align-items:center;padding:6px 34px 0 44px;z-index:40;font-weight:700;font-size:16.5px;color:var(--ink)}
+.sb svg{position:relative;inset:auto;fill:currentColor}
+.home{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:139px;height:5px;border-radius:3px;background:var(--ink);opacity:.9;z-index:45}
+.meta{font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.hand{font-family:"Gochi"}
+.pad{position:absolute;inset:0;padding:78px 28px 0}
+.hair{height:1px;background:var(--line);margin:0}
+button{font-family:Bricolage}
+.tabbar{position:absolute;left:34px;right:34px;bottom:30px;height:64px;border-radius:32px;background:var(--ivory);box-shadow:0 8px 28px #3b322c26,0 0 0 1px var(--line);display:flex;align-items:center;justify-content:space-around;z-index:30}
+.tabbar svg{position:relative;inset:auto;width:25px;height:25px;fill:none;stroke:var(--ink2);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tabbar .on svg{stroke:var(--ink);stroke-width:2.2}.tabbar .on{position:relative}.tabbar .on:after{content:"";position:absolute;left:50%;bottom:-9px;width:4px;height:4px;border-radius:50%;background:var(--pen);transform:translateX(-50%)}
+.pro{position:absolute;right:0;top:0;background:var(--pen);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:8px;letter-spacing:.05em}
+</style>
+</head>
+<body>
+<h1>Today dashboard: four approaches</h1>
+<p class="lede">True iPhone size, the paper look, now with new generated artwork: a hero scene (light and dark) with the mascot standing on its hill, a paper icon for each of the five habits, and a line from the coach. <b>Tap the coach or its line, or the Coach tab, to open the Coach screen</b>; tap Today to come back. Tap the habit icons to tick them. <b>Hide calories</b> shows calorie-free mode, <b>Free plan</b> marks what Free does not get, <b>Night</b> shows dark mode. Fake data: Anna, Miso, Monday 26 October. Nothing is built.</p>
+<div class="top"><button id="mode">Night</button><button id="cal">Hide calories</button><button id="free">Free plan</button></div>
+<div class="row" id="row"></div>
+<script>
+const $=(r,s)=>r.querySelector(s);
+document.getElementById("mode").onclick=e=>{document.body.classList.toggle("dark");e.target.textContent=document.body.classList.contains("dark")?"Day":"Night";render()};
+const CL="../coach-clips/webm/miso/",HI="../onboarding/paper/web/";
+const num=n=>Math.round(n).toLocaleString("en-GB");
+const S={hide:false,free:false,h:{protein:false,strength:false,movement:true,fibre:false,sleep:true}};
+const T=new URLSearchParams(location.search).get("view")==="coach"?["coach","coach","coach","coach"]:["today","today","today","today"];
+document.getElementById("cal").onclick=e=>{S.hide=!S.hide;e.target.textContent=S.hide?"Show calories":"Hide calories";render()};
+document.getElementById("free").onclick=e=>{S.free=!S.free;e.target.textContent=S.free?"Pro plan":"Free plan";render()};
+const P=62,PT=85,K=1090,KT=1540,ST=4820,STT=8000;
+const HAB=[["protein","Protein","habit-protein"],["strength","Strength","habit-strength"],["movement","Move","habit-move"],["fibre","Fibre","habit-fibre"],["sleep","Sleep","habit-sleep"]];
+const done=()=>Object.values(S.h).filter(Boolean).length;
+const ic={today:'<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.9 1.9M16.8 16.8l1.9 1.9M18.7 5.3l-1.9 1.9M7.2 16.8l-1.9 1.9"/>',food:'<path d="M6 3v7a3 3 0 006 0V3M9 3v18M18 3c-2.2 2-3.2 5-3.2 8H18v10"/>',train:'<path d="M3 9.5v5M6.2 7v10M17.8 7v10M21 9.5v5M6.2 12h11.6"/>',coach:'<path d="M4.5 5.5h15v10.5H10l-5.5 4z"/>',progress:'<path d="M4 20v-9M10 20V4M16 20v-6M22 20H2"/>'};
+const status=`<div class="sb"><span>9:41</span><span style="display:flex;gap:7px;align-items:center"><svg width="19" height="12" viewBox="0 0 19 12"><rect x="0" y="7.5" width="3.2" height="4.5" rx=".7"/><rect x="4.8" y="5" width="3.2" height="7" rx=".7"/><rect x="9.6" y="2.5" width="3.2" height="9.5" rx=".7"/><rect x="14.4" y="0" width="3.2" height="12" rx=".7"/></svg><svg width="17" height="12" viewBox="0 0 17 12"><path d="M8.5 3.2c2.3 0 4.4.9 6 2.4l1-1.1A10.4 10.4 0 008.5 1.7 10.4 10.4 0 001.5 4.5l1 1.1a8.6 8.6 0 016-2.4zM8.5 6.8c1.3 0 2.5.5 3.4 1.3l1-1.1a6.2 6.2 0 00-8.8 0l1 1.1c.9-.8 2.1-1.3 3.4-1.3zM8.5 10.3l1.8-1.9a2.6 2.6 0 00-3.6 0z"/></svg><svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2"/><path d="M25 4.5v4c.8-.3 1.5-1.1 1.5-2s-.7-1.7-1.5-2z" opacity=".5"/></svg></span></div>`;
+const tabs=a=>`<div class="tabbar">${["today","food","train","coach","progress"].map(k=>`<div class="${k===a?"on":""}" data-tab="${k}" style="cursor:pointer;padding:10px 12px"><svg viewBox="0 0 24 24">${ic[k]}</svg></div>`).join("")}</div>`;
+const dev=(inner,a)=>`<div class="device"><div class="screen"><div class="island"></div>${status}${inner}${tabs(a||"today")}<div class="home"></div></div></div>`;
+const proTag=h=>S.free?`<div style="position:relative;opacity:.5">${h}<span class="pro">PRO</span></div>`:h;
+const plate=()=>document.body.classList.contains("dark")?{src:"today-morning-night",fx:.725,fy:.68}:{src:"today-morning-day",fx:.77,fy:.66};
+const scene=(iw,tx,ty,extra)=>{const p=plate(),ih=iw/1.5;return `<img src="art/${p.src}.jpg" style="position:absolute;left:${tx-p.fx*iw}px;top:${ty-p.fy*ih}px;width:${iw}px;${extra||""}">`};
+const mascot=(clip,m,tx,ty)=>`<video src="${CL}${clip}.webm" muted playsinline loop autoplay style="position:absolute;left:${tx-m/2}px;top:${ty-.93*m}px;width:${m}px;height:${m}px;pointer-events:none"></video>`;
+const fade="-webkit-mask-image:linear-gradient(#000 86%,transparent);mask-image:linear-gradient(#000 86%,transparent)";
+const habits=small=>proTag(`<div style="display:flex;justify-content:space-between">${HAB.map(([k,t,img])=>`<button data-h="${k}" style="border:0;background:none;color:var(--ink);cursor:pointer;padding:0;width:62px;position:relative"><img src="${HI}${img}.png" style="width:${small?44:50}px;height:${small?44:50}px;object-fit:contain;display:block;margin:0 auto;opacity:${S.h[k]?1:.62};filter:${S.h[k]?"none":"grayscale(.35)"};transition:all .25s"><i style="position:absolute;right:7px;top:-2px;width:19px;height:19px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;opacity:${S.h[k]?1:0};transform:scale(${S.h[k]?1:.4});transition:all .2s"><svg viewBox="0 0 20 20" style="position:relative;inset:auto;width:11px;height:11px;fill:none;stroke:var(--ivory);stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M4 10.5l4 4 8-9"/></svg></i><div style="font-size:11px;font-weight:600;margin-top:5px;color:var(--ink2)">${t}</div></button>`).join("")}</div>`);
+const bar=(v,t)=>`<div style="height:4px;border-radius:2px;background:var(--line)"><div style="width:${Math.min(100,v/t*100)}%;height:100%;border-radius:2px;background:var(--ink)"></div></div>`;
+const row3=()=>`<div style="display:flex">${[S.hide?["Habits",`${done()} of 5`,"today"]:["Calories left",num(KT-K),`of ${num(KT)}`],["Steps",num(ST),`of ${num(STT)}`]].map(([a,b,c],i)=>`<div style="flex:1;${i?"padding-left:22px;border-left:1px solid var(--line)":""}"><div class="meta" style="font-size:10.5px">${a}</div><div style="font-size:28px;font-weight:800;letter-spacing:-.04em;margin-top:2px">${b}</div><div style="font-size:12px;color:var(--ink2)">${c}</div></div>`).join("")}</div>`;
+const session=()=>proTag(`<div style="display:flex;align-items:center;justify-content:space-between"><div><div class="meta" style="font-size:10.5px">Today · 20 min</div><div style="font-size:22px;font-weight:800;letter-spacing:-.03em;margin-top:2px">Upper body</div></div><div style="height:44px;padding:0 26px;border-radius:22px;background:var(--ink);color:var(--ivory);font:700 15px Bricolage;display:flex;align-items:center">Start</div></div>`);
+const greet=(a,b)=>`<div class="meta">Monday 26 October</div><div style="font-size:33px;font-weight:800;letter-spacing:-.04em;line-height:1.02;margin-top:5px">${a}${b?`<br><span class="hand" style="font-weight:400;font-size:40px;letter-spacing:0">${b}</span>`:""}</div>`;
+const note=(txt,w)=>`<div data-go="coach" style="cursor:pointer;width:${w||170}px"><div class="hand" style="font-size:22px;color:var(--pen);line-height:1.08">${txt}</div><div style="display:inline-flex;align-items:center;gap:5px;margin-top:9px;height:27px;padding:0 12px;border-radius:14px;background:var(--ivory);box-shadow:0 0 0 1px var(--line);font-size:12px;font-weight:700">Ask Miso <span style="color:var(--pen)">›</span></div></div>`;
+const LINE="Lift at eight.<br>Protein with lunch.";
+const V={
+0(){return dev(`<div style="position:absolute;left:0;right:0;top:0;height:340px;overflow:hidden;${fade}">${scene(680,300,274)}</div>${`<div data-go="coach" style="position:absolute;inset:0 0 auto 0;height:340px;cursor:pointer;z-index:5">${mascot("idle",176,300,274)}</div>`}
+ <div style="position:absolute;left:28px;top:70px;z-index:6">${greet("Good morning,","Anna.")}</div><div style="position:absolute;left:28px;top:196px;z-index:6">${note(LINE,170)}</div>
+ <div class="pad" style="padding-top:352px"><div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:72px;font-weight:800;letter-spacing:-.07em;line-height:.9">${P}</span><span style="font-size:20px;color:var(--ink2);font-weight:600">of ${PT}g protein</span></div><div style="margin-top:12px">${bar(P,PT)}</div>
+ <div style="margin-top:20px">${row3()}</div><div class="hair" style="margin:18px 0 14px"></div>${habits(true)}<div style="margin-top:16px">${session()}</div></div>`)},
+1(){const R=96,C=2*Math.PI*R;return dev(`<div class="pad"><div style="display:flex;justify-content:space-between"><div>${greet("Today")}<div style="margin-top:14px">${note(LINE,176)}</div></div>
+ <div data-go="coach" style="position:relative;width:148px;height:148px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 1px var(--line);margin-top:2px;flex:none;cursor:pointer">${scene(380,74,108)}${mascot("idle",84,74,108)}</div></div>
+ <div style="position:relative;width:230px;height:230px;margin:20px auto 0"><svg viewBox="0 0 230 230" style="position:absolute;inset:0;width:230px;height:230px"><circle cx="115" cy="115" r="${R}" fill="none" stroke="var(--line)" stroke-width="7"/><circle cx="115" cy="115" r="${R}" fill="none" stroke="var(--ink)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-P/PT)}" transform="rotate(-90 115 115)"/></svg><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><div class="meta">Protein</div><div style="font-size:72px;font-weight:800;letter-spacing:-.06em;line-height:1">${P}</div><div style="font-size:14px;color:var(--ink2);font-weight:600">of ${PT}g</div></div></div>
+ <div style="margin-top:20px">${row3()}</div><div class="hair" style="margin:16px 0 12px"></div>${habits(true)}<div style="margin-top:14px">${session()}</div></div>`)},
+2(){return dev(`<div style="position:absolute;left:0;right:0;top:0;height:440px;overflow:hidden">${scene(790,262,352)}</div>
+ <div data-go="coach" style="position:absolute;left:0;right:0;top:0;height:380px;cursor:pointer;z-index:5">${mascot("suggest",224,262,352)}</div>
+ <div style="position:absolute;left:28px;top:70px;z-index:6;color:var(--ink)">${greet("Morning,","Anna.")}</div><div style="position:absolute;left:28px;top:210px;z-index:6">${note("Lift at eight.<br>Then lunch.<br>I'll be here.",150)}</div>
+ <div style="position:absolute;left:0;right:0;top:392px;bottom:0;border-radius:32px 32px 0 0;background:var(--ivory);box-shadow:0 -12px 34px #3b322c22;padding:24px 28px 0;z-index:7"><div style="position:absolute;left:50%;top:9px;width:38px;height:4px;border-radius:2px;background:var(--line);transform:translateX(-50%)"></div>
+  <div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:60px;font-weight:800;letter-spacing:-.06em;line-height:.9">${P}</span><span style="font-size:18px;color:var(--ink2);font-weight:600">of ${PT}g protein</span></div><div style="margin-top:11px">${bar(P,PT)}</div>
+  <div style="margin-top:16px">${row3()}</div><div class="hair" style="margin:14px 0 12px"></div>${habits(true)}<div style="margin-top:14px">${session()}</div></div>`)},
+3(){const stop=(t,a,b,k,img)=>`<div style="position:relative;display:flex;align-items:center;gap:16px;margin-bottom:12px"><button data-h="${k}" style="border:0;background:none;padding:0;cursor:pointer;position:relative;flex:none"><img src="${HI}${img}.png" style="width:54px;height:54px;object-fit:contain;display:block;opacity:${S.h[k]?1:.7};filter:${S.h[k]?"none":"grayscale(.3)"}"><i style="position:absolute;right:-3px;top:-3px;width:19px;height:19px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center;opacity:${S.h[k]?1:0}"><svg viewBox="0 0 20 20" style="position:relative;inset:auto;width:11px;height:11px;fill:none;stroke:var(--ivory);stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M4 10.5l4 4 8-9"/></svg></i></button><div><div class="meta" style="font-size:10.5px">${t}</div><div style="font-size:20px;font-weight:800;letter-spacing:-.03em">${a}</div><div style="font-size:13px;color:var(--ink2)">${b}</div></div></div>`;
+ return dev(`<div style="position:absolute;left:0;right:0;top:0;height:250px;overflow:hidden;${fade}">${scene(560,296,212)}</div><div data-go="coach" style="position:absolute;left:0;right:0;top:0;height:250px;cursor:pointer;z-index:5">${mascot("idle",116,296,212)}</div>
+ <div style="position:absolute;left:28px;top:70px;z-index:6">${greet("Your","day.")}</div><div style="position:absolute;left:28px;top:170px;z-index:6;width:190px"><div data-go="coach" style="cursor:pointer;display:inline-flex;align-items:center;gap:8px"><span class="hand" style="font-size:21px;color:var(--pen);line-height:1.05">Lift at eight.</span><span style="height:26px;padding:0 11px;border-radius:13px;background:var(--ivory);box-shadow:0 0 0 1px var(--line);font-size:12px;font-weight:700;display:inline-flex;align-items:center">Ask ›</span></div></div>
+ <div class="pad" style="padding-top:262px"><div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:44px;font-weight:800;letter-spacing:-.05em;line-height:.95">${P}</span><span style="font-size:16px;color:var(--ink2);font-weight:600">of ${PT}g protein</span>${S.hide?"":`<span style="margin-left:auto;font-size:13px;color:var(--ink2)"><b style="color:var(--ink)">${num(KT-K)}</b> kcal left</span>`}</div><div style="margin-top:10px">${bar(P,PT)}</div>
+ <div style="margin-top:24px">${stop("8:00 · 20 min","Upper body","Dumbbells at home","strength","habit-strength")}${stop("1:00 pm","Lunch","Protein and fibre","protein","habit-protein")}${stop("Afternoon","A walk","3,180 steps to go","movement","habit-move")}${stop("Evening","Wind down","Lights out by 10:30","sleep","habit-sleep")}</div></div>`)}
+};
+const coachScreen=()=>dev(`<div style="position:absolute;left:0;right:0;top:0;height:270px;overflow:hidden;${fade}">${scene(640,276,226)}</div><div style="position:absolute;left:0;right:0;top:0;height:270px;z-index:5;pointer-events:none">${mascot("hello",178,276,226)}</div>
+ <div style="position:absolute;left:28px;top:70px;z-index:6"><div class="meta">Your coach</div><div style="font-size:33px;font-weight:800;letter-spacing:-.04em;margin-top:5px"><span class="hand" style="font-weight:400;font-size:42px;letter-spacing:0">Miso</span></div></div>
+ <div class="pad" style="padding-top:288px"><div style="background:var(--card);border-radius:22px 22px 22px 6px;padding:16px 18px;font-size:16px;line-height:1.4;max-width:330px">Morning, Anna. You're 23g short on protein today. Greek yoghurt at lunch would get you most of the way.</div>
+ <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px">${["What's for lunch?","Swap today's session","I'm tired today"].map(t=>`<div style="height:38px;padding:0 16px;border-radius:19px;box-shadow:0 0 0 1.5px var(--line) inset;display:flex;align-items:center;font-size:14px;font-weight:600">${t}</div>`).join("")}</div></div>
+ <div style="position:absolute;left:24px;right:24px;bottom:108px;height:52px;border-radius:26px;box-shadow:0 0 0 1.5px var(--line) inset;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 20px;color:var(--ink2);font-size:15px;z-index:20">Ask Miso…<div style="width:38px;height:38px;border-radius:50%;background:var(--ink);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" style="position:relative;inset:auto;width:18px;height:18px;fill:none;stroke:var(--ivory);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div></div>`,"coach");
+const ITEMS=[
+ ["A · Hero and page","The scene fills the top with the mascot on its hill and her line from the coach in the sky. Below it, the calm page: protein, two small figures, the five paper habit icons, and the session."],
+ ["B · Medallion and ring","The coach in a small round window of the scene beside her line, over one thin protein ring. The most restrained, with the art as an accent."],
+ ["C · Full-bleed","The scene runs edge to edge with a big mascot, and the day sits on a paper sheet that slides over it. The most eye-catching."],
+ ["D · Your day","A slim hero strip with the coach, then the day as stops, each with its paper icon: lift, lunch, a walk, wind down. Tap an icon to tick it."]
+];
+const stages=[];
+ITEMS.forEach(([t,d],i)=>{const e=document.createElement("div");e.className="opt";e.style.width="352px";e.innerHTML=`<div class="tag">${t}</div><div class="why">${d}</div><div class="stage"></div>`;document.getElementById("row").appendChild(e);stages.push([i,e.querySelector(".stage")])});
+function render(){stages.forEach(([i,st])=>{st.innerHTML=T[i]==="coach"?coachScreen():V[i]();
+ st.querySelectorAll("[data-h]").forEach(b=>b.onclick=ev=>{ev.stopPropagation();if(S.free)return;S.h[b.dataset.h]=!S.h[b.dataset.h];render()});
+ st.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{T[i]="coach";render()});
+ st.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{const k=b.dataset.tab;if(k==="today"||k==="coach"){T[i]=k;render()}})})}
+render();
+</script>
+</body>
+</html>

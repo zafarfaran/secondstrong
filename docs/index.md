@@ -18,6 +18,11 @@ Load only what the task needs.
 - [Onboarding](design/onboarding.md): the chosen pen-line flow and where its prototypes are
 - [Onboarding questions](design/onboarding-questions.md): the 9 questions, their rules and what was left out
 - [Family circle](design/family-circle.md): paying for and looking out for a parent, with her consent (draft)
+- [Today tab](design/today.md): the full-bleed dashboard with the coach, protein first, habits and the Coach tab (built in the prototype)
+- [Food tab and camera](design/food.md): the day as a timeline and the photo meal log (built in the prototype)
+- [Coach chat](design/coach-chat.md): voice conversation and a coach that writes first (proposal)
+- [Widgets](design/widgets.md): home screen and lock screen widgets (proposal)
+- [Calorie tracker](design/calorie-tracker.md): MacroFactor-style adaptive maintenance, inside the section 7 safety rules (proposal)
 
 ## Decisions
 - [0001 Repo as system of record](decisions/0001-repo-as-system-of-record.md)

@@ -30,6 +30,7 @@ extension OnboardingFlow {
     func arrive(_ index: Int) async throws {
         bucket = .arrive(index)
         camera(to: index)
+        companionTransition(to: OnboardingStep(rawValue: index))
         guard let title = frames[.title(index)] else { return }
         try await ink(planner.underline(title))
         switch OnboardingStep(rawValue: index) {
@@ -57,6 +58,10 @@ extension OnboardingFlow {
         case .training:
             if let level = answers.experience { try await ring(.experience(level), pad: 5) }
             if let place = answers.equipment { try await ring(.equipment(place), pad: 5) }
+        case .activity:
+            if let level = answers.activity { try await ring(.activity(level), pad: 5) }
+        case .goal:
+            if let goal = answers.foodGoal { try await ring(.foodGoal(goal), pad: 5) }
         case .days:
             for day in answers.days { try await ring(.day(day), pad: 3) }
         default: break

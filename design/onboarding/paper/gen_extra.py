@@ -21,6 +21,16 @@ JOBS = {
     "goal-independent": "A small almond paper house with a terracotta paper roof and a round cream paper door, with a tiny apricot paper key.",
     "goal-restart": "A single apricot paper running shoe with cream paper laces and a terracotta paper sole.",
     "goal-comfortable": "A soft almond paper heart wrapped in a sage paper cardigan-shaped blanket, calm and cosy.",
+    # energy screens (SS-0024); copied into SSDesign/Resources/Images and used by PaperArt in Glyphs.swift
+    "activity-sit": "A small cream paper armchair with an apricot paper cushion and a folded sage paper blanket, calm and cosy.",
+    "activity-some": "A little paper broom and a sage paper watering can side by side, cream and almond paper, light and homely.",
+    "activity-most": "A pair of apricot paper walking shoes with cream paper laces, one stepping forward, with a tiny sage paper leaf.",
+    "activity-hard": "A terracotta paper wheelbarrow filled with cream and sage paper parcels, strong and cheerful.",
+    "food-goal-cut": "A single soft sage paper feather resting on a cream paper cloud, light and gentle.",
+    "food-goal-hold": "A small balanced stack of three round almond and cream paper stones, steady and calm.",
+    "food-goal-gain": "A little sage paper seedling with two leaves growing from a terracotta paper pot, hopeful.",
+    "food-view-cal": "A round cream paper plate with a sage paper leaf, an apricot paper egg half and a tiny paper fork, no numbers or text.",
+    "food-view-free": "A cream paper teacup with a swirl of almond paper steam and a small terracotta paper heart, calm, no text.",
 }
 
 

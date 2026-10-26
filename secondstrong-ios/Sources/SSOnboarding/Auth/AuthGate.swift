@@ -16,6 +16,7 @@ struct AuthGate: View {
             case .sent: AuthInboxScreen(flow: flow).transition(.opacity)
             case .expired: AuthExpiredScreen(flow: flow).transition(.opacity)
             case .returning: AuthReturningScreen(flow: flow).transition(.opacity)
+            case .invited: AuthInvitedScreen(flow: flow).transition(.opacity)
             }
         }
         .animation(.easeInOut(duration: 0.3), value: flow.authStage)

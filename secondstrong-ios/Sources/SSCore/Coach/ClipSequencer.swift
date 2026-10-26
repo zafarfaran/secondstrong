@@ -48,11 +48,13 @@ public struct ClipSequencer: Sendable {
         manifest.segments[mood] ?? ClipSegments(enter: 0...0, loop: 0...1, leave: 1...1)
     }
 
-    /// Idle is only breathing, so it gives way at once; any other state finishes its loop first.
+    /// Idle and its variations are only breathing and fidgeting, so they give way at once; any other state finishes
+    /// its loop first. A variation that is asked to go back to idle just finishes: it returns to idle by itself.
     public mutating func request(_ next: CoachMood) -> Action {
         if next == mood, phase != .leave { pending = nil; return .none }
+        if mood.isIdleVariant, next == .idle { pending = nil; return .none }
         pending = next
-        guard mood == .idle, phase == .loop else { return .none }
+        guard mood.isRestful, phase == .loop else { return .none }
         return begin(next)
     }
 
@@ -63,7 +65,7 @@ public struct ClipSequencer: Sendable {
             if time >= s.enter.upperBound - Self.slack { phase = .loop }
         case .loop:
             guard time >= s.loop.upperBound - Self.slack else { return .none }
-            if pending == nil { return .seek(s.loop.lowerBound) }
+            if pending == nil { return mood.isIdleVariant ? begin(.idle) : .seek(s.loop.lowerBound) }
             phase = .leave
         case .leave:
             if time >= s.leave.upperBound - Self.slack { return begin(pending ?? .idle) }
@@ -74,7 +76,7 @@ public struct ClipSequencer: Sendable {
     private mutating func begin(_ next: CoachMood) -> Action {
         mood = next
         pending = nil
-        phase = next == .idle ? .loop : .enter
+        phase = next.isRestful ? .loop : .enter
         return .play(next)
     }
 }

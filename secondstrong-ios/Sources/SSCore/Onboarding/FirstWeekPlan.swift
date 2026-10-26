@@ -14,6 +14,9 @@ public struct FirstWeekPlan: Equatable, Sendable {
     public let coachName: String
     public let intention: String?
     public let calorieFree: Bool
+    public let hidesCalories: Bool
+    /// Maintenance and target, only when a calorie target is possible and she chose to see calories.
+    public let energy: EnergyPlan?
     public let showsGPNote: Bool
     public let trainingLine: String
 
@@ -22,6 +25,8 @@ public struct FirstWeekPlan: Equatable, Sendable {
         trainingDays = answers.days
         coachName = answers.displayName
         calorieFree = answers.calorieFree
+        hidesCalories = answers.calorieFree || answers.foodView == .habitsOnly
+        energy = answers.showsCalories ? EnergyPlan(answers) : nil
         showsGPNote = answers.showsGPNote
         let words = answers.intention.trimmingCharacters(in: .whitespacesAndNewlines)
         intention = words.isEmpty || answers.calorieFree ? nil : words
@@ -41,6 +46,6 @@ public struct FirstWeekPlan: Equatable, Sendable {
 
     public var coachNote: String {
         let first = trainingDays.first?.short ?? "Monday"
-        return "\(first) first. Easy on rough mornings. — \(coachName)"
+        return "\(first) first. Easy does it. — \(coachName)"
     }
 }

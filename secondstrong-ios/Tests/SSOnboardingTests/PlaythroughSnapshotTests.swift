@@ -55,7 +55,7 @@ import SSCore
         flow.next(); await pause(3.5)
         flow.answers.select(birthDate: BirthDate(year: 1972, month: 3, day: 9)); await pause(0.3); shot("08-birth")
         flow.next(); await pause(3.5)
-        flow.pick(safety: .thyroid); await pause(0.3); shot("09-safety")
+        flow.pick(safety: ProcessInfo.processInfo.environment["SS_EATING"] == "1" ? .eatingHistory : .thyroid); await pause(0.3); shot("09-safety")
         flow.next(); await pause(4.0)
         flow.answers.setBody(heightCm: 165, weightKg: 70); await pause(0.3); shot("10-body")
         flow.next(); await pause(3.5)
@@ -63,11 +63,20 @@ import SSCore
         flow.next(); await pause(4.5); shot("12-days")
         for d in [Weekday.mon, .wed, .fri] { flow.toggle(day: d) }
         await pause(0.4); shot("13-days-picked")
+        if flow.answers.isAsked(.activity) {
+            flow.next(); await pause(3.5); flow.pick(activity: .some); await pause(0.3); shot("11a-activity")
+            flow.next(); await pause(3.5); flow.pick(foodGoal: .cut); await pause(0.6); shot("11b-goal"); flow.setWeeklyKilos(0.4); await pause(0.5); shot("11b-goal-max"); flow.setWeeklyKilos(0.25)
+            if ProcessInfo.processInfo.environment["SS_HABITS"] == "1" { flow.pick(foodView: .habitsOnly); await pause(0.5); shot("11b-goal-habits") }
+        }
         flow.next(); await pause(4.5); shot("14a-building-mid")
         await pause(3.5); shot("14b-building-end")
         await pause(9.0); shot("14-plan")
         await pause(3.0); shot("15-plan-ready")
-        flow.finish(); await pause(2.5); shot("16-overview")
+        flow.next(); await pause(4.5); shot("15b-paywall")
+        flow.paywallTab = .helpers; flow.setHelpers(2); await pause(0.6); shot("15c-paywall-helpers")
+        await flow.purchase(); await pause(4.5)
+        flow.inviteName = "Sam"; flow.inviteMessage = "Thinking of you. Go gently."; await pause(0.4); shot("15d-invite")
+        flow.finishOnboarding(); await pause(2.5); shot("16-overview")
 
         #expect(flow.step == OnboardingFlow.lastStep)
         #expect(flow.startReady)

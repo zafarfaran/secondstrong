@@ -12,50 +12,50 @@ struct PlanSection: View {
     var body: some View {
         SectionFrame(index: OnboardingStep.plan.rawValue, flow: flow, scene: .plan) {
             MetaLabel(today)
-            SectionTitle("Your first", emphasis: "week.", index: OnboardingStep.plan.rawValue)
-            protein
+            SectionTitle("Begin your", emphasis: "program.", index: OnboardingStep.plan.rawValue, size: 32)
+            hero.padding(.top, 8)
             Color.clear.frame(height: 14).penAnchor(.bar)
             weekRow
-            Color.clear.frame(height: 8)
-            reminders
-            note
+            if flow.plan.showsGPNote {
+                Text("Check with your GP first.").font(SSFont.display(13, weight: 400)).foregroundStyle(Palette.ink2)
+                    .padding(.top, 6)
+            }
+            note.padding(.top, 8)
             Spacer(minLength: 0)
             startButton
         }
     }
 
-    /// Her own words, then anything the safety screen asked us to say. Kept short to fit above the note.
-    private var reminders: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            if let words = flow.plan.intention {
-                Text("You said: \u{201C}\(words)\u{201D}")
-                    .font(SSFont.hand(19))
-                    .foregroundStyle(Palette.ink2)
-                    .lineLimit(2)
+    /// The calorie ring with protein beside it. Without calories (her choice, or the safety branch) protein stands alone.
+    private var hero: some View {
+        HStack(alignment: .center, spacing: 20) {
+            if let energy = flow.plan.energy { ring(energy) }
+            VStack(alignment: .leading, spacing: 2) {
+                (Text("\(flow.plan.proteinGrams)").font(SSFont.display(flow.plan.energy == nil ? 64 : 50)).tracking(-2.4)
+                    + Text("g").font(SSFont.display(20)).tracking(-1))
+                    .foregroundStyle(Palette.ink)
+                    .penAnchor(.pnum)
+                MetaLabel("protein")
             }
-            if flow.plan.calorieFree {
-                Text("No calorie counting. Just protein and habits.").font(SSFont.display(13, weight: 400)).foregroundStyle(Palette.ink2)
-            }
-            if flow.plan.showsGPNote {
-                Text("Check with your GP before you start.").font(SSFont.display(13, weight: 400)).foregroundStyle(Palette.ink2)
-            }
-            Text(flow.plan.trainingLine).font(SSFont.display(13, weight: 400)).foregroundStyle(Palette.ink2)
+            .opacity(flow.proteinLit ? 1 : 0.18)
+            .accessibilityElement(children: .combine)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .opacity(flow.proteinLit ? 1 : 0.18)
     }
 
-    private var protein: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 12) {
-            (Text("\(flow.plan.proteinGrams)").font(SSFont.display(64)).tracking(-3.2)
-                + Text("g").font(SSFont.display(24)).tracking(-1.2))
-                .foregroundStyle(Palette.ink)
-                .frame(height: 64 * 0.9)
-                .penAnchor(.pnum)
-            MetaLabel("protein a day")
+    private func ring(_ energy: EnergyPlan) -> some View {
+        ZStack {
+            Circle().stroke(Palette.ink.opacity(0.12), lineWidth: 13)
+            Circle().trim(from: 0, to: flow.proteinLit ? 1 : 0)
+                .stroke(Palette.ink, style: StrokeStyle(lineWidth: 13, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+                .animation(.easeOut(duration: 1.1), value: flow.proteinLit)
+            VStack(spacing: 0) {
+                Text(energy.target.formatted()).font(SSFont.display(30)).tracking(-1.2).foregroundStyle(Palette.ink)
+                MetaLabel("kcal a day")
+            }
         }
-        .opacity(flow.proteinLit ? 1 : 0.18)
-        .padding(.top, 6)
+        .frame(width: 148, height: 148)
         .accessibilityElement(children: .combine)
     }
 
@@ -98,8 +98,8 @@ struct PlanSection: View {
     }
 
     private var startButton: some View {
-        Button { flow.finish() } label: {
-            Text("Start my week")
+        Button { flow.next() } label: {
+            Text("Begin")
                 .font(SSFont.display(16.5, weight: 600))
                 .foregroundStyle(flow.startReady ? Palette.ivory : Palette.ink)
                 .frame(maxWidth: .infinity)
@@ -110,5 +110,6 @@ struct PlanSection: View {
         .buttonStyle(PressScaleStyle(pressed: 0.97))
         .disabled(!flow.startReady)
         .penAnchor(.start)
+            .penAnchor(.next(OnboardingStep.plan.rawValue))
     }
 }

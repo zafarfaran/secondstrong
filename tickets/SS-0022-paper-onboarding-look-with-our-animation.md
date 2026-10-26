@@ -4,7 +4,7 @@ title: Paper onboarding look with our animations
 type: feature
 status: review
 created: 2026-10-21
-updated: 2026-10-22
+updated: 2026-10-24
 external:
 ---
 
@@ -29,3 +29,10 @@ Combine the paper art from design/onboarding/paper with the app's own animation:
 - 2026-10-21 Faran Zafar: Docked coach covers the paper badges at top right. Proposal: rest at bottom right above the Continue button, and ride the pen line during the commit stroke. POC with three riding styles: design/onboarding/ride-line.html. Waiting for the owner's pick before building.
 - 2026-10-21 Faran Zafar: Owner declined the riding line. Fix only: the docked coach now rests at the bottom right, just above the Continue button, instead of the top right where the paper badges sit.
 - 2026-10-22 Faran Zafar: Preview app: Light / Dark / System switch in the onboarding window toolbar (opens in light); snapshot tests now render light unless SS_DARK=1.
+- 2026-10-24 Faran Zafar: Coach falls to its corner: new fall clip made with HyperFrames (squat, stretched fall, squash, hop, settle) for all eight coaches, added to design/coach-clips (build.mjs, webm) and the app (HEVC alpha). Screen movement accelerates and lands when the clip's landing starts; the coach drops in again after the building screen. Node 22 needed for HyperFrames.
+- 2026-10-24 Faran Zafar: Page hop on every screen change (coach leaps out of the top and falls back with the fall clip; hidden on loading and paywall, drops back in after). Three idle clips rendered with HyperFrames (look, yawn, bounce; all coaches) played when the person has been quiet for 6 s, then every 7 s, resetting on any touch or answer. Sequencer treats idle variants as restful (interruptible, return to idle). 85 tests pass.
+- 2026-10-24 Faran Zafar: Fixed the coach vanishing for a split second between clips: the new clip was shown the moment it was requested, before its first frame was ready. The player now cues it paused on the spare player and swaps only when it is ready for display, keeping the old clip up meanwhile. Added a test that the visible layer is always ready during hand-overs.
+- 2026-10-24 Faran Zafar: Page change no longer leaps up first; the coach only falls down into its corner (the leap remains only when it leaves for the loading screen and paywall).
+- 2026-10-24 Faran Zafar: Coach stays visible between pages (fall plays in place); leaves for loading/paywall by dropping out of the bottom.
+- 2026-10-24 Faran Zafar: Removed the soft white sheen on the coaches' heads (looked like a glow): mascot board, PNGs, all 160 clips re-rendered and HEVC re-encoded.
+- 2026-10-24 Faran Zafar: The real glow was a blurred 12px outline stroke on the body (meant as an ear contact shadow) that leaked round the whole silhouette. Removed it from the board; PNGs and all 160 clips re-rendered. Only the ground shadow is left.

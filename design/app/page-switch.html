@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page switch concepts</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#7A6E64;--pen:#A85A3C;--page:#E4DCD1;--line:#3b322c1c}
+body.dark{--ink:#F1E9DF;--ivory:#1B1613;--card:#26201C;--ink2:#A89C90;--pen:#E09A78;--page:#0F0C0A;--line:#f1e9df1c}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:26px 24px 70px}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:860px;line-height:1.5;font-size:14.5px}
+.top button{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer;margin-right:6px}
+.row{display:flex;gap:26px;flex-wrap:wrap;margin-top:22px}.opt{width:330px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:92px;margin-bottom:12px}
+.device{zoom:.8;width:426px;height:898px;border-radius:64px;background:linear-gradient(145deg,#3a3a3d,#17171a);padding:12px;position:relative;box-shadow:inset 0 0 0 2px #55555a,inset 0 0 0 5px #0a0a0b}
+.screen{position:relative;width:402px;height:874px;border-radius:52px;overflow:hidden;background:var(--ivory);touch-action:pan-y;user-select:none;cursor:grab}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:126px;height:37px;border-radius:24px;background:#000;z-index:50}
+.pg{position:absolute;inset:0;padding:84px 26px 0;background:var(--ivory);will-change:transform}
+.pg h2{font-size:33px;font-weight:800;letter-spacing:-.04em}.pg .hand{font-family:"Gochi";font-size:26px;color:var(--pen);margin:2px 0 18px}
+.blk{border-radius:22px;background:var(--card);height:92px;margin-bottom:12px;padding:16px 18px;font-weight:700}.blk small{display:block;font-weight:500;color:var(--ink2);margin-top:4px}
+.hero{height:230px;border-radius:26px;margin-bottom:12px;display:flex;align-items:flex-end;padding:18px;font:26px "Gochi";color:#fff}
+.bar{position:absolute;left:34px;right:34px;bottom:30px;height:64px;border-radius:32px;background:var(--ivory);box-shadow:0 0 0 1px var(--line);display:flex;align-items:center;z-index:30}
+.bar .ind{position:absolute;top:8px;height:48px;border-radius:24px;background:var(--card);width:20%;left:0}
+.bar .dot{position:absolute;bottom:7px;width:4px;height:4px;border-radius:50%;background:var(--pen);margin-left:-2px}
+.bar i{flex:1;display:flex;justify-content:center;position:relative;z-index:2;cursor:pointer}
+.bar svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hint{font-size:12px;color:var(--ink2);margin-top:8px;max-width:330px}
+</style></head>
+<body>
+<h1>Switching pages: four ways it could feel</h1>
+<p class="lede">Drag any phone sideways, or tap its bar icons. The bar order is Food, Train, Today, Coach, Progress. All four follow your finger and settle when you let go; they differ in what the pages and the bar do while it moves. No shadows. Fake data. Nothing is built.</p>
+<div class="top"><button id="mode">Night</button><button id="slow">Slow-mo: off</button></div>
+<div class="row" id="row"></div>
+<script>
+const NAMES=["Food","Train","Today","Coach","Progress"];
+const IC=['<path d="M6 3v7a3 3 0 006 0V3M9 3v18M18 3c-2.2 2-3.2 5-3.2 8H18v10"/>','<path d="M3 9.5v5M6.2 7v10M17.8 7v10M21 9.5v5M6.2 12h11.6"/>','<path d="M4 12l8-7 8 7M6 10.5V20h12v-9.5"/>','<path d="M4.5 5.5h15v10.5H10l-5.5 4z"/>','<path d="M4 20v-9M10 20V4M16 20v-6M22 20H2"/>'];
+const SUB=["Meals and protein","This week's lifts","Your day at a glance","Chat with Miso","Your trend"];
+const HERO=["#C98B5E","#8E9E86","#D9A47A","#A58FB5","#7E9FB0"];
+const W=402;
+function pageHTML(i){return `<h2>${NAMES[i]}</h2><div class="hand">${SUB[i]}</div>`+(i===2?`<div class="hero" style="background:${HERO[i]}">Morning, Anna.</div>`:`<div class="hero" style="background:${HERO[i]};height:150px"></div>`)+`<div class="blk">Item one<small>Fake data</small></div><div class="blk">Item two<small>Fake data</small></div>`}
+const CONCEPTS=[
+["A · Slide","Pages sit side by side like a strip and slide as one. Simple and familiar, what is built now.",
+ (x)=>({tx:x*100,ty:0,s:1,o:1,z:0}),false],
+["B · Push with depth","The new page slides over the old one, which drifts back a little, dims and shrinks. Feels layered, like moving between rooms.",
+ (x)=>x>=0?{tx:x*100,ty:0,s:1,o:1,z:2}:{tx:x*28,ty:0,s:1+x*.07,o:1+x*.7,z:1},false],
+["C · Slide, bar follows","Same slide, but the bar shows where you are going: a soft capsule glides along the icons with your finger, and the icons it passes darken. You can see the destination before you let go.",
+ (x)=>({tx:x*100,ty:0,s:1,o:1,z:0}),true],
+["D · Fade and rise","Nothing moves sideways. The old page fades and settles down a little while the new one rises into place. Calm, and good when tabs are far apart.",
+ (x)=>({tx:0,ty:Math.abs(x)*26,s:1-Math.abs(x)*.04,o:Math.max(0,1-Math.abs(x)*1.6),z:x===0?2:0}),true]
+];
+const cards=[];
+CONCEPTS.forEach(([t,d,fn,bar],ci)=>{
+ const e=document.createElement("div");e.className="opt";
+ e.innerHTML=`<div class="tag">${t}</div><div class="why">${d}</div><div class="device"><div class="screen"><div class="island"></div>${NAMES.map((_,i)=>`<div class="pg" data-i="${i}">${pageHTML(i)}</div>`).join("")}<div class="bar"><div class="ind"></div><div class="dot"></div>${IC.map((p,i)=>`<i data-t="${i}"><svg viewBox="0 0 24 24">${p}</svg></i>`).join("")}</div></div></div><div class="hint">Drag the screen sideways, or tap an icon.</div>`;
+ document.getElementById("row").appendChild(e);
+ const st={cur:2,ci,fn,screen:e.querySelector(".screen")};cards.push(st);
+ const pages=[...e.querySelectorAll(".pg")],icons=[...e.querySelectorAll(".bar i")],ind=e.querySelector(".ind"),dot=e.querySelector(".dot");
+ const wideBar=()=>st.screen.querySelector(".bar").clientWidth;
+ function draw(){
+  pages.forEach((pg,i)=>{
+   const x=i-st.cur;
+   if(Math.abs(x)>=1.0001&&ci!==3){pg.style.display="none";return}
+   if(ci===3&&Math.abs(x)>=1){pg.style.display="none";return}
+   const r=fn(x);pg.style.display="";
+   pg.style.transform=`translate(${r.tx}%,${r.ty}px) scale(${r.s})`;pg.style.opacity=r.o;pg.style.zIndex=r.z;
+  });
+  const bw=wideBar(),seg=bw/5;
+  const pos=bar?st.cur:Math.round(st.cur);
+  ind.style.display=bar?"":"none";
+  ind.style.left=(pos*seg)+"px";
+  dot.style.left=(Math.round(st.cur)*seg+seg/2)+"px";
+  icons.forEach((ic,i)=>{const near=Math.max(0,1-Math.abs(i-st.cur));ic.style.color=bar?`color-mix(in srgb,var(--ink) ${Math.round(near*100)}%,var(--ink2))`:(i===Math.round(st.cur)?"var(--ink)":"var(--ink2)")});
+ }
+ st.draw=draw;draw();
+ let down=null,base=2,raf=null;
+ const slow=()=>document.getElementById("slow").dataset.on==="1"?3:1;
+ function glide(to){
+  cancelAnimationFrame(raf);const from=st.cur,dur=300*slow(),t0=performance.now();
+  (function f(n){const k=Math.min(1,(n-t0)/dur),q=1-Math.pow(1-k,3);st.cur=from+(to-from)*q;draw();if(k<1)raf=requestAnimationFrame(f)})(t0);
+ }
+ st.screen.onpointerdown=ev=>{if(ev.target.closest(".bar i"))return;cancelAnimationFrame(raf);down={x:ev.clientX};base=st.cur;st.screen.setPointerCapture(ev.pointerId)};
+ st.screen.onpointermove=ev=>{if(!down)return;const dx=(ev.clientX-down.x)/(parseFloat(getComputedStyle(st.screen.parentElement).zoom)||1);let c=base-dx/W;
+  if(c<0)c=c*.3;if(c>4)c=4+(c-4)*.3;st.cur=c;down.last=ev.clientX;draw()};
+ st.screen.onpointerup=ev=>{if(!down)return;const moved=st.cur-base;let to=Math.round(base);
+  if(Math.abs(moved)>.18)to=base+(moved>0?1:-1);to=Math.max(0,Math.min(4,Math.round(to)));down=null;glide(to)};
+ icons.forEach(ic=>ic.onclick=()=>glide(+ic.dataset.t));
+});
+document.getElementById("mode").onclick=e=>{document.body.classList.toggle("dark");e.target.textContent=document.body.classList.contains("dark")?"Day":"Night";cards.forEach(c=>c.draw())};
+document.getElementById("slow").onclick=e=>{const on=e.target.dataset.on==="1";e.target.dataset.on=on?"0":"1";e.target.textContent="Slow-mo: "+(on?"off":"on")};
+</script></body></html>

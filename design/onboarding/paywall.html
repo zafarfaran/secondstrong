@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paywall: four directions</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#5D534B;--pen:#A85A3C;--page:#E9E2D8;--apricot:#F0C9A8}
+body.dark{--ink:#F1E9DF;--ivory:#211B17;--card:#2A231F;--ink2:#B8AA9D;--pen:#E09A78;--page:#14100E;--apricot:#8a5a3a}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:24px 20px 60px;transition:background .3s}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:760px;line-height:1.45}
+.top button,.replay{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer}
+.row{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px}.opt{width:340px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:84px;margin-bottom:8px}
+.phone{position:relative;width:340px;height:700px;border-radius:32px;overflow:hidden;background:var(--ivory);box-shadow:0 10px 30px #0003;background-image:repeating-linear-gradient(transparent 0 31px,#8882 31px 32px);transition:background .3s}
+.stage{position:absolute;inset:0}
+.meta{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2)}
+.title{font-size:30px;font-weight:800;letter-spacing:-.035em;line-height:1.04}.title em{font-family:"Gochi";font-style:normal;font-weight:400;font-size:36px;letter-spacing:0}
+.head{position:absolute;left:26px;right:26px;top:64px}
+.btn{position:absolute;left:24px;right:24px;bottom:24px;height:52px;border-radius:26px;background:var(--ink);color:var(--ivory);font:600 16px "Bricolage";display:flex;align-items:center;justify-content:center}
+.hand{font-family:"Gochi"}
+.coach{position:absolute;width:120px;height:120px;pointer-events:none}.coach video{width:120px;height:120px;display:block}
+svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.abs{position:absolute}
+</style>
+</head>
+<body>
+<h1>Paywall: four directions</h1>
+<p class="lede">Today's paywall is correct but plain: a title, two price cards, and a lot of empty space. These four keep every rule (hard paywall with no skip, renewal price and date in readable type, Restore purchases, cancel any time) and the real prices, helper stepper and yearly saving, and try to make it feel worth paying for. They are all interactive: tap Just me or Me and a helper, the helper stepper, and Monthly or Yearly. Prices: £9.99 solo, +£3 first helper, +£4 each after, yearly = 8 months. Fake data (Anna, Miso, 85g, Mon Wed Fri). Nothing is built in the app yet.</p>
+<div class="top"><button id="mode">Night</button></div>
+<div class="row" id="row"></div>
+<script>
+const $=(r,s)=>r.querySelector(s);
+document.getElementById("mode").onclick=e=>{document.body.classList.toggle("dark");e.target.textContent=document.body.classList.contains("dark")?"Day":"Night"};
+const IMG="../../secondstrong-ios/Sources/SSDesign/Resources/Images/";
+const gbp=p=>"£"+(p/100).toFixed(2);
+const monthly=h=>h===0?999:999+300+(h-1)*400;
+const yearly=m=>Math.round((m*8)/100+0.07)*100-1;
+const D=[
+ {t:"A · Free trial timeline",d:"Leads with the thing people worry about: when do I get charged? A three-step timeline (today, a reminder on day 5, first payment on day 7) sits above the plans. Builds trust, which is what makes a hard paywall convert."},
+ {t:"B · What you get",d:"The sunrise hills and the coach on top, then a short paper-icon list of what the plan includes, then compact plan choices. Sells the value before it shows a price."},
+ {t:"C · One big yearly card",d:"One large, calm yearly card with the monthly price per month as the hero number, a small 'or pay monthly' under it, and helpers as a simple add-on line. Fewest decisions, most conversion-focused."},
+ {t:"D · Anna's program ticket",d:"A torn-paper ticket summarises her own program (85g protein, Mon Wed Fri lifting, coach Miso), so the price is next to what she is paying for. Personal, and it ties back to everything she told us."}
+];
+function seg(S,i){return `<div style="display:flex;background:var(--card);border-radius:22px;padding:4px"><button data-a="tab" data-v="solo" style="flex:1;height:36px;border-radius:18px;border:0;font:600 14px Bricolage;cursor:pointer;${S.tab==="solo"?"background:var(--ink);color:var(--ivory)":"background:none;color:var(--ink2)"}">Just me</button><button data-a="tab" data-v="helper" style="flex:1;height:36px;border-radius:18px;border:0;font:600 14px Bricolage;cursor:pointer;${S.tab==="helper"?"background:var(--ink);color:var(--ivory)":"background:none;color:var(--ink2)"}">Me and a helper</button></div>`}
+function stepper(S){return S.tab!=="helper"?"":`<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;border:1.5px solid #8884;border-radius:16px;padding:5px 12px"><div><b style="font-size:14px">Helpers</b><div style="font-size:12px;color:var(--ink2);white-space:nowrap">A son or daughter, say</div></div><div style="display:flex;align-items:center;gap:10px"><button data-a="n" data-v="-1" style="width:30px;height:30px;border-radius:50%;border:1.5px solid var(--ink);background:none;color:var(--ink);font:500 18px Bricolage;cursor:pointer">−</button><b style="font-size:18px;min-width:14px;text-align:center">${S.n}</b><button data-a="n" data-v="1" style="width:30px;height:30px;border-radius:50%;border:1.5px solid var(--ink);background:none;color:var(--ink);font:500 18px Bricolage;cursor:pointer">+</button></div></div>`}
+const H=S=>S.tab==="helper"?S.n:0;
+const price=S=>{const m=monthly(H(S));return S.per==="y"?yearly(m):m};
+const terms=S=>`7 days free, then ${gbp(price(S))} a ${S.per==="y"?"year":"month"}${H(S)?` for you and ${H(S)} helper${H(S)>1?"s":""}`:""}. Renews automatically. Cancel any time in Settings.`;
+const foot=`<div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;color:var(--ink2);margin-top:10px"><span>Restore purchases</span><span>Add helpers any time</span></div>`;
+const cta=`<div style="flex:none;height:52px;border-radius:26px;background:var(--ink);color:var(--ivory);font:600 16px Bricolage;display:flex;align-items:center;justify-content:center">Start 7-day free trial</div>`;
+const radio=(S,per,big)=>{const m=monthly(H(S)),y=yearly(m),on=S.per===per;const p=per==="y"?y:m;return `<button data-a="per" data-v="${per}" style="position:relative;display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1.5px solid ${on?"var(--ink)":"#8884"};background:${on?"var(--card)":"none"};color:var(--ink);border-radius:18px;padding:${big?"14px":"11px"} 14px;margin-bottom:8px;cursor:pointer;font-family:Bricolage"><span style="flex:none;width:20px;height:20px;border-radius:50%;border:2px solid ${on?"var(--ink)":"#8886"};display:flex;align-items:center;justify-content:center">${on?'<i style="width:10px;height:10px;border-radius:50%;background:var(--ink)"></i>':""}</span><span style="flex:1"><b style="font-size:15px">${per==="y"?"Yearly":"Monthly"}</b><br><span style="font-size:12.5px;color:var(--ink2)">${per==="y"?gbp(Math.round(y/12))+" a month":"Billed every month"}</span></span><span style="text-align:right"><b style="font-size:19px;letter-spacing:-.03em">${gbp(p)}</b>${per==="y"?`<br><span style="font-size:11px;font-weight:700;color:var(--pen)">SAVE ${Math.round((1-y/(m*12))*100)}%</span>`:""}</span></button>`};
+const VIEW={
+0(S){return `<div style="position:absolute;inset:0;padding:60px 24px 20px;display:flex;flex-direction:column">
+ <div class="meta">Your program is ready</div><div class="title" style="margin-top:6px;font-size:30px">Try it <em>free</em><br>for 7 days.</div>
+ <div style="margin-top:16px;position:relative;padding-left:26px">
+  <div style="position:absolute;left:7px;top:8px;bottom:14px;width:2px;background:var(--pen);opacity:.5"></div>
+  ${[["Today","Full access. Nothing to pay now."],["Day 5","We remind you before it ends."],["Day 7","First payment. Cancel before: pay nothing."]].map(([a,b],i)=>`<div style="position:relative;margin-bottom:7px"><i style="position:absolute;left:-26px;top:3px;width:16px;height:16px;border-radius:50%;background:${i===0?"var(--ink)":"var(--ivory)"};border:2px solid ${i===0?"var(--ink)":"var(--pen)"}"></i><b style="font-size:15px">${a}</b><div style="font-size:13px;color:var(--ink2);line-height:1.3">${b}</div></div>`).join("")}</div>
+ <div style="margin-top:6px">${seg(S)}${stepper(S)}</div>
+ <div style="margin-top:12px">${radio(S,"y")}${radio(S,"m")}</div>
+ <div style="margin-top:auto;font-size:12px;line-height:1.3;text-align:center;margin-bottom:8px">${terms(S)}</div>${cta}${foot}</div>`},
+1(S){return `<img src="${IMG}paper-plan.jpg" style="position:absolute;left:-50px;top:-30px;width:440px;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)">
+ <div class="abs" style="left:230px;top:58px"><video src="../coach-clips/webm/miso/cheer.webm" muted playsinline loop autoplay style="width:100px;height:100px"></video></div>
+ <div style="position:absolute;inset:0;padding:160px 24px 20px;display:flex;flex-direction:column">
+ <div class="title" style="font-size:27px">Everything you need<br>to get <em>stronger.</em></div>
+ <div style="margin-top:14px">${[["goal-protein.png","Your 85g protein plan"],["goal-strong.png","A strength program, 3 days a week"],["goal-energy.png","Miso, your coach, every day"]].map(([i,t])=>`<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><img src="${IMG}${i}" style="width:28px;height:28px"><span style="font-weight:600;font-size:14.5px">${t}</span></div>`).join("")}</div>
+ <div style="margin-top:6px">${seg(S)}${stepper(S)}</div>
+ <div style="display:flex;gap:8px;margin-top:10px">${["m","y"].map(per=>{const m=monthly(H(S)),y=yearly(m),on=S.per===per;return `<button data-a="per" data-v="${per}" style="position:relative;flex:1;text-align:left;border:1.5px solid ${on?"var(--ink)":"#8884"};background:${on?"var(--card)":"none"};color:var(--ink);border-radius:16px;padding:10px 12px;cursor:pointer;font-family:Bricolage">${per==="y"?'<span style="position:absolute;top:-9px;left:10px;background:var(--pen);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px">SAVE '+Math.round((1-y/(m*12))*100)+'%</span>':""}<b style="font-size:13.5px">${per==="y"?"Yearly":"Monthly"}</b><div style="font-size:20px;font-weight:800;letter-spacing:-.03em">${gbp(per==="y"?y:m)}</div><div style="font-size:11.5px;color:var(--ink2)">${per==="y"?gbp(Math.round(y/12))+" a month":"Every month"}</div></button>`}).join("")}</div>
+ <div style="margin-top:auto;font-size:12px;line-height:1.3;text-align:center;margin-bottom:8px">${terms(S)}</div>${cta}${foot}</div>`},
+2(S){const m=monthly(H(S)),y=yearly(m);return `<div style="position:absolute;inset:0;padding:60px 24px 20px;display:flex;flex-direction:column">
+ <div class="abs" style="right:6px;top:34px"><video src="../coach-clips/webm/miso/hello.webm" muted playsinline loop autoplay style="width:110px;height:110px"></video></div>
+ <div class="meta">Your program is ready</div><div class="title" style="margin-top:6px;font-size:32px">Start free.<br><em>Stay strong.</em></div>
+ <div style="margin-top:26px;border:2px solid var(--ink);border-radius:26px;padding:22px 20px;background:var(--card);position:relative;opacity:${S.per==="y"?1:.55};cursor:pointer" data-a="per" data-v="y">
+  <span style="position:absolute;top:-12px;left:20px;background:var(--pen);color:#fff;font-size:11px;font-weight:700;letter-spacing:.05em;padding:3px 10px;border-radius:10px">BEST VALUE · SAVE ${Math.round((1-y/(m*12))*100)}%</span>
+  <div class="meta">Yearly</div>
+  <div style="font-size:50px;font-weight:800;letter-spacing:-.05em;line-height:1;margin-top:4px">${gbp(Math.round(y/12))}<span style="font-size:17px;font-weight:600;letter-spacing:0;color:var(--ink2)"> a month</span></div>
+  <div style="font-size:13.5px;color:var(--ink2);margin-top:6px">Billed ${gbp(y)} a year</div></div>
+ <div data-a="per" data-v="m" style="text-align:center;margin-top:12px;font-size:14px;font-weight:600;color:${S.per==="m"?"var(--ink)":"var(--ink2)"};cursor:pointer">${S.per==="m"?"✓ ":""}Or pay monthly: ${gbp(m)}</div>
+ <div style="margin-top:14px">${seg(S)}${stepper(S)}</div>
+ <div style="margin-top:auto;font-size:12px;line-height:1.3;text-align:center;margin-bottom:8px">${terms(S)}</div>${cta}${foot}</div>`},
+3(S){return `<div style="position:absolute;inset:0;padding:60px 24px 20px;display:flex;flex-direction:column">
+ <div class="meta">Made for you</div><div class="title" style="margin-top:4px;font-size:28px">Anna's <em>program.</em></div>
+ <div style="margin-top:16px;position:relative;background:#EFE6D6;color:#3B322C;border-radius:6px;padding:10px 16px 16px;box-shadow:0 8px 18px #0003;transform:rotate(-1deg);clip-path:polygon(0 0,100% 0,100% 100%,95% 97%,90% 100%,85% 97%,80% 100%,75% 97%,70% 100%,65% 97%,60% 100%,55% 97%,50% 100%,45% 97%,40% 100%,35% 97%,30% 100%,25% 97%,20% 100%,15% 97%,10% 100%,5% 97%,0 100%)">
+  ${[["Protein","85g a day"],["Lifting","Mon · Wed · Fri"],["Your coach","Miso"]].map(([a,b])=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1.5px dashed #3b322c33"><span style="font-size:11px;font-weight:700;letter-spacing:.09em;color:#7b6c60;padding-top:3px">${a.toUpperCase()}</span><b style="font-size:16px">${b}</b></div>`).join("")}
+  </div><div class="abs" style="right:10px;top:36px"><video src="../coach-clips/webm/miso/proud.webm" muted playsinline loop autoplay style="width:96px;height:96px"></video></div>
+ <div style="margin-top:16px">${seg(S)}${stepper(S)}</div>
+ <div style="margin-top:10px">${radio(S,"y")}${radio(S,"m")}</div>
+ <div style="margin-top:auto;font-size:12px;line-height:1.3;text-align:center;margin-bottom:8px">${terms(S)}</div>${cta}${foot}</div>`}
+};
+function build(d,i){
+ const S={tab:new URLSearchParams(location.search).get("helper")?"helper":"solo",n:2,per:"y"};
+ const e=document.createElement("div");e.className="opt";
+ e.innerHTML=`<div class="tag">${d.t}</div><div class="why" style="min-height:96px">${d.d}</div><div class="phone"><div class="stage"></div></div>`;
+ document.getElementById("row").appendChild(e);
+ const st=$(e,".stage"),render=()=>{st.innerHTML=VIEW[i](S);st.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{const a=b.dataset.a,v=b.dataset.v;if(a==="tab")S.tab=v;if(a==="per")S.per=v;if(a==="n")S.n=Math.max(1,Math.min(4,S.n+ +v));render()})};
+ render();
+}
+D.forEach(build);
+</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Food tab with Miso</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#7A6E64;--pen:#A85A3C;--page:#E4DCD1;--line:#3b322c1c;--track:#3b322c14;--paper:#FFFDF8}
+body.dark{--ink:#F1E9DF;--ivory:#1B1613;--card:#26201C;--ink2:#A89C90;--pen:#E09A78;--page:#0F0C0A;--line:#f1e9df1c;--track:#f1e9df18;--paper:#2A231E}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:26px 24px 70px}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:900px;line-height:1.5;font-size:14.5px}
+.top button,.rs{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer;margin-right:6px}
+.row{display:flex;gap:26px;flex-wrap:wrap;margin-top:22px}.opt{width:330px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:112px;margin-bottom:12px}
+.device{zoom:.8;width:426px;height:898px;border-radius:64px;background:linear-gradient(145deg,#3a3a3d,#17171a);padding:12px;position:relative;box-shadow:inset 0 0 0 2px #55555a,inset 0 0 0 5px #0a0a0b}
+.screen{position:relative;width:402px;height:874px;border-radius:52px;overflow:hidden;background:var(--ivory)}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:126px;height:37px;border-radius:24px;background:#000;z-index:60}
+.hand{font-family:"Gochi"}.meta{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.abs{position:absolute}.mv{position:absolute;pointer-events:none}.mv video{width:100%;height:100%;display:block}
+.nocal .kcal{display:none!important}
+.fab{position:absolute;right:22px;bottom:112px;width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--ivory);display:flex;align-items:center;justify-content:center;z-index:45;cursor:pointer;transition:transform .15s}
+.fab:active{transform:scale(.9)}.fab svg,.bar svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.bar{position:absolute;left:34px;right:34px;bottom:30px;height:64px;border-radius:32px;background:var(--ivory);box-shadow:0 0 0 1px var(--line);display:flex;align-items:center;z-index:44}
+.bar .ind{position:absolute;top:8px;height:48px;border-radius:24px;background:var(--card);width:20%;left:0}
+.bar i{flex:1;display:flex;justify-content:center;position:relative;z-index:2;color:var(--ink2)}.bar i.on{color:var(--ink)}.bar svg{width:25px;height:25px}
+.week{display:flex;justify-content:space-between}.day{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--ink2);width:48px}
+.day .w{position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center}.day .n{position:absolute;font-size:14px;font-weight:700;color:var(--ink)}
+.meal{display:flex;align-items:center;gap:13px;padding:10px;border-radius:20px;background:var(--card);margin-bottom:9px;animation:slidein .5s cubic-bezier(.2,.9,.3,1.2) both}
+.meal b{font-size:15.5px;display:block}.meal small{color:var(--ink2);font-size:12.5px}.meal .r{margin-left:auto;text-align:right;font-weight:800;font-size:15px}
+@keyframes slidein{from{opacity:0;transform:translateY(22px) scale(.96)}to{opacity:1;transform:none}}
+.plate{width:56px;height:56px;flex:none}
+.pop{animation:pop .45s cubic-bezier(.2,1.6,.4,1)}@keyframes pop{0%{transform:scale(.6)}100%{transform:scale(1)}}
+.num{font-weight:800;letter-spacing:-.05em;line-height:1}
+.bump{animation:bump .5s ease}@keyframes bump{40%{transform:scale(1.12)}}
+.stampa{animation:stamp .5s cubic-bezier(.2,1.3,.4,1) both}@keyframes stamp{0%{opacity:0;transform:rotate(-8deg) scale(1.9)}100%{opacity:1;transform:rotate(-6deg) scale(1)}}
+.wave{position:absolute;left:0;width:200%;height:30px;bottom:100%;animation:wv 3.2s linear infinite}.wave.b{animation-duration:5s;animation-direction:reverse;opacity:.55}
+@keyframes wv{to{transform:translateX(-50%)}}
+.drop{position:absolute;animation:dropin .7s cubic-bezier(.5,0,.9,.5) both;z-index:30}@keyframes dropin{from{transform:translateY(-120px) scale(1.3);opacity:1}to{transform:translateY(90px) scale(.5);opacity:0}}
+.tape{position:absolute;top:-9px;left:50%;width:54px;height:18px;margin-left:-27px;background:#e9d8a6aa;transform:rotate(-3deg)}
+.menu{position:absolute;right:22px;bottom:178px;background:var(--ivory);border-radius:22px;box-shadow:0 0 0 1px var(--line);padding:6px;z-index:50;width:210px;animation:slidein .25s both}
+.menu div{display:flex;gap:12px;align-items:center;padding:11px 12px;font-weight:600;font-size:15px;border-radius:14px;cursor:pointer}.menu div:hover{background:var(--card)}
+.menu svg{width:20px;height:20px;fill:none;stroke:var(--pen);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+</style></head>
+<body>
+<h1>Food tab, with Miso and some life</h1>
+<p class="lede">The first four were too flat. These four put Miso on the page and move: numbers count up, rings and the jar fill, new meals drop in and Miso reacts. <b>Tap the + on any phone</b> to log the next meal (the fifth one pushes you past your protein goal), <b>Reset</b> under each phone starts again. Miso plays her real clips (thinking, wow, cheer). Calories are optional, so the switch hides them. Food pictures are placeholders; real ones would be scan photos. No glows. Fake data. Nothing is built.</p>
+<div class="top"><button id="mode">Night</button><button id="cal">Calories: on</button></div>
+<div class="row" id="row"></div>
+<script>
+const $=(s,r=document)=>r.querySelector(s);
+const CL="../coach-clips/webm/miso/";
+const PT=85,KT=1540;
+const MEALS=[["Greek yoghurt, berries","8:05",310,24,"berry"],["Coffee, oat milk","8:40",60,2,"cup"],["Eggs on toast, cottage cheese","12:40",480,28,"egg"],["Almonds, handful","15:30",240,10,"nuts"],["Chicken, rice, greens","18:40",560,31,"bowl"]];
+const plate=(k,s=56)=>{const C={berry:["#C98B5E","#8C3F5C"],cup:["#8E9E86","#F2E7D3"],egg:["#D9A47A","#F6D46B"],nuts:["#A58FB5","#B07A4E"],bowl:["#7E9FB0","#7DAA6A"]}[k];
+ return `<svg class="plate" width="${s}" height="${s}" viewBox="0 0 56 56"><rect width="56" height="56" rx="15" fill="${C[0]}"/><circle cx="28" cy="29" r="17" fill="#FFF8EC"/><circle cx="28" cy="29" r="12" fill="none" stroke="#e6d8c0" stroke-width="1.5"/>${k==="berry"?'<circle cx="23" cy="28" r="4" fill="#8C3F5C"/><circle cx="31" cy="26" r="4" fill="#B2476B"/><circle cx="28" cy="33" r="4" fill="#8C3F5C"/>':k==="cup"?'<path d="M19 26h18v6a7 7 0 01-7 7h-4a7 7 0 01-7-7z" fill="#A87752"/>':k==="egg"?'<ellipse cx="28" cy="29" rx="9" ry="7" fill="#fff"/><circle cx="28" cy="29" r="4" fill="#F2B63A"/>':k==="nuts"?'<ellipse cx="23" cy="29" rx="4" ry="6" fill="#B07A4E" transform="rotate(-25 23 29)"/><ellipse cx="31" cy="28" rx="4" ry="6" fill="#9A6A42" transform="rotate(20 31 28)"/><ellipse cx="28" cy="34" rx="4" ry="5.5" fill="#B07A4E"/>':'<path d="M18 30a10 10 0 0020 0z" fill="#F4E3BD"/><circle cx="24" cy="27" r="3.5" fill="#7DAA6A"/><circle cx="32" cy="27" r="3.5" fill="#E58C5A"/>'}</svg>`};
+const IC={food:'<path d="M6 3v7a3 3 0 006 0V3M9 3v18M18 3c-2.2 2-3.2 5-3.2 8H18v10"/>',train:'<path d="M3 9.5v5M6.2 7v10M17.8 7v10M21 9.5v5M6.2 12h11.6"/>',today:'<path d="M4 12l8-7 8 7M6 10.5V20h12v-9.5"/>',coach:'<path d="M4.5 5.5h15v10.5H10l-5.5 4z"/>',progress:'<path d="M4 20v-9M10 20V4M16 20v-6M22 20H2"/>'};
+const bar=`<div class="bar"><div class="ind"></div>${Object.keys(IC).map(k=>`<i class="${k==="food"?"on":""}"><svg viewBox="0 0 24 24">${IC[k]}</svg></i>`).join("")}</div>`;
+const fab=`<div class="fab"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>`;
+const ringSvg=(size,sw,id)=>{const r=(size-sw)/2,c=2*Math.PI*r;return `<svg width="${size}" height="${size}" style="position:absolute;left:0;top:0"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--track)" stroke-width="${sw}"/><circle id="${id}" data-c="${c}" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--pen)" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c}" style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1s cubic-bezier(.3,.8,.3,1)"/></svg>`};
+const DAYS=["M","T","W","T","F","S","S"],PAST=[.94,1,.82,0,0,0,0];
+const weekHTML=(sel)=>`<div class="week">${DAYS.map((d,i)=>`<div class="day" style="${i===3?"color:var(--ink)":""}">${d}<div class="w">${ringSvg(40,3.2,"wk"+i).replace('stroke="var(--pen)"',`stroke="${i===3?"var(--pen)":"var(--ink2)"}"`)}<span class="n">${26+i>31?26+i-31:26+i}</span></div></div>`).join("")}</div>`;
+function setRing(root,id,f){const e=$("#"+id,root);if(!e)return;e.style.strokeDashoffset=(+e.dataset.c)*(1-Math.min(1,f))}
+function count(el,to,fmt=(v)=>Math.round(v)){const from=+el.dataset.v||0;el.dataset.v=to;const t0=performance.now();(function f(n){const k=Math.max(0,Math.min(1,(n-t0)/800)),q=1-Math.pow(1-k,3);el.textContent=fmt(from+(to-from)*q);if(k<1)requestAnimationFrame(f)})(t0)}
+function clip(root,name,after){const v=$("video",root);if(!v)return;v.loop=!after;v.src=CL+name+".webm";v.play().catch(()=>{});v.onended=after?()=>clip(root,after):null}
+const tot=n=>MEALS.slice(0,n).reduce((a,m)=>[a[0]+m[3],a[1]+m[2]],[0,0]);
+const weekFill=root=>{PAST.forEach((p,i)=>setRing(root,"wk"+i,i===3?0:p))};
+const miso=(cls,style,name="idle")=>`<div class="mv ${cls}" style="${style}"><video src="${CL}${name}.webm" muted playsinline loop autoplay></video></div>`;
+const lineFor=(p)=>p>=PT?"You made it. Protein done.":p>=60?`${PT-p}g to go. Dinner will do it.`:`Lift today. ${PT-p}g to go.`;
+const mealLi=(m,i)=>`<div class="meal" style="animation-delay:${i*.08}s">${plate(m[4])}<div><b>${m[0]}</b><small>${m[1]}</small></div><div class="r">${m[3]}g<small class="kcal" style="display:block">${m[2]} kcal</small></div></div>`;
+const STARTN=2;
+const CONCEPTS=[
+{name:"A · Scene on top",why:"The same paper hills as Today, with Miso sitting on them and saying how food is going. A sheet slides up with the week, your protein and what you ate. Log a meal and Miso thinks, then looks pleased; the number counts up.",
+ build(root){root.insertAdjacentHTML("beforeend",`<img src="${document.body.classList.contains("dark")?"art/today-morning-night.jpg":"art/today-morning-day.jpg"}" class="abs" style="left:0;top:0;width:402px;height:400px;object-fit:cover;object-position:50% 100%">
+ <div class="abs meta" style="left:24px;top:60px">Thursday 29 October</div><div class="abs" style="left:24px;top:76px;font-size:34px;font-weight:800;letter-spacing:-.04em">Food</div>
+ ${miso("","right:8px;top:136px;width:210px;height:210px")}
+ <div class="abs hand" id="line" style="left:24px;top:186px;font-size:27px;color:var(--pen);width:170px;line-height:1.1"></div>
+ <div class="abs" style="left:0;right:0;top:350px;bottom:0;background:var(--ivory);border-radius:30px 30px 0 0;padding:18px 22px;overflow:hidden">${weekHTML()}
+  <div style="display:flex;align-items:baseline;gap:8px;margin-top:14px"><span class="num" id="big" style="font-size:54px">0</span><span style="font-weight:700;color:var(--ink2)">of ${PT}g protein</span><span class="kcal" style="margin-left:auto;font-weight:700;font-size:13px;color:var(--ink2)"><span id="kc">0</span> / ${KT} kcal</span></div>
+  <div style="height:8px;border-radius:4px;background:var(--track);margin:10px 0 14px"><div id="bar" style="height:8px;border-radius:4px;background:var(--ink);width:0;transition:width 1s cubic-bezier(.3,.8,.3,1)"></div></div>
+  <div id="list"></div></div>`)},
+ update(root,n,fresh){const[t,k]=tot(n);count($("#big",root),t);count($("#kc",root),k);$("#bar",root).style.width=Math.min(100,t/PT*100)+"%";$("#line",root).textContent=lineFor(t);
+  const list=$("#list",root);list.innerHTML=MEALS.slice(0,n).slice(-3).reverse().map((m,i)=>mealLi(m,fresh?i:0)).join("");
+  if(fresh){clip(root,"thinking");setTimeout(()=>clip(root,t>=PT?"cheer":"wow","idle"),1200);$("#big",root).classList.remove("bump");void $("#big",root).offsetWidth;$("#big",root).classList.add("bump")}}},
+{name:"B · The protein jar",why:"Protein is a paper jar that fills with a gentle wave as you eat. Miso leans over the rim and watches it rise. Log a meal and a little sticker of it drops in. Hit the line and she cheers.",
+ build(root){root.insertAdjacentHTML("beforeend",`<div class="abs" style="left:24px;top:60px"><div class="meta">Thursday 29 October</div><div style="font-size:34px;font-weight:800;letter-spacing:-.04em">Food</div></div>
+ <div class="abs" style="left:22px;right:22px;top:128px">${weekHTML()}</div>
+ <div class="abs" style="left:71px;top:222px;width:190px;height:236px;border:3.5px solid var(--ink);border-radius:26px 26px 70px 70px;overflow:hidden;background:var(--card)"><div id="liq" style="position:absolute;left:0;right:0;bottom:0;height:0;background:color-mix(in srgb,var(--pen) 55%,var(--card));transition:height 1.2s cubic-bezier(.3,.8,.3,1)"><svg class="wave" viewBox="0 0 400 30" preserveAspectRatio="none"><path d="M0 15q50-30 100 0t100 0 100 0 100 0v15H0z" fill="color-mix(in srgb,var(--pen) 55%,var(--card))"/></svg><svg class="wave b" viewBox="0 0 400 30" preserveAspectRatio="none"><path d="M0 15q50-30 100 0t100 0 100 0 100 0v15H0z" fill="color-mix(in srgb,var(--pen) 55%,var(--card))"/></svg></div>
+  <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><span class="num" id="big" style="font-size:58px;color:var(--ink);mix-blend-mode:normal">0</span><span style="font-weight:700;font-size:14px;color:var(--ink)">of ${PT}g protein</span></div><div id="drops"></div></div>
+ <div class="abs" style="left:78px;top:210px;width:176px;height:14px;border-radius:7px;background:var(--ink)"></div>
+ ${miso("","left:212px;top:128px;width:150px;height:150px;z-index:2")}
+ <div class="abs hand" id="line" style="left:22px;top:186px;font-size:21px;color:var(--pen);width:200px;line-height:1.05;white-space:nowrap"></div>
+ <div class="abs" style="left:22px;right:22px;top:482px"><div style="display:flex;gap:9px;overflow:hidden" id="stk"></div><div class="kcal meta" style="margin-top:12px"><span id="kc">0</span> of ${KT} kcal</div></div>`)},
+ update(root,n,fresh){const[t,k]=tot(n);count($("#big",root),t);count($("#kc",root),k);$("#liq",root).style.height=Math.min(100,t/PT*100)+"%";$("#line",root).textContent=lineFor(t);
+  $("#stk",root).innerHTML=MEALS.slice(0,n).map((m,i)=>`<div class="${fresh&&i===n-1?"pop":""}" style="text-align:center;width:62px"><div style="transform:rotate(${(i%2?3:-3)}deg)">${plate(m[4],58)}</div><div style="font-size:11px;font-weight:700;margin-top:3px">${m[3]}g</div></div>`).join("");
+  if(fresh){const m=MEALS[n-1];const d=document.createElement("div");d.className="drop";d.style.left="66px";d.style.top="20px";d.innerHTML=plate(m[4],58);$("#drops",root).appendChild(d);setTimeout(()=>d.remove(),800);clip(root,"thinking");setTimeout(()=>clip(root,t>=PT?"cheer":"wow","idle"),900)}}},
+{name:"C · Sticker calendar",why:"Every day gets a Miso sticker: cheering when you hit your line, calm when close, empty when not yet. Today's sticker fills in as you eat. Tapping Month opens the whole month of stickers, a look back that is fun to fill.",
+ build(root){const face=(p,i)=>p>=.9?"art/miso-goal.png":p>0?"art/miso-morning.png":"";
+  const wk=DAYS.map((d,i)=>`<div class="day" style="${i===3?"color:var(--ink)":""}">${d}<div style="width:44px;height:44px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;transform:rotate(${[-4,3,-2,0,0,0,0][i]}deg);${i===3?"outline:2px dashed var(--pen);outline-offset:2px":""}" ${i===3?'id="today"':""}>${PAST[i]>0?`<img src="${face(PAST[i],i)}" style="width:40px;height:40px;object-fit:contain">`:`<span style="font-size:13px;color:var(--ink2)">${26+i>31?26+i-31:26+i}</span>`}</div></div>`).join("");
+  root.insertAdjacentHTML("beforeend",`<div class="abs" style="left:24px;top:60px;right:24px;display:flex;justify-content:space-between;align-items:flex-end"><div><div class="meta">October</div><div style="font-size:34px;font-weight:800;letter-spacing:-.04em">Food</div></div><div id="mt" style="font-weight:700;font-size:13.5px;border-radius:16px;padding:8px 14px;background:var(--card);cursor:pointer">Month</div></div>
+  <div class="abs" id="wkbox" style="left:22px;right:22px;top:134px"><div class="week">${wk}</div></div>
+  <div class="abs" id="month" style="left:22px;right:22px;top:134px;display:none"><div class="week" style="margin-bottom:8px">${DAYS.map(d=>`<div class="day" style="width:48px">${d}</div>`).join("")}</div><div id="grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px 0;justify-items:center"></div><div class="hand" style="font-size:24px;color:var(--pen);margin-top:10px;text-align:center">20 stickers this month</div></div>
+  <div class="abs" id="main" style="left:22px;right:22px;top:222px"><div style="background:var(--card);border-radius:28px;padding:16px;display:flex;gap:6px;align-items:center;height:210px;position:relative">
+   <div style="position:relative;width:116px;height:116px;flex:none;margin-left:6px">${ringSvg(116,10,"rg")}<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><span class="num" id="big" style="font-size:34px">0</span><span style="font-size:11.5px;font-weight:700;color:var(--ink2)">of ${PT}g</span></div></div>
+   <div style="flex:1;position:relative;height:100%"><div class="hand" id="line" style="position:absolute;left:0;top:12px;width:110px;font-size:21px;color:var(--pen);line-height:1.05"></div>${miso("","right:-6px;bottom:-6px;width:150px;height:150px")}</div></div>
+   <div class="kcal meta" style="margin:12px 4px 0"><span id="kc">0</span> of ${KT} kcal</div><div id="list" style="margin-top:12px"></div></div>`);
+  const g=$("#grid",root);for(let d=1;d<=31;d++){const off=d===1?3:0;if(d===1)for(let i=0;i<3;i++)g.insertAdjacentHTML("beforeend","<span></span>");const f=d<29?(d%7===3?"art/miso-morning.png":"art/miso-goal.png"):"";g.insertAdjacentHTML("beforeend",`<div style="width:42px;height:42px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;transform:rotate(${(d*37%7)-3}deg)">${f?`<img src="${f}" style="width:36px;height:36px;object-fit:contain">`:`<span style="font-size:12px;color:var(--ink2)">${d}</span>`}</div>`)}
+  $("#mt",root).onclick=()=>{const o=$("#month",root).style.display==="none";$("#month",root).style.display=o?"":"none";$("#wkbox",root).style.display=o?"none":"";$("#main",root).style.display=o?"none":"";$("#mt",root).textContent=o?"Week":"Month"}},
+ update(root,n,fresh){const[t,k]=tot(n);count($("#big",root),t);count($("#kc",root),k);setRing(root,"rg",t/PT);$("#line",root).textContent=lineFor(t);
+  $("#list",root).innerHTML=MEALS.slice(0,n).slice(-2).reverse().map((m,i)=>mealLi(m,fresh?i:0)).join("");
+  const td=$("#today",root);if(t>=PT){td.innerHTML='<img src="art/miso-goal.png" style="width:40px;height:40px;object-fit:contain" class="pop">'}
+  if(fresh){clip(root,"thinking");setTimeout(()=>clip(root,t>=PT?"cheer":"wow","idle"),1200)}}},
+{name:"D · Paper diary",why:"A page from a diary: meals are taped-on photos with handwriting, and Miso sits in the corner and stamps your protein total after every meal. Warm, a little playful, and it fits the paper look of the rest of the app.",
+ build(root){root.insertAdjacentHTML("beforeend",`<div class="abs" style="inset:0;background:repeating-linear-gradient(var(--paper) 0 31px,var(--line) 31px 32px);opacity:.9"></div>
+ <div class="abs" style="left:26px;top:58px"><div class="hand" style="font-size:40px;line-height:1">Thursday 29th</div><div class="hand" style="font-size:22px;color:var(--pen)">what I ate</div></div>
+ <div class="abs" style="left:22px;right:22px;top:136px">${weekHTML()}</div>
+ <div class="abs" id="polas" style="left:22px;right:22px;top:222px;display:grid;grid-template-columns:1fr 1fr;gap:20px 18px"></div>
+ ${miso("","left:-12px;bottom:100px;width:180px;height:180px")}
+ <div class="abs" id="stampbox" style="right:24px;bottom:176px"></div>`)},
+ update(root,n,fresh){const[t,k]=tot(n);
+  $("#polas",root).innerHTML=MEALS.slice(0,n).slice(-4).map((m,i)=>`<div style="background:#fffdf8;padding:8px 8px 6px;border-radius:4px;box-shadow:0 0 0 1px var(--line);transform:rotate(${[-2.5,2,1.5,-1.5][i%4]}deg);position:relative;${fresh&&i===Math.min(n,4)-1?"animation:slidein .6s cubic-bezier(.2,1.4,.4,1) both":""}"><div class="tape"></div><div style="display:flex;justify-content:center;background:${({berry:"#C98B5E",cup:"#8E9E86",egg:"#D9A47A",nuts:"#A58FB5",bowl:"#7E9FB0"})[m[4]]};border-radius:2px;padding:10px 0">${plate(m[4],72)}</div><div class="hand" style="font-size:19px;color:#3B322C;margin-top:5px;line-height:1.05">${m[0].split(",")[0]}</div><div class="hand" style="font-size:17px;color:#A85A3C">${m[3]}g<span class="kcal"> · ${m[2]} kcal</span></div></div>`).join("");
+  const sb=$("#stampbox",root);sb.innerHTML=`<div class="stampa" style="border:3px solid var(--pen);border-radius:16px;padding:8px 16px;color:var(--pen);text-align:center;background:#fffdf8aa"><div class="hand" style="font-size:42px;line-height:1">${t}g</div><div class="hand" style="font-size:18px">${t>=PT?"goal! ✓":`of ${PT}g protein`}</div></div>`;
+  if(fresh){clip(root,"thinking");setTimeout(()=>clip(root,t>=PT?"cheer":"wow","idle"),1000)}}}
+];
+CONCEPTS.forEach((c,ci)=>{
+ const e=document.createElement("div");e.className="opt";e.innerHTML=`<div class="tag">${c.name}</div><div class="why">${c.why}</div><div class="device"><div class="screen"><div class="island"></div>${bar}${fab}</div></div><button class="rs" style="margin-top:10px">Reset</button>`;
+ $("#row").appendChild(e);const root=$(".screen",e);
+ let n=STARTN;const insertBefore=$(".bar",root);
+ const holder=document.createElement("div");holder.style.display="contents";root.insertBefore(holder,insertBefore);
+ const shadow=holder;c.build(shadow);
+ const R=root; // updates query within screen
+ const first=()=>{c.update(R,n,false);weekFill(R)};
+ setTimeout(first,300);
+ $(".fab",root).onclick=()=>{n=n>=MEALS.length?STARTN:n+1;c.update(R,n,n>STARTN)};
+ $(".rs",e).onclick=()=>{n=STARTN;c.update(R,n,false);clip(R,"idle")};
+});
+$("#mode").onclick=ev=>{document.body.classList.toggle("dark");ev.target.textContent=document.body.classList.contains("dark")?"Day":"Night"};
+$("#cal").onclick=ev=>{document.body.classList.toggle("nocal");ev.target.textContent="Calories: "+(document.body.classList.contains("nocal")?"off":"on")};
+</script></body></html>

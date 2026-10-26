@@ -47,6 +47,45 @@ public enum PaperArt {
         return BundledImage.load("goal-\(name)")
     }
 
+    /// Paper cut-outs for the energy screens (made by design/onboarding/paper/gen_extra.py).
+    @MainActor public static func activity(_ level: ActivityLevel) -> Image {
+        let name = switch level {
+        case .sit: "activity-sit"
+        case .some: "activity-some"
+        case .most: "activity-most"
+        case .hard: "activity-hard"
+        }
+        return BundledImage.load(name)
+    }
+
+    @MainActor public static func foodGoal(_ goal: FoodGoal) -> Image {
+        let name = switch goal {
+        case .cut: "food-goal-cut"
+        case .hold: "food-goal-hold"
+        case .gain: "food-goal-gain"
+        }
+        return BundledImage.load(name)
+    }
+
+    /// The Today hero: a paper scene with a flat hill for the coach, and where that hill is as fractions of the picture.
+    /// The morning scene serves until late afternoon, the dusk scene after (SS-0025). 1536 x 1024.
+    @MainActor public static func todayScene(_ part: DayPart, dark: Bool) -> (image: Image, plateau: CGPoint) {
+        let time = part.usesMorningScene ? "morning" : "evening"
+        let plateau: CGPoint = switch (part.usesMorningScene, dark) {
+        case (true, false): CGPoint(x: 0.77, y: 0.655)
+        case (true, true): CGPoint(x: 0.725, y: 0.69)
+        case (false, false): CGPoint(x: 0.78, y: 0.745)
+        case (false, true): CGPoint(x: 0.79, y: 0.63)
+        }
+        return (BundledImage.load("today-\(time)-\(dark ? "night" : "day")", ext: "jpg"), plateau)
+    }
+
+    /// The still picture of a coach for a widget (widgets cannot play video): `still-<coach>-<morning|goal|evening>`.
+    @MainActor public static func still(_ name: String) -> Image { BundledImage.load(name) }
+
+    /// A made-up photo of a plate, standing in for the camera feed on a Mac and in tests (SS-0032).
+    @MainActor public static var samplePlate: Image { BundledImage.load("sample-plate", ext: "jpg") }
+
     /// A small paper vignette for a page: consent, birth, safety, body or training.
     @MainActor public static func badge(_ name: String) -> Image { BundledImage.load("scene-\(name)") }
 }

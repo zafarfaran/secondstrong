@@ -12,16 +12,12 @@ struct ConsentSection: View {
         SectionFrame(index: OnboardingStep.consent.rawValue, flow: flow, badge: "consent") {
             MetaLabel("Your privacy")
             SectionTitle("Before we", emphasis: "begin.", index: OnboardingStep.consent.rawValue)
-            Text("A good plan needs a few questions about your health.")
-                .font(SSFont.display(16, weight: 400))
-                .foregroundStyle(Palette.ink2)
-                .fixedSize(horizontal: false, vertical: true)
             VStack(spacing: 0) {
-                point("lock", "Yours alone", "Nobody else sees your answers unless you choose to share them.")
+                point("lock", "Yours alone", "Nobody sees your answers unless you share them.")
                 divider
-                point("wand.and.stars", "Only for your plan", "We use them to build and adjust your plan, and for nothing else.")
+                point("wand.and.stars", "Only for your plan", "Used to build your plan, nothing else.")
                 divider
-                point("hand.raised", "Always your choice", "Change or delete your answers any time in Settings.")
+                point("hand.raised", "Always your choice", "Change or delete them any time.")
             }
             .background(Palette.card, in: RoundedRectangle(cornerRadius: 20))
             .overlay(RoundedRectangle(cornerRadius: 20).stroke(Palette.ink.opacity(0.08), lineWidth: 1))

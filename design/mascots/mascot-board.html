@@ -221,7 +221,7 @@ label.meta{display:block; margin-top:2px}
   </div>
 
   <div class="notes">
-    <div><h4>Construction</h4><p>Every coach is built the same way: a lit base form, a soft form shadow clipped inside it, a key highlight, then features. One light direction across the cast keeps them reading as a family.</p></div>
+    <div><h4>Construction</h4><p>Every coach is built the same way: a lit base form, a soft form shadow clipped inside it, then features (no soft white sheen: it read as a glow, removed 2026-10-24). One light direction across the cast keeps them reading as a family.</p></div>
     <div><h4>Acting</h4><p>Brows carry most of the emotion: lifted for hello and listening, one raised for thinking, knitted for lifting, soft and worried for comfort. Eyes, mouth and pose follow.</p></div>
     <div><h4>Handoff</h4><p>Each layer is a named group (body, shade, eyes, brows, mouth, arms), so the SVGs import into Rive with the rig already separated.</p></div>
   </div>
@@ -375,7 +375,6 @@ function mascot(key){
   /* form shadow + key highlight across the whole silhouette */
   const volume = `<g clip-path="url(#${u}sil)">
       <ellipse cx="${x1+w*.62}" cy="${y2+4}" rx="${w*.6}" ry="${h*.32}" fill="${T.b[3]}" opacity=".38" filter="url(#${u}b10)"/>
-      <ellipse cx="${x1+w*.3}" cy="${y1+h*.24}" rx="${w*.24}" ry="${h*.16}" fill="#FFFFFF" opacity=".42" filter="url(#${u}b10)"/>
     </g>
     <ellipse cx="${x1+w*.27}" cy="${y1+h*.17}" rx="${Math.max(5,w*.06)}" ry="${Math.max(3,h*.035)}" transform="rotate(-28 ${x1+w*.27} ${y1+h*.17})" fill="#FFFFFF" opacity=".55" filter="url(#${u}b1)"/>`;
   const es = c.eyeScale || 1;
@@ -418,7 +417,7 @@ function mascot(key){
     <ellipse class="shadow" cx="100" cy="181" rx="50" ry="6.5" fill="var(--shadow)" filter="url(#${u}b3)"/>
     <g class="rig"><g class="pose">
       <g data-layer="arms">${arm("l",c.arms[0])}${arm("r",c.arms[1])}</g>
-      <g data-layer="back">${c.back.map(shape).join("")}${c.back.length ? `<g clip-path="url(#${u}backclip)"><path d="${c.body}" fill="none" stroke="${T.b[3]}" stroke-width="12" opacity=".26" filter="url(#${u}b3)"/></g>` : ""}</g>
+      <g data-layer="back">${c.back.map(shape).join("")}</g>
       <g data-layer="body"><path d="${c.body}" fill="${fill("b")}"/>${(c.inner||[]).map(p=>`<g clip-path="url(#${u}clip)">${shape(p)}</g>`).join("")}${volume}${dots}</g>
       ${sway}
       <g data-layer="details">${c.front.map(p => (p.o || p.soft ? "" : `<path d="${p.d}" fill="${T.b[3]}" opacity=".18" transform="translate(0 2.5)" filter="url(#${u}b3)"/>`) + shape(p)).join("")}${lines}</g>

@@ -29,9 +29,9 @@ struct SafetySection: View {
     }
 
     private var reassurance: String {
-        if flow.answers.calorieFree { return "Thank you. We'll keep numbers out of it." }
-        if flow.answers.safety.contains(.pregnancy) { return "Thank you. We'll start gently." }
-        if flow.answers.showsGPNote { return "A quick word with your GP first is a good idea." }
+        if flow.answers.calorieFree { return "Thank you. No numbers." }
+        if flow.answers.safety.contains(.pregnancy) { return "Thank you. We'll go gently." }
+        if flow.answers.showsGPNote { return "Check with your GP first." }
         return " "
     }
 }

@@ -1,7 +1,7 @@
 import Foundation
 
 /// The eight coaches a member can pick. Source: design/mascots/README.md.
-public enum Coach: String, CaseIterable, Sendable, Identifiable {
+public enum Coach: String, CaseIterable, Sendable, Identifiable, Codable {
     case pebble, fern, wren, bramble, luna, otto, tilly, miso
 
     public var id: String { rawValue }

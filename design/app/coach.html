@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coach: chat, voice and proactive messages</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#7A6E64;--pen:#A85A3C;--page:#E4DCD1;--line:#3b322c1c;--apricot:#F0C9A8}
+body.dark{--ink:#F1E9DF;--ivory:#1B1613;--card:#26201C;--ink2:#A89C90;--pen:#E09A78;--page:#0F0C0A;--line:#f1e9df1c;--apricot:#8a5a3a}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:26px 24px 70px;transition:background .3s}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:820px;line-height:1.5;font-size:14.5px}
+.top button{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer;margin-right:6px}
+.row{display:flex;gap:30px;flex-wrap:wrap;margin-top:22px}.opt{width:340px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:74px;margin-bottom:12px}
+.device{zoom:.82;width:426px;height:898px;border-radius:64px;background:linear-gradient(145deg,#3a3a3d,#17171a);padding:12px;box-shadow:0 30px 60px -18px #000a,inset 0 0 0 2px #55555a,inset 0 0 0 5px #0a0a0b;position:relative}
+.device:before,.device:after{content:"";position:absolute;width:4px;background:#2a2a2d;border-radius:2px}
+.device:before{left:-3px;top:150px;height:64px;box-shadow:0 90px 0 #2a2a2d}.device:after{right:-3px;top:210px;height:100px}
+.screen{position:relative;width:402px;height:874px;border-radius:52px;overflow:hidden;background:var(--ivory);color:var(--ink);transition:background .3s}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:126px;height:37px;border-radius:24px;background:#000;z-index:50}
+.sb{position:absolute;top:0;left:0;right:0;height:54px;display:flex;justify-content:space-between;align-items:center;padding:6px 34px 0 44px;z-index:40;font-weight:700;font-size:16.5px;color:var(--ink)}
+.sb svg{position:relative;inset:auto;fill:currentColor}
+.home{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:139px;height:5px;border-radius:3px;background:var(--ink);opacity:.9;z-index:45}
+.meta{font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.hand{font-family:"Gochi"}
+.pad{position:absolute;inset:0;padding:78px 28px 0}
+.hair{height:1px;background:var(--line);margin:0}
+button{font-family:Bricolage}
+.tabbar{position:absolute;left:34px;right:34px;bottom:30px;height:64px;border-radius:32px;background:var(--ivory);box-shadow:0 8px 28px #3b322c26,0 0 0 1px var(--line);display:flex;align-items:center;justify-content:space-around;z-index:30}
+.tabbar svg{position:relative;inset:auto;width:25px;height:25px;fill:none;stroke:var(--ink2);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tabbar .on svg{stroke:var(--ink);stroke-width:2.2}.tabbar .on{position:relative}.tabbar .on:after{content:"";position:absolute;left:50%;bottom:-9px;width:4px;height:4px;border-radius:50%;background:var(--pen);transform:translateX(-50%)}
+.pro{position:absolute;right:0;top:0;background:var(--pen);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:8px;letter-spacing:.05em}
+</style>
+</head>
+<body>
+<h1>Coach: chat, voice, and a coach that messages first</h1>
+<p class="lede">Four screens for the Coach tab, in the spirit of a character you chat and talk with that reaches out to you (the way Muse does): <b>A</b> the chat, where Miso has already written to her; <b>B</b> and <b>C</b> two takes on a voice conversation, tap the screen to cycle listening, thinking and speaking; <b>D</b> how Miso reaches out, with a notification and the controls. All at true iPhone size, in the paper look, fake data. Night shows dark mode. Nothing is built, and nothing here is wired to a real voice or a real coach.</p>
+<div class="top"><button id="mode">Night</button></div>
+<div class="row" id="row"></div>
+<script>
+const $=(r,s)=>r.querySelector(s);
+document.getElementById("mode").onclick=e=>{document.body.classList.toggle("dark");e.target.textContent=document.body.classList.contains("dark")?"Day":"Night";render()};
+const CL="../coach-clips/webm/miso/";
+const ic={today:'<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.9 1.9M16.8 16.8l1.9 1.9M18.7 5.3l-1.9 1.9M7.2 16.8l-1.9 1.9"/>',food:'<path d="M6 3v7a3 3 0 006 0V3M9 3v18M18 3c-2.2 2-3.2 5-3.2 8H18v10"/>',train:'<path d="M3 9.5v5M6.2 7v10M17.8 7v10M21 9.5v5M6.2 12h11.6"/>',coach:'<path d="M4.5 5.5h15v10.5H10l-5.5 4z"/>',progress:'<path d="M4 20v-9M10 20V4M16 20v-6M22 20H2"/>'};
+const status=`<div class="sb"><span>9:41</span><span style="display:flex;gap:7px;align-items:center"><svg width="19" height="12" viewBox="0 0 19 12"><rect x="0" y="7.5" width="3.2" height="4.5" rx=".7"/><rect x="4.8" y="5" width="3.2" height="7" rx=".7"/><rect x="9.6" y="2.5" width="3.2" height="9.5" rx=".7"/><rect x="14.4" y="0" width="3.2" height="12" rx=".7"/></svg><svg width="17" height="12" viewBox="0 0 17 12"><path d="M8.5 3.2c2.3 0 4.4.9 6 2.4l1-1.1A10.4 10.4 0 008.5 1.7 10.4 10.4 0 001.5 4.5l1 1.1a8.6 8.6 0 016-2.4zM8.5 6.8c1.3 0 2.5.5 3.4 1.3l1-1.1a6.2 6.2 0 00-8.8 0l1 1.1c.9-.8 2.1-1.3 3.4-1.3zM8.5 10.3l1.8-1.9a2.6 2.6 0 00-3.6 0z"/></svg><svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2"/><path d="M25 4.5v4c.8-.3 1.5-1.1 1.5-2s-.7-1.7-1.5-2z" opacity=".5"/></svg></span></div>`;
+
+const tabs=(a,hide)=>hide?"":`<div class="tabbar">${["today","food","train","coach","progress"].map(k=>`<div class="${k===a?"on":""}" style="padding:10px 12px"><svg viewBox="0 0 24 24">${ic[k]}</svg></div>`).join("")}</div>`;
+const dev=(inner,a,hide,dark)=>`<div class="device"><div class="screen" style="${dark?"background:#1B1613;color:#F1E9DF;--ink:#F1E9DF;--ink2:#A89C90;--ivory:#1B1613;--card:#26201C;--line:#f1e9df1c;--pen:#E09A78":""}"><div class="island"></div>${status}${inner}${tabs(a,hide)}<div class="home"></div></div></div>`;
+const isDark=()=>document.body.classList.contains("dark");
+const sceneSrc=()=>isDark()?"art/today-morning-night.jpg":"art/today-morning-day.jpg";
+const mic='<svg viewBox="0 0 24 24" style="position:relative;inset:auto;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/></svg>';
+const wave='<svg viewBox="0 0 24 24" style="position:relative;inset:auto;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2"/></svg>';
+const avatar=(sz)=>`<div style="position:relative;width:${sz}px;height:${sz}px;border-radius:50%;overflow:hidden;flex:none;box-shadow:0 0 0 1px var(--line);background:var(--card)"><img src="${sceneSrc()}" style="position:absolute;left:${-sz*1.2}px;top:${-sz*.35}px;width:${sz*3.2}px"><video src="${CL}idle.webm" muted playsinline loop autoplay style="position:absolute;left:${sz*.02}px;top:${sz*.02}px;width:${sz*.96}px;height:${sz*.96}px"></video></div>`;
+const bub=(txt,me)=>`<div style="display:flex;justify-content:${me?"flex-end":"flex-start"};margin-bottom:8px"><div style="max-width:300px;padding:12px 16px;font-size:15.5px;line-height:1.38;border-radius:${me?"22px 22px 6px 22px":"22px 22px 22px 6px"};background:${me?"var(--ink)":"var(--card)"};color:${me?"var(--ivory)":"var(--ink)"}">${txt}</div></div>`;
+const time=t=>`<div style="font-size:11px;color:var(--ink2);margin:10px 4px 6px;font-weight:600">${t}</div>`;
+const chip=t=>`<span style="display:inline-flex;align-items:center;height:36px;padding:0 15px;border-radius:18px;box-shadow:0 0 0 1.5px var(--line) inset;font-size:14px;font-weight:600;margin-right:8px">${t}</span>`;
+const S={state:0,voiceA:false,t:{morning:true,midday:true,after:true,evening:false}};
+const STATES=[["Listening…","listening","Go on, I'm listening."],["Thinking…","thinking","…"],["Miso","suggest","A yoghurt bowl with berries and a handful of nuts would add about 20 grams."]];
+const bars=(on)=>`<div style="display:flex;align-items:center;justify-content:center;gap:5px;height:44px">${Array.from({length:19},(_,i)=>`<i style="width:4px;border-radius:2px;background:var(--ink);opacity:.8;height:${on?8+Math.abs(Math.sin(i*1.3))*30:6}px;transition:height .3s;animation:${on?`bar ${0.6+(i%5)*.12}s ease-in-out ${i*.04}s infinite alternate`:"none"}"></i>`).join("")}</div>`;
+const css=document.createElement("style");css.textContent="@keyframes bar{from{transform:scaleY(.35)}to{transform:scaleY(1)}}@keyframes pulse{0%{transform:scale(.8);opacity:.5}100%{transform:scale(1.45);opacity:0}}";document.head.appendChild(css);
+const ctrl=(a,b,c,dark)=>`<div style="position:absolute;left:0;right:0;bottom:48px;display:flex;justify-content:center;gap:26px;z-index:20">${[a,b,c].map(([lab,svg,bg,fg])=>`<div style="text-align:center"><div style="width:64px;height:64px;border-radius:50%;background:${bg};color:${fg};display:flex;align-items:center;justify-content:center;box-shadow:${bg==="transparent"?"0 0 0 1.5px var(--line) inset":"none"}">${svg}</div><div style="font-size:11.5px;font-weight:600;margin-top:7px;color:var(--ink2)">${lab}</div></div>`).join("")}</div>`;
+const X='<svg viewBox="0 0 24 24" style="position:relative;inset:auto;width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+const KB='<svg viewBox="0 0 24 24" style="position:relative;inset:auto;width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></svg>';
+const V={
+0(){ if(S.voiceA)return V[1](true);
+ return dev(`<div style="position:absolute;inset:0;padding:60px 24px 0">
+ <div style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:12px">${avatar(56)}<div><div class="hand" style="font-size:30px;line-height:1">Miso</div><div style="font-size:12.5px;color:var(--ink2);margin-top:2px"><i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--pen);margin-right:5px"></i>Your coach</div></div></div>
+ <div data-voice="1" style="width:46px;height:46px;border-radius:50%;box-shadow:0 0 0 1.5px var(--line) inset;display:flex;align-items:center;justify-content:center;cursor:pointer" title="Talk">${wave}</div></div>
+ <div style="margin-top:18px;height:660px;overflow:hidden;position:relative"><div class="meta" style="text-align:center;margin-bottom:4px">Today</div>
+  <div style="text-align:center;font-size:12px;color:var(--ink2);margin-bottom:10px">Miso started this chat</div>
+  ${time("8:02 am")}${bub("Morning, Anna. Lift at eight today. I'll check in after.")}
+  ${time("12:40 pm")}${bub("You're 23g short on protein today. Eggs or yoghurt at lunch would close most of it. Want ideas?")}
+  <div style="margin:2px 0 14px">${chip("Lunch ideas")}${chip("Not now")}</div>
+  ${bub("Lunch ideas",true)}${bub("Try eggs on toast with cottage cheese. About 28g, ten minutes.")}
+  <div style="margin:4px 0 0;border-radius:20px;background:var(--card);padding:13px 16px;display:flex;align-items:center;justify-content:space-between"><div><div class="meta" style="font-size:10.5px">Today · 20 min</div><div style="font-size:19px;font-weight:800;letter-spacing:-.03em">Upper body</div></div><div style="height:40px;padding:0 22px;border-radius:20px;background:var(--ink);color:var(--ivory);font:700 14px Bricolage;display:flex;align-items:center">Start</div></div></div>
+ <div style="position:absolute;left:20px;right:20px;bottom:106px;display:flex;align-items:center;gap:8px;height:54px;border-radius:27px;background:var(--ivory);box-shadow:0 0 0 1.5px var(--line) inset,0 6px 20px #3b322c14;padding:0 8px 0 20px;z-index:20"><span style="flex:1;color:var(--ink2);font-size:15px">Message Miso…</span><div style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink2)">${mic}</div><div data-voice="1" style="width:40px;height:40px;border-radius:50%;background:var(--ink);color:var(--ivory);display:flex;align-items:center;justify-content:center;cursor:pointer">${wave}</div></div></div>`,"coach")},
+1(fromA){const st=STATES[S.state];
+ return dev(`<div style="position:absolute;inset:0;overflow:hidden"><img src="${sceneSrc()}" style="position:absolute;left:-520px;top:30px;width:1000px"><div style="position:absolute;left:0;right:0;top:0;height:260px;background:linear-gradient(var(--ivory),transparent)"></div><div style="position:absolute;left:0;right:0;bottom:0;height:400px;background:linear-gradient(transparent,var(--ivory) 52%)"></div>
+ <div data-cycle="1" style="position:absolute;inset:0;cursor:pointer;z-index:5"></div>
+ <video src="${CL}${st[1]}.webm" muted playsinline loop autoplay style="position:absolute;left:100px;top:191px;width:300px;height:300px;pointer-events:none;z-index:4" key="${S.state}"></video>
+ <div style="position:absolute;left:0;right:0;top:66px;text-align:center;z-index:6"><div class="hand" style="font-size:34px">Miso</div><div style="font-size:13px;color:var(--ink2);font-weight:600;margin-top:2px">${st[0]==="Miso"?"Speaking":st[0]}</div></div>
+ <div style="position:absolute;left:0;right:0;top:560px;z-index:6;padding:0 36px;text-align:center"><div style="height:46px">${S.state===0?bars(true):S.state===1?bars(false):""}</div><div class="hand" style="font-size:25px;color:var(--pen);line-height:1.15;margin-top:8px;min-height:60px">${st[2]}</div></div>
+ ${ctrl(["Mute",'<svg viewBox="0 0 24 24" style="position:relative;inset:auto;width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21M4 4l16 16"/></svg>',"transparent","var(--ink)"],["End",X,"var(--pen)","#fff"],["Type",KB,"transparent","var(--ink)"])}</div>`,"coach",true)},
+2(){const st=STATES[S.state];
+ return dev(`<div style="position:absolute;inset:0;overflow:hidden;background:radial-gradient(circle at 50% 44%,#4a2f22 0%,#241a15 45%,#120e0c 100%)"><div data-cycle="1" style="position:absolute;inset:0;cursor:pointer;z-index:5"></div>
+ ${[0,1,2].map(i=>`<i style="position:absolute;left:51px;top:230px;width:300px;height:300px;border-radius:50%;border:1.5px solid #F0C9A8;opacity:.5;animation:${S.state===0?"pulse 2.6s ease-out "+i*.85+"s infinite":"none"};transform:scale(.9)"></i>`).join("")}
+ <div style="position:absolute;left:76px;top:255px;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,#F0C9A855,#F0C9A800 70%);filter:blur(2px)"></div>
+ <video src="${CL}${st[1]}.webm" muted playsinline loop autoplay style="position:absolute;left:61px;top:240px;width:280px;height:280px;pointer-events:none;z-index:4"></video>
+ <div style="position:absolute;left:0;right:0;top:70px;text-align:center;color:#F1E9DF;z-index:6"><div class="hand" style="font-size:34px">Miso</div><div style="font-size:13px;opacity:.65;font-weight:600;margin-top:2px">${st[0]==="Miso"?"Speaking":st[0]}</div></div>
+ <div style="position:absolute;left:0;right:0;top:560px;padding:0 34px;text-align:center;z-index:6;color:#F1E9DF"><div style="font-size:21px;line-height:1.35;font-weight:500;min-height:90px;opacity:${S.state===1?.4:1}">${S.state===0?"“Go on, I’m listening.”":S.state===1?"…":"A yoghurt bowl with berries and a handful of nuts would add about 20 grams."}</div></div>
+ <div style="position:absolute;left:0;right:0;bottom:48px;display:flex;justify-content:center;gap:22px;z-index:20">${[["Mute","#ffffff22","#F1E9DF",'<svg viewBox="0 0 24 24" style="position:relative;inset:auto;width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21M4 4l16 16"/></svg>'],["End","#E09A78","#1B1613",X],["Type","#ffffff22","#F1E9DF",KB]].map(([l,bg,fg,svg])=>`<div style="text-align:center"><div style="width:64px;height:64px;border-radius:50%;background:${bg};color:${fg};display:flex;align-items:center;justify-content:center">${svg}</div><div style="font-size:11.5px;font-weight:600;margin-top:7px;color:#F1E9DF;opacity:.6">${l}</div></div>`).join("")}</div></div>`,"coach",true,true)},
+3(){const row=(k,t,d)=>`<div data-t="${k}" style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);cursor:pointer"><div><div style="font-size:16px;font-weight:700">${t}</div><div style="font-size:12.5px;color:var(--ink2);margin-top:1px">${d}</div></div><div style="width:50px;height:30px;border-radius:15px;background:${S.t[k]?"var(--ink)":"var(--line)"};position:relative;transition:all .2s;flex:none"><i style="position:absolute;top:3px;left:${S.t[k]?23:3}px;width:24px;height:24px;border-radius:50%;background:var(--ivory);transition:all .2s"></i></div></div>`;
+ return dev(`<div style="position:absolute;inset:0;padding:60px 24px 0">
+ <div class="meta">Check-ins</div><div style="font-size:30px;font-weight:800;letter-spacing:-.04em;line-height:1.05;margin-top:4px">When Miso <span class="hand" style="font-weight:400;font-size:37px;letter-spacing:0">writes first.</span></div>
+ <div style="margin-top:18px;border-radius:22px;background:var(--card);padding:13px 15px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 8px 24px #3b322c18">${avatar(46)}<div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink2);font-weight:600"><span>MISO</span><span>now</span></div><div style="font-size:15px;line-height:1.3;margin-top:2px"><b>23g protein to go.</b> Want lunch ideas?</div></div></div>
+ <div style="margin-top:16px">${row("morning","Morning plan","One note when your day starts")}${row("midday","Protein check","Only if you're a way off, around lunch")}${row("after","After your session","A few words once you finish")}${row("evening","Wind down","A gentle nudge towards sleep")}</div>
+ <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)"><div style="font-size:16px;font-weight:700">Quiet hours</div><div style="font-size:15px;color:var(--ink2);font-weight:600">9 pm to 7 am</div></div>
+ <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 0"><div style="font-size:16px;font-weight:700">At most</div><div style="display:flex;gap:6px">${["1","2","3"].map((n,i)=>`<span style="width:38px;height:34px;border-radius:17px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;${i===1?"background:var(--ink);color:var(--ivory)":"box-shadow:0 0 0 1.5px var(--line) inset"}">${n}</span>`).join("")}<span style="font-size:13px;color:var(--ink2);align-self:center;margin-left:4px">a day</span></div></div>
+ <div class="hand" style="font-size:20px;color:var(--pen);line-height:1.15;margin-top:8px">Miso never nags about weight or calories.</div></div>`,"coach")}
+};
+const ITEMS=[
+ ["A · Chat","Miso has already written to her, with times, quick replies and a session card, and the thread says who started it. A waveform button at the top and in the message bar starts a voice conversation (tap it)."],
+ ["B · Voice, paper scene","Voice on the paper scene: the big mascot listens, thinks and speaks with its own clips, handwritten words appear under it, and three round controls. Tap the screen to cycle the states."],
+ ["C · Voice, ambient","The same conversation as a dark, immersive screen: a warm glow and rings that pulse while she speaks, captions in plain type. Tap to cycle."],
+ ["D · Reaching out","What a message from Miso looks like when it arrives, and the quiet controls behind it: which check-ins, quiet hours and a daily cap. Tap the switches."]
+];
+const stages=[];
+ITEMS.forEach(([t,d],i)=>{const e=document.createElement("div");e.className="opt";e.style.width="352px";e.innerHTML=`<div class="tag">${t}</div><div class="why">${d}</div><div class="stage"></div>`;document.getElementById("row").appendChild(e);stages.push([i,e.querySelector(".stage")])});
+function render(){stages.forEach(([i,st])=>{st.innerHTML=V[i]();
+ st.querySelectorAll("[data-voice]").forEach(b=>b.onclick=()=>{S.voiceA=true;render()});
+ st.querySelectorAll("[data-cycle]").forEach(b=>b.onclick=()=>{S.state=(S.state+1)%3;S.voiceA=S.voiceA;render()});
+ st.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{S.t[b.dataset.t]=!S.t[b.dataset.t];render()});
+ const x=st.querySelector("[data-end]");})}
+render();
+setTimeout(()=>{},0);
+</script>
+</body>
+</html>

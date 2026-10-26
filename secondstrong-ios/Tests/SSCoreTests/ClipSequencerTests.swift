@@ -7,7 +7,8 @@ struct ClipSequencerTests {
     {"states":{
       "idle":{"in":[0,0],"loop":[0,4],"out":[4,4]},
       "hello":{"in":[0,0.5],"loop":[0.5,1.7],"out":[1.7,2.2]},
-      "cheer":{"in":[0,0.4],"loop":[0.4,1.6],"out":[1.6,2]}}}
+      "cheer":{"in":[0,0.4],"loop":[0.4,1.6],"out":[1.6,2]},
+      "idleLook":{"in":[0,0],"loop":[0,3.2],"out":[3.2,3.2]}}}
     """
 
     private func make() throws -> ClipSequencer {
@@ -17,7 +18,7 @@ struct ClipSequencerTests {
     @Test func parsesTheManifest() throws {
         let manifest = try ClipManifest(json: Data(Self.json.utf8))
         #expect(manifest.segments[.hello]?.loop == 0.5...1.7)
-        #expect(manifest.segments.count == 3)
+        #expect(manifest.segments.count == 4)
     }
 
     @Test func idleGivesWayAtOnce() throws {
@@ -80,5 +81,36 @@ struct ClipSequencerTests {
         _ = s.request(.cheer)
         _ = s.request(.hello)
         #expect(s.tick(at: 1.7) == .seek(0.5))
+    }
+
+    @Test func anIdleVariationPlaysOnceAndReturnsToIdle() throws {
+        var s = try make()
+        #expect(s.request(.idleLook) == .play(.idleLook))
+        #expect(s.phase == .loop)
+        #expect(s.tick(at: 1.0) == .none)
+        #expect(s.tick(at: 3.2) == .play(.idle))
+        #expect(s.mood == .idle)
+    }
+
+    @Test func askingForIdleDuringAVariationLetsItFinish() throws {
+        var s = try make()
+        _ = s.request(.idleLook)
+        #expect(s.request(.idle) == .none)
+        #expect(s.mood == .idleLook)
+        #expect(s.tick(at: 3.2) == .play(.idle))
+    }
+
+    @Test func anotherStateInterruptsAVariationAtOnce() throws {
+        var s = try make()
+        _ = s.request(.idleLook)
+        #expect(s.request(.hello) == .play(.hello))
+        #expect(s.mood == .hello)
+    }
+
+    @Test func variationsAreRestfulAndTimed() {
+        #expect(CoachMood.idle.isRestful)
+        #expect(CoachMood.idleYawn.isRestful)
+        #expect(!CoachMood.hello.isRestful)
+        #expect(CoachMood.idleVariants.allSatisfy { $0.idleVariantSeconds > 0 })
     }
 }

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Welcome screen: four directions</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#5D534B;--pen:#A85A3C;--page:#E9E2D8;--apricot:#F0C9A8}
+body.dark{--ink:#F1E9DF;--ivory:#211B17;--card:#2A231F;--ink2:#B8AA9D;--pen:#E09A78;--page:#14100E;--apricot:#8a5a3a}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:24px 20px 60px;transition:background .3s}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:760px;line-height:1.45}
+.top button,.replay{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer}
+.row{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px}.opt{width:340px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:84px;margin-bottom:8px}
+.phone{position:relative;width:340px;height:620px;border-radius:32px;overflow:hidden;background:var(--ivory);box-shadow:0 10px 30px #0003;background-image:repeating-linear-gradient(transparent 0 31px,#8882 31px 32px);transition:background .3s}
+.stage{position:absolute;inset:0}
+.meta{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2)}
+.title{font-size:30px;font-weight:800;letter-spacing:-.035em;line-height:1.04}.title em{font-family:"Gochi";font-style:normal;font-weight:400;font-size:36px;letter-spacing:0}
+.head{position:absolute;left:26px;right:26px;top:64px}
+.btn{position:absolute;left:24px;right:24px;bottom:24px;height:52px;border-radius:26px;background:var(--ink);color:var(--ivory);font:600 16px "Bricolage";display:flex;align-items:center;justify-content:center}
+.hand{font-family:"Gochi"}
+.coach{position:absolute;width:120px;height:120px;pointer-events:none}.coach video{width:120px;height:120px;display:block}
+svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.abs{position:absolute}
+</style>
+</head>
+<body>
+<h1>Welcome screen: four directions</h1>
+<p class="lede">The moment after payment and the helper invite: no more questions, no plan details (the Begin your program screen already did that). Just a warm welcome, by name, from the coach they chose. Here the person is Anna and the coach is Miso (fake data). Press Replay under a phone to watch it again. Nothing is built in the app yet.</p>
+<div class="top"><button id="mode">Night</button></div>
+<div class="row" id="row"></div>
+<script>
+const $=(r,s)=>r.querySelector(s);
+document.getElementById("mode").onclick=e=>{document.body.classList.toggle("dark");e.target.textContent=document.body.classList.contains("dark")?"Day":"Night"};
+const NS="http://www.w3.org/2000/svg";
+const el=(tag,attrs={},parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent&&parent.appendChild(e);return e};
+const html=(s)=>{const d=document.createElement("div");d.innerHTML=s.trim();return d.firstChild};
+const draw=(p,ms,delay=0,ease="cubic-bezier(.4,.1,.3,1)")=>{const L=p.getTotalLength();p.style.strokeDasharray=L;return p.animate([{strokeDashoffset:L},{strokeDashoffset:0}],{duration:ms,delay,easing:ease,fill:"both"})};
+const pop=(n,delay,from="scale(.2)",ms=380)=>n.animate([{transform:from,opacity:0},{transform:"none",opacity:1}],{duration:ms,delay,easing:"cubic-bezier(.3,1.6,.5,1)",fill:"both"});
+const fade=(n,delay,ms=400,dy=8)=>n.animate([{opacity:0,transform:`translateY(${dy}px)`},{opacity:1,transform:"none"}],{duration:ms,delay,easing:"ease-out",fill:"both"});
+const coach=(st,clip,x,y,delay,flip)=>{const c=html(`<div class="coach" style="left:${x}px;top:${y}px"><video src="../coach-clips/webm/miso/${clip}.webm" muted playsinline loop autoplay></video></div>`);st.appendChild(c);if(flip)c.style.transform="scaleX(-1)";fade(c,delay,500,16);return c};
+
+
+const D=[
+ {t:"A · Hello, Anna",d:"The coach waves hello, big, in the middle of the page, while the pen writes the person's name in handwriting and underlines it. One warm line from the coach below. The simplest and most personal."},
+ {t:"B · A letter from your coach",d:"An envelope on the page opens, a note slides out and the coach writes it line by line, signed with a little paw. Slower and sweeter, and the words can be the coach's own voice."},
+ {t:"C · Sunrise again",d:"The page the person started on, the paper sunrise with the eight coaches on the path, but now the sun is up and warm light fills the hills. Yours steps forward and says hello. A bookend to the first screen."},
+ {t:"D · The door opens",d:"A paper door stands on the page. It swings open onto warm light and the coach steps out to greet you. 'Come on in.' A clear 'you are inside now' beat."}
+];
+const SHOW={
+0(st){
+ st.innerHTML=`<div class="abs" style="left:0;right:0;top:78px;text-align:center"><div class="meta">You're in</div></div>`;
+ const glow=html(`<div class="abs" style="left:20px;top:150px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,var(--apricot),transparent 68%);opacity:.55"></div>`);st.appendChild(glow);glow.animate([{transform:"scale(.4)",opacity:0},{transform:"none",opacity:.55}],{duration:1400,delay:200,easing:"ease-out",fill:"both"});
+ const c=html(`<div class="abs" style="left:60px;top:170px;width:220px;height:220px"><video src="../coach-clips/webm/miso/hello.webm" muted playsinline loop autoplay style="width:220px;height:220px;display:block"></video></div>`);st.appendChild(c);
+ c.animate([{transform:"translateY(40px) scale(.7)",opacity:0},{transform:"none",opacity:1}],{duration:700,delay:300,easing:"cubic-bezier(.3,1.5,.5,1)",fill:"both"});
+ const w=html(`<div class="abs hand" style="left:0;right:0;top:420px;text-align:center;font-size:46px;color:var(--ink);line-height:1">Welcome, Anna.</div>`);st.appendChild(w);
+ w.animate([{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0 0 0)"}],{duration:1100,delay:1200,easing:"linear",fill:"both"});
+ const svg=el("svg",{viewBox:"0 0 340 620"},st);const u=el("path",{d:"M64 478 C110 486 200 486 276 474",fill:"none",stroke:"var(--pen)","stroke-width":2.8,"stroke-linecap":"round"},svg);draw(u,600,2300);
+ const s2=html(`<div class="abs" style="left:40px;right:40px;top:500px;text-align:center;font-size:15px;color:var(--ink2);line-height:1.4">I'm Miso. I'm so glad you're here.</div>`);st.appendChild(s2);fade(s2,2700);
+ st.appendChild(html(`<div class="btn">Let's begin</div>`));
+},
+1(st){
+ st.innerHTML=`<div class="abs" style="left:0;right:0;top:64px;text-align:center"><div class="meta">A note for you</div></div>`;
+ const env=html(`<div class="abs" style="left:50px;top:330px;width:240px;height:160px;background:#D9C7A6;border-radius:6px;box-shadow:0 10px 22px #0003"></div>`);st.appendChild(env);
+ env.animate([{transform:"translateY(40px)",opacity:0},{transform:"none",opacity:1}],{duration:500,delay:100,fill:"both",easing:"ease-out"});
+ const letter=html(`<div class="abs" style="left:34px;top:112px;width:272px;height:272px;background:#F6EEDD;color:#3B322C;border-radius:4px;box-shadow:0 8px 20px #0003;padding:24px 22px;transform-origin:50% 100%"><div class="hand" style="font-size:30px;color:#A85A3C;line-height:1">Dear Anna,</div><div class="hand" style="font-size:19px;line-height:1.4;margin-top:12px;color:#3B322C;white-space:nowrap"><span class="l">Thank you for trusting me</span><br><span class="l">with this. There is no rush</span><br><span class="l">and nothing to get right.</span><br><span class="l">We start gently, together.</span></div><div class="hand sig" style="position:absolute;right:26px;bottom:20px;font-size:24px;color:#A85A3C">with love, Miso</div></div>`);st.appendChild(letter);
+ letter.animate([{transform:"translateY(260px) rotate(-3deg)",opacity:0},{transform:"translateY(0) rotate(-1deg)",opacity:1}],{duration:900,delay:800,easing:"cubic-bezier(.2,.9,.3,1)",fill:"both"});
+ letter.querySelectorAll(".l").forEach((n,i)=>{n.style.display="inline-block";n.animate([{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0 0 0)"}],{duration:900,delay:1900+i*850,easing:"linear",fill:"both"})});
+ const sig=letter.querySelector(".sig");sig.animate([{opacity:0},{opacity:1}],{duration:500,delay:5400,fill:"both"});
+ const front=html(`<div class="abs" style="left:50px;top:400px;width:240px;height:90px;background:#CDB993;border-radius:0 0 6px 6px;clip-path:polygon(0 0,50% 55%,100% 0,100% 100%,0 100%)"></div>`);st.appendChild(front);
+ coach(st,"hello",206,422,5000);
+ st.appendChild(html(`<div class="btn">Open the app</div>`));
+},
+2(st){
+ const img=html(`<img src="../../secondstrong-ios/Sources/SSDesign/Resources/Images/paper-welcome.jpg" style="position:absolute;left:0;bottom:0;width:340px;display:block;filter:brightness(.78) saturate(.8);-webkit-mask-image:linear-gradient(transparent,#000 14%);mask-image:linear-gradient(transparent,#000 14%)">`);st.appendChild(img);
+ img.animate([{filter:"brightness(.78) saturate(.8)"},{filter:"brightness(1.02) saturate(1.05)"}],{duration:2400,delay:300,easing:"ease-in-out",fill:"both"});
+ const warm=html(`<div class="abs" style="left:0;right:0;top:0;height:620px;background:radial-gradient(circle at 66% 62%,#F6B97Acc,transparent 55%)"></div>`);st.appendChild(warm);warm.animate([{opacity:0},{opacity:.8}],{duration:2400,delay:300,fill:"both"});
+ const hd=html(`<div class="abs" style="left:26px;right:26px;top:70px"><div class="meta">You're in</div><div class="title" style="margin-top:6px">Welcome to<br><em>Second Strong,</em><br>Anna.</div></div>`);st.appendChild(hd);fade(hd,1500,700,14);
+ const sub=html(`<div class="abs" style="left:26px;right:26px;top:238px;font-size:15px;color:var(--ink2);line-height:1.4;max-width:230px">The sun's up. Miso is ready when you are.</div>`);st.appendChild(sub);fade(sub,2300);
+ const c=coach(st,"hello",100,322,2000);c.style.transform="scale(1.1)";
+ st.appendChild(html(`<div class="btn">Let's begin</div>`));
+},
+3(st){
+ st.innerHTML=`<div class="abs" style="left:0;right:0;top:64px;text-align:center"><div class="meta">Welcome</div><div class="title" style="margin-top:6px">Come on <em>in.</em></div></div>`;
+ const light=html(`<div class="abs" style="left:70px;top:170px;width:200px;height:320px;border-radius:100px 100px 6px 6px;background:radial-gradient(ellipse at 50% 80%,#FFE7BD,#F6B97A 70%);box-shadow:0 0 60px 20px #F6B97A66"></div>`);st.appendChild(light);light.animate([{opacity:.2},{opacity:1}],{duration:1400,delay:1100,fill:"both"});
+ const c=html(`<div class="abs" style="left:100px;top:300px;width:140px;height:140px"><video src="../coach-clips/webm/miso/hello.webm" muted playsinline loop autoplay style="width:140px;height:140px;display:block"></video></div>`);st.appendChild(c);
+ c.animate([{transform:"scale(.3) translateY(30px)",opacity:0},{transform:"scale(1)",opacity:1}],{duration:700,delay:1900,easing:"cubic-bezier(.3,1.5,.5,1)",fill:"both"});
+ const door=html(`<div class="abs" style="left:70px;top:170px;width:200px;height:320px;perspective:700px"><div class="d" style="width:200px;height:320px;border-radius:100px 100px 6px 6px;background:linear-gradient(160deg,#C98A62,#A85A3C);box-shadow:inset 0 0 0 6px #E1B28F55,0 10px 24px #0004;transform-origin:0 50%;position:relative"><div style="position:absolute;right:22px;top:170px;width:16px;height:16px;border-radius:50%;background:#F2D9A8;box-shadow:0 2px 4px #0005"></div><div style="position:absolute;left:34px;right:34px;top:60px;height:80px;border-radius:50px 50px 4px 4px;border:3px solid #E1B28F66"></div></div></div>`);st.appendChild(door);
+ $(door,".d").animate([{transform:"rotateY(0)"},{transform:"rotateY(-112deg)"}],{duration:1300,delay:800,easing:"cubic-bezier(.5,0,.2,1)",fill:"both"});
+ const gr=html(`<div class="abs" style="left:26px;right:26px;top:510px;text-align:center;font-size:15px;color:var(--ink2);line-height:1.4">Anna, your coach is waiting inside.</div>`);st.appendChild(gr);fade(gr,2400);
+ st.appendChild(html(`<div class="btn">Step inside</div>`));
+}};
+function build(d,i){
+ const e=document.createElement("div");e.className="opt";
+ e.innerHTML=`<div class="tag">${d.t}</div><div class="why">${d.d}</div><div class="phone"><div class="stage"></div></div><button class="replay" style="margin-top:8px">Replay</button>`;
+ document.getElementById("row").appendChild(e);
+ const st=$(e,".stage"),run=()=>{st.innerHTML="";SHOW[i](st)};
+ $(e,".replay").onclick=run;setTimeout(run,300+i*150);
+}
+D.forEach(build);
+const T=new URLSearchParams(location.search).get('t');
+if(T!==null)setTimeout(()=>document.getAnimations().forEach(a=>{a.pause();a.currentTime=+T}),900);
+</script>
+</body>
+</html>

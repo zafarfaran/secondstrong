@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Miso widgets</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#7A6E64;--pen:#A85A3C;--page:#E4DCD1;--line:#3b322c1c;--apricot:#F0C9A8}
+body.dark{--ink:#F1E9DF;--ivory:#1B1613;--card:#26201C;--ink2:#A89C90;--pen:#E09A78;--page:#0F0C0A;--line:#f1e9df1c;--apricot:#8a5a3a}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:26px 24px 70px;transition:background .3s}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:820px;line-height:1.5;font-size:14.5px}
+.top button{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer;margin-right:6px}
+.row{display:flex;gap:30px;flex-wrap:wrap;margin-top:22px}.opt{width:340px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:74px;margin-bottom:12px}
+.device{zoom:.82;width:426px;height:898px;border-radius:64px;background:linear-gradient(145deg,#3a3a3d,#17171a);padding:12px;box-shadow:0 30px 60px -18px #000a,inset 0 0 0 2px #55555a,inset 0 0 0 5px #0a0a0b;position:relative}
+.device:before,.device:after{content:"";position:absolute;width:4px;background:#2a2a2d;border-radius:2px}
+.device:before{left:-3px;top:150px;height:64px;box-shadow:0 90px 0 #2a2a2d}.device:after{right:-3px;top:210px;height:100px}
+.screen{position:relative;width:402px;height:874px;border-radius:52px;overflow:hidden;background:var(--ivory);color:var(--ink);transition:background .3s}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:126px;height:37px;border-radius:24px;background:#000;z-index:50}
+.sb{position:absolute;top:0;left:0;right:0;height:54px;display:flex;justify-content:space-between;align-items:center;padding:6px 34px 0 44px;z-index:40;font-weight:700;font-size:16.5px;color:var(--ink)}
+.sb svg{position:relative;inset:auto;fill:currentColor}
+.home{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:139px;height:5px;border-radius:3px;background:var(--ink);opacity:.9;z-index:45}
+.meta{font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.hand{font-family:"Gochi"}
+.pad{position:absolute;inset:0;padding:78px 28px 0}
+.hair{height:1px;background:var(--line);margin:0}
+button{font-family:Bricolage}
+.tabbar{position:absolute;left:34px;right:34px;bottom:30px;height:64px;border-radius:32px;background:var(--ivory);box-shadow:0 8px 28px #3b322c26,0 0 0 1px var(--line);display:flex;align-items:center;justify-content:space-around;z-index:30}
+.tabbar svg{position:relative;inset:auto;width:25px;height:25px;fill:none;stroke:var(--ink2);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tabbar .on svg{stroke:var(--ink);stroke-width:2.2}.tabbar .on{position:relative}.tabbar .on:after{content:"";position:absolute;left:50%;bottom:-9px;width:4px;height:4px;border-radius:50%;background:var(--pen);transform:translateX(-50%)}
+.pro{position:absolute;right:0;top:0;background:var(--pen);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:8px;letter-spacing:.05em}
+</style>
+</head>
+<body>
+<h1>Miso on your screens</h1>
+<p class="lede">Round two, built around the mascot, from the lock screen and Miso widgets you liked. Miso changes with the day: <b>Morning</b> (idle, her plan), <b>Goal reached</b> (cheering) and <b>Evening</b> (resting, wind down). Switch the state below and every phone follows. <b>A</b> Miso peeking up on the lock screen, <b>B</b> Miso inside the lock widgets, <b>C</b> small and medium home widgets with a speech note, <b>D</b> a large Miso widget with the scene and the day. A widget cannot play video, so these show the still pictures of Miso that the real widgets would use, one per state. Same rules: protein first, no weight, calories off in calorie-free mode. Fake data. Nothing is built.</p>
+<div class="top"><button id="mode">Night</button><button id="cal">Hide calories</button> <span style="margin-left:10px"><button data-st="0" class="on">Morning</button><button data-st="1">Goal reached</button><button data-st="2">Evening</button></span></div>
+<div class="row" id="row"></div>
+<script>
+const $=(r,s)=>r.querySelector(s);
+const CL="../coach-clips/webm/miso/";
+const S={hide:false,st:0};
+document.getElementById("mode").onclick=e=>{document.body.classList.toggle("dark");e.target.textContent=document.body.classList.contains("dark")?"Day":"Night";render()};
+document.getElementById("cal").onclick=e=>{S.hide=!S.hide;e.target.textContent=S.hide?"Show calories":"Hide calories";render()};
+document.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{S.st=+b.dataset.st;document.querySelectorAll("[data-st]").forEach(x=>{x.style.background=x===b?"var(--ink)":"none";x.style.color=x===b?"var(--ivory)":"var(--ink)"});render()});
+document.querySelector("[data-st='0']").style.background="var(--ink)";document.querySelector("[data-st='0']").style.color="var(--ivory)";
+const isDark=()=>document.body.classList.contains("dark");
+const num=n=>Math.round(n).toLocaleString("en-GB");
+const PT=85,KT=1540,ST=4820,STT=8000;
+const STATES=[{clip:"morning",P:62,K:1090,line:["Lift today.","23g to go."],short:"23g to go.",msg:"Lift at eight. 23g protein to go."},{clip:"goal",P:88,K:1490,line:["You made it.","Protein done."],short:"Protein done.",msg:"You hit your protein today. Lovely."},{clip:"evening",P:88,K:1490,line:["Easy evening.","Lights out soon."],short:"Rest well.",msg:"Easy evening. Lights out by 10:30."}];
+const cur=()=>STATES[S.st];
+const status=`<div class="sb"><span>9:41</span><span style="display:flex;gap:7px;align-items:center"><svg width="19" height="12" viewBox="0 0 19 12"><rect x="0" y="7.5" width="3.2" height="4.5" rx=".7"/><rect x="4.8" y="5" width="3.2" height="7" rx=".7"/><rect x="9.6" y="2.5" width="3.2" height="9.5" rx=".7"/><rect x="14.4" y="0" width="3.2" height="12" rx=".7"/></svg><svg width="17" height="12" viewBox="0 0 17 12"><path d="M8.5 3.2c2.3 0 4.4.9 6 2.4l1-1.1A10.4 10.4 0 008.5 1.7 10.4 10.4 0 001.5 4.5l1 1.1a8.6 8.6 0 016-2.4zM8.5 6.8c1.3 0 2.5.5 3.4 1.3l1-1.1a6.2 6.2 0 00-8.8 0l1 1.1c.9-.8 2.1-1.3 3.4-1.3zM8.5 10.3l1.8-1.9a2.6 2.6 0 00-3.6 0z"/></svg><svg width="27" height="13" viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2"/><path d="M25 4.5v4c.8-.3 1.5-1.1 1.5-2s-.7-1.7-1.5-2z" opacity=".5"/></svg></span></div>`;
+const wall=()=>isDark()?"art/today-evening-night.jpg":"art/today-evening-day.jpg";
+const home=(inner,lock)=>`<div class="device"><div class="screen" style="background:#000"><img src="${wall()}" style="position:absolute;left:-330px;top:0;height:874px;filter:${lock?"none":"saturate(.9)"}"><div style="position:absolute;inset:0;background:${lock?"#2a1d1488":isDark()?"#0006":"#fbf8f433"}"></div><div class="island"></div>${lock?"":status}${inner}<div class="home"></div></div></div>`;
+const icon=(c,l)=>`<div style="text-align:center"><div style="width:62px;height:62px;border-radius:15px;background:${c};box-shadow:inset 0 0 0 1px #0001"></div><div style="font-size:11px;font-weight:600;margin-top:5px;color:${isDark()?"#f1e9df":"#3b322c"}">${l}</div></div>`;
+const icons=(n)=>`<div style="display:flex;justify-content:${n<4?"space-around":"space-between"};padding:0 ${n<4?0:4}px">${["#F0C9A8","#C9B58A","#9EBA72","#E8C05F"].slice(0,n).map((c,i)=>icon(c,["Notes","Photos","Maps","Clock"][i])).join("")}</div>`;
+const W=(w,h,inner,extra)=>`<div style="width:${w}px;height:${h}px;border-radius:24px;background:${isDark()?"#1b1613f2":"#fbf8f4f5"};color:${isDark()?"#f1e9df":"#3b322c"};padding:16px;position:relative;overflow:hidden;${extra||""}">${inner}</div>`;
+const ink=()=>isDark()?"#f1e9df":"#3b322c", ink2=()=>isDark()?"#a89c90":"#7a6e64", line=()=>isDark()?"#f1e9df22":"#3b322c1c", pen=()=>isDark()?"#e09a78":"#a85a3c";
+const ring=(sz,w,f)=>{const r=(sz-w)/2,c=2*Math.PI*r;return `<svg viewBox="0 0 ${sz} ${sz}" style="position:relative;inset:auto;width:${sz}px;height:${sz}px"><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="${line()}" stroke-width="${w}"/><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="${ink()}" stroke-width="${w}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-f)}" transform="rotate(-90 ${sz/2} ${sz/2})"/></svg>`};
+const meta=(t)=>`<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${ink2()}">${t}</div>`;
+const bar=(f)=>`<div style="height:4px;border-radius:2px;background:${line()}"><div style="width:${f*100}%;height:100%;border-radius:2px;background:${ink()}"></div></div>`;
+
+const ringSvg=(sz,w,f,col,track)=>{const r=(sz-w)/2,c=2*Math.PI*r;return `<svg viewBox="0 0 ${sz} ${sz}" style="position:absolute;inset:0;width:${sz}px;height:${sz}px"><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="${track}" stroke-width="${w}"/><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-Math.min(1,f))}" transform="rotate(-90 ${sz/2} ${sz/2})"/></svg>`};
+const face=(sz,clip)=>`<img src="art/miso-${clip}.png" style="position:absolute;left:${-sz*.48}px;top:${-sz*.52}px;width:${sz*1.96}px;height:${sz*1.96}px;pointer-events:none">`;
+const lockCircleMiso=()=>{const c=cur();return `<div style="width:76px;height:76px;border-radius:50%;background:#ffffff26;position:relative;overflow:hidden">${ringSvg(76,5,c.P/PT,"#fff","#ffffff44")}<div style="position:absolute;left:8px;top:8px;width:60px;height:60px;border-radius:50%;overflow:hidden;background:#fbf8f4">${face(60,c.clip)}</div></div>`};
+const lockRectLine=()=>{const c=cur();return `<div style="width:172px;height:76px;border-radius:22px;background:#ffffff26;color:#fff;padding:11px 14px"><div style="font-size:11px;font-weight:700;letter-spacing:.08em;opacity:.8">MISO</div><div class="hand" style="font-size:21px;line-height:1.02;margin-top:3px">${c.line[0]}<br>${c.line[1]}</div></div>`};
+const lockRectProtein=()=>{const c=cur();return `<div style="width:172px;height:76px;border-radius:22px;background:#ffffff26;color:#fff;padding:10px 14px"><div style="font-size:11px;font-weight:700;letter-spacing:.08em;opacity:.8">PROTEIN</div><div style="font-size:22px;font-weight:800;letter-spacing:-.04em;margin-top:1px">${c.P} of ${PT}g</div><div style="height:4px;border-radius:2px;background:#ffffff44;margin-top:6px"><div style="width:${Math.min(100,c.P/PT*100)}%;height:100%;border-radius:2px;background:#fff"></div></div></div>`};
+const clock=(top)=>`<div style="position:absolute;left:0;right:0;top:${top}px;text-align:center;color:#fff"><div style="font-size:15px;font-weight:600;opacity:.85">Monday 26 October</div><div style="font-size:96px;font-weight:700;letter-spacing:-.04em;line-height:1;margin-top:2px">9:41</div></div>`;
+const notif=(top)=>`<div style="position:absolute;left:18px;right:18px;top:${top}px;border-radius:22px;background:#ffffff33;backdrop-filter:blur(20px);padding:12px 14px;display:flex;gap:11px;color:#fff"><div style="width:42px;height:42px;border-radius:50%;background:#fbf8f4;overflow:hidden;position:relative;flex:none">${face(42,cur().clip)}</div><div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;opacity:.85"><span>MISO</span><span>now</span></div><div style="font-size:14px;line-height:1.3;margin-top:1px">${cur().msg}</div></div></div>`;
+const dockBtns=`<div style="position:absolute;left:0;right:0;bottom:46px;display:flex;justify-content:space-between;padding:0 50px"><div style="width:50px;height:50px;border-radius:50%;background:#ffffff33"></div><div style="width:50px;height:50px;border-radius:50%;background:#ffffff33"></div></div>`;
+const bubbleNote=(t)=>`<div style="position:relative;display:inline-block;background:${isDark()?"#2a231f":"#fff"};color:${ink()};border-radius:16px 16px 16px 4px;padding:8px 12px;font-family:Gochi;font-size:17px;line-height:1.05;box-shadow:0 0 0 1px ${line()}">${t}</div>`;
+const V={
+0(){const c=cur();return home(`<div style="position:absolute;left:0;right:0;top:370px;height:420px;overflow:hidden;pointer-events:none"><img src="art/miso-${c.clip}.png" style="position:absolute;left:41px;top:20px;width:320px;height:320px"></div>
+ ${clock(84)}<div style="position:absolute;left:0;right:0;top:236px;text-align:center;color:#fff;font-size:15px;font-weight:600">${c.P} of ${PT}g protein${S.hide?"":" · "+num(KT-c.K)+" left"}</div>
+ <div style="position:absolute;left:36px;top:272px;display:flex;gap:12px">${lockCircleMiso()}${lockRectLine()}</div>${dockBtns}`,true)},
+1(){const c=cur();return home(`${clock(84)}<div style="position:absolute;left:0;right:0;top:236px;text-align:center;color:#fff;font-size:15px;font-weight:600">${S.st===2?"Rest well, Anna.":c.P+" of "+PT+"g protein"}</div>
+ <div style="position:absolute;left:36px;top:272px;display:flex;gap:12px">${lockCircleMiso()}${lockRectProtein()}</div>${notif(392)}${dockBtns}`,true)},
+2(){const c=cur();return home(`<div style="position:absolute;left:32px;top:112px;width:158px;height:158px;border-radius:24px;background:${isDark()?"#1b1613":"#fbf8f4"};overflow:hidden">${ringSvg(158,0,0,"#0000","#0000")}<div style="position:absolute;left:20px;top:14px;width:118px;height:118px">${ringSvg(118,5,c.P/PT,ink(),line())}<div style="position:absolute;left:10px;top:10px;width:98px;height:98px;border-radius:50%;overflow:hidden">${face(98,c.clip)}</div></div><div style="position:absolute;left:0;right:0;bottom:11px;text-align:center;font-size:12px;font-weight:700;color:${ink()}">${c.P} of ${PT}g</div></div>
+ <div style="position:absolute;left:212px;top:112px;width:158px">${icons(2)}<div style="height:34px"></div>${icons(2)}</div>
+ <div style="position:absolute;left:32px;top:300px">${W(338,158,`<img src="art/miso-${c.clip}.png" style="position:absolute;right:-6px;bottom:-14px;width:170px;height:170px"><div style="position:absolute;left:16px;top:16px;width:170px">${bubbleNote(c.line[0]+"<br>"+c.line[1])}<div style="margin-top:14px">${meta("Protein")}<div style="font-size:30px;font-weight:800;letter-spacing:-.05em;line-height:1">${c.P}<span style="font-size:13px;color:${ink2()};font-weight:600"> / ${PT}g</span></div><div style="margin-top:8px;width:130px">${bar(Math.min(1,c.P/PT))}</div></div></div>`,"padding:0")}</div>
+ <div style="position:absolute;left:32px;top:484px;width:338px">${icons(4)}</div><div style="position:absolute;left:32px;top:600px;width:338px">${icons(4)}</div>`)},
+3(){const c=cur();return home(`<div style="position:absolute;left:32px;top:112px">${W(338,354,`<div style="position:absolute;left:0;right:0;top:0;height:196px;overflow:hidden"><img src="${isDark()?"art/today-morning-night.jpg":"art/today-morning-day.jpg"}" style="position:absolute;left:-190px;top:-120px;width:640px"></div><img src="art/miso-${c.clip}.png" style="position:absolute;left:158px;top:10px;width:180px;height:180px"><div style="position:absolute;left:16px;top:16px;width:150px">${bubbleNote(c.line[0]+"<br>"+c.line[1])}</div>
+  <div style="position:absolute;left:16px;right:16px;top:208px;z-index:2"><div style="display:flex;align-items:baseline;gap:6px"><span style="font-size:40px;font-weight:800;letter-spacing:-.06em;line-height:.9">${c.P}</span><span style="font-size:13px;color:${ink2()};font-weight:600">of ${PT}g protein</span>${S.hide?"":`<span style="margin-left:auto;font-size:12px;color:${ink2()}"><b style="color:${ink()}">${num(KT-c.K)}</b> kcal left</span>`}</div><div style="margin-top:8px">${bar(Math.min(1,c.P/PT))}</div>
+  <div style="display:flex;justify-content:space-between;margin-top:12px">${["Protein","Strength","Move","Fibre","Sleep"].map((h,i)=>{const on=[2,4].includes(i)||(S.st>0&&i===0);return `<div style="text-align:center;width:52px"><div style="width:26px;height:26px;margin:0 auto;border-radius:50%;border:1.5px solid ${on?ink():line()};background:${on?ink():"transparent"}"></div><div style="font-size:10px;font-weight:600;color:${ink2()};margin-top:3px">${h}</div></div>`}).join("")}</div></div>`,"padding:0")}</div><div style="position:absolute;left:32px;top:500px;width:338px">${icons(4)}</div><div style="position:absolute;left:32px;top:620px;width:338px">${icons(4)}</div>`)}
+};
+const ITEMS=[["A · Miso peeks up","On the lock screen Miso sits behind the clock and peeks up from the bottom, big, with the circular widget showing her face inside your protein ring and a line from her beside it. The most 'she is with you'."],["B · Miso in the widgets","A calmer lock screen: her face in the ring, a protein bar, and her message as a notification underneath. The wallpaper stays clean."],["C · Small and medium","The small widget is her face inside the protein ring. The medium has her with a speech note and protein. She changes pose with the state."],["D · Large, the scene","The paper scene with Miso, her note, protein, calories left (off in calorie-free mode) and the five habits, in one large widget."]];
+const stages=[];
+ITEMS.forEach(([t,d],i)=>{const e=document.createElement("div");e.className="opt";e.style.width="352px";e.innerHTML=`<div class="tag">${t}</div><div class="why" style="min-height:96px">${d}</div><div class="stage"></div>`;document.getElementById("row").appendChild(e);stages.push([i,e.querySelector(".stage")])});
+function render(){stages.forEach(([i,st])=>{st.innerHTML=V[i]()})}
+render();
+</script></body></html>

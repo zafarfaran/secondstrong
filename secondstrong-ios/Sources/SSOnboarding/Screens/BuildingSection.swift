@@ -13,8 +13,8 @@ struct BuildingSection: View {
 
     private var steps: [String] {
         let days = flow.answers.days.count
-        return ["Reading what you told us", "Working out your protein", "Choosing where to start lifting",
-                "Planning around your \(days) training days", "Drafting your first week"]
+        return ["Reading your answers", "Working out your numbers", "Picking where to start",
+                "Fitting your \(days) days", "Drafting your week"]
     }
 
     var body: some View {
@@ -131,11 +131,21 @@ struct BuildingSection: View {
 
     private func result(_ elapsed: Double) -> some View {
         let show = elapsed >= Self.curveDuration + 0.3
-        return HStack(alignment: .firstTextBaseline, spacing: 10) {
-            (Text("\(flow.plan.proteinGrams)").font(SSFont.display(56)).tracking(-2.8)
-                + Text("g").font(SSFont.display(22)).tracking(-1))
-                .foregroundStyle(Palette.ink)
-            MetaLabel("protein a day")
+        return VStack(alignment: .leading, spacing: 0) {
+            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                (Text("\(flow.plan.proteinGrams)").font(SSFont.display(56)).tracking(-2.8)
+                    + Text("g").font(SSFont.display(22)).tracking(-1))
+                    .foregroundStyle(Palette.ink)
+                MetaLabel("protein a day")
+            }
+            if let energy = flow.plan.energy {
+                HStack(alignment: .firstTextBaseline, spacing: 10) {
+                    (Text(energy.target.formatted()).font(SSFont.display(34)).tracking(-1.4)
+                        + Text(" kcal").font(SSFont.display(16)).tracking(-0.4))
+                        .foregroundStyle(Palette.ink)
+                    MetaLabel("a day")
+                }
+            }
         }
         .opacity(show ? 1 : 0)
         .animation(.easeOut(duration: 0.5), value: show)

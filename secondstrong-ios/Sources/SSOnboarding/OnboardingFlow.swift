@@ -3,7 +3,14 @@ import SSCore
 import SSDesign
 
 enum CompanionState { case hidden, flying, docked }
-enum AuthStage { case choose, email, sent, expired, returning }
+enum AuthStage { case choose, email, sent, expired, returning, invited }
+enum PaywallTab { case solo, helpers }
+
+/// A line the coach is saying right now, shown in a bubble.
+struct Speech: Equatable, Identifiable {
+    let id = UUID()
+    let text: String
+}
 
 /// Who the door greets by name once the backend knows them. Fake data until then.
 struct KnownMember: Equatable {
@@ -16,8 +23,8 @@ enum AuthProvider { case apple, google }
 /// Drives the whole onboarding: answers, the pen, the camera and the living bits.
 @MainActor @Observable
 final class OnboardingFlow {
-    static let lastStep = OnboardingStep.plan.rawValue
-    static let companionSize = 74.0
+    static let lastStep = OnboardingStep.invite.rawValue
+    static let companionSize = 110.0
     static let showcaseSize = 210.0
 
     var answers = OnboardingAnswers()
@@ -32,16 +39,15 @@ final class OnboardingFlow {
     var strokes: [InkStroke] = []
     var cameraY: CGFloat = 0
     private(set) var ended = false
-    private(set) var overviewScale: CGFloat = 1
     private(set) var endVisible = false
 
     var heroVisible = false
     private(set) var heroMood = CoachMood.idle
     private(set) var showMood = CoachMood.idle
     private(set) var companionMood = CoachMood.idle
-    private(set) var companionState = CompanionState.hidden
-    private(set) var companionCentre = CGPoint.zero
-    private(set) var companionScale = 1.0
+    var companionState = CompanionState.hidden
+    var companionCentre = CGPoint.zero
+    var companionScale = 1.0
     private(set) var shakeTicks: [Goal: Int] = [:]
     private(set) var buildStart: Date?
     private(set) var buildMood = CoachMood.idle
@@ -61,6 +67,21 @@ final class OnboardingFlow {
     var noteProgress = 0.0
     var startReady = false
 
+    var paywallTab = PaywallTab.solo
+    var billing = BillingPeriod.yearly
+    private(set) var helperCount = 1
+    private(set) var purchasing = false
+    private(set) var purchased = false
+    private(set) var restoreNote = ""
+    var inviteName = ""
+    var inviteMessage = ""
+    private(set) var inviteSent = false
+    private(set) var invitedBy: String?
+
+    /// Helpers on the plan being bought: none when solo.
+    var plannedHelpers: Int { paywallTab == .solo ? 0 : helperCount }
+    var planPrice: Int { Pricing.price(helpers: plannedHelpers, period: billing) }
+
     enum Bucket { case none, arrive(Int), commit(Int) }
     var planner = PenPlanner(width: 390)
     var bucket = Bucket.none
@@ -71,6 +92,18 @@ final class OnboardingFlow {
     private var queued = false
     private var advanceTask: Task<Void, Never>?
     private var moodTasks: [String: Task<Void, Never>] = [:]
+
+    var lastActivity = Date()
+    var lastNudge = Date.distantPast
+    var variantIndex = 0
+    var idleWatch: Task<Void, Never>?
+    var companionAway = false
+    var speech: Speech?
+    var speechTask: Task<Void, Never>?
+    var speechShownAt = Date.distantPast
+    var lineIndex: [OnboardingStep: Int] = [:]
+    static let quietBeforeNudge = 6.0
+    static let nudgeGap = 7.0
 
     var stepValue: OnboardingStep { OnboardingStep(rawValue: step) ?? .plan }
     var plan: FirstWeekPlan { FirstWeekPlan(answers) }
@@ -86,12 +119,14 @@ final class OnboardingFlow {
         try? await waitForLayout()
         while !signedIn, !Task.isCancelled { try? await Task.sleep(for: .milliseconds(100)) }
         guard !welcomedBack else { return }
+        startIdleWatch()
         do { try await arrive(0) } catch { return }
         finishTurn()
     }
 
     func stop() {
         advanceTask?.cancel()
+        idleWatch?.cancel()
         moodTasks.values.forEach { $0.cancel() }
     }
 
@@ -112,12 +147,17 @@ final class OnboardingFlow {
         queued = false
         do {
             try await commit(step)
+            if stepValue == .plan, invitedBy != nil {
+                finishOnboarding()   // someone else's plan already covers them: no paywall
+                return
+            }
             if step == OnboardingStep.coach.rawValue {
                 try await liftOff()
                 step += 1
                 try await wait(0.2)
             } else {
                 step += 1
+                while !answers.isAsked(stepValue) { step += 1 }
             }
             try await arrive(step)
             if stepValue == .building {
@@ -139,11 +179,11 @@ final class OnboardingFlow {
     }
 
     func back() {
-        guard !busy, step > 0, step < Self.lastStep else { return }
+        guard !busy, !purchased, step > 0, step < Self.lastStep else { return }
         busy = true
         // The building screen plays once; going back from the plan skips over it.
         var target = step - 1
-        while OnboardingStep(rawValue: target) == .building { target -= 1 }
+        while OnboardingStep(rawValue: target) == .building || !answers.isAsked(OnboardingStep(rawValue: target) ?? .plan) { target -= 1 }
         for page in target + 1...step {
             fade(arrivals[page])
             fade(commits[page - 1])
@@ -152,6 +192,7 @@ final class OnboardingFlow {
         }
         if target == OnboardingStep.coach.rawValue { companionState = .hidden }
         step = target
+        if companionAway, !companionHidesOnPage { Task { await dropCompanionIn() } }
         if let s = snapshots[step] { planner.restore(s) }
         camera(to: step, duration: 0.7)
         advanceTask = Task {
@@ -185,6 +226,7 @@ final class OnboardingFlow {
     func previewAuth(_ stage: AuthStage) {
         authEmail = "anna.hart@example.com"
         member = KnownMember(firstName: "Anna", coach: .miso, method: .apple)
+        if stage == .invited { invitedBy = "Sam" }
         authStage = stage
     }
 
@@ -265,39 +307,48 @@ final class OnboardingFlow {
         }
     }
 
-    /// The coach lifts off the page and drifts down to the bottom-right corner, settling with a small bounce
-    /// while the page scrolls away underneath.
-    private func liftOff() async throws {
-        guard let from = frames[.coachShow] else { return }
-        companionCentre = CGPoint(x: from.midX, y: from.midY + cameraY)
-        companionScale = from.width / Self.showcaseSize
-        companionState = .flying
-        pulseCompanion(.cheer, for: 1.0)
-        try await wait(0.06)
-        let size = Self.companionSize
-        // Bottom right, just above the Continue button: the top right is where the paper badges sit.
-        let buttonTop = screen.height - 26 - safeBottom - 54
-        let to = CGPoint(x: screen.width - 14 - size / 2, y: buttonTop - 8 - size / 2)
-        let d = reduceMotion ? 0.001 : 0.95
-        withAnimation(.timingCurve(0.45, 0, 0.2, 1, duration: d)) { companionCentre.x = to.x }
-        withAnimation(.timingCurve(0.3, 0, 0.2, 1, duration: d)) { companionCentre.y = to.y }
-        withAnimation(.spring(duration: d, bounce: reduceMotion ? 0 : 0.2)) { companionScale = size / Self.showcaseSize }
-        Task {
-            try? await wait(d)
-            if companionState == .flying { companionState = .docked }
-        }
+    // MARK: paywall and helpers
+    // SS-0020: purchases are simulated until in-app purchase is wired up. Nothing is charged.
+
+    func setHelpers(_ count: Int) { helperCount = min(max(count, 1), Pricing.maxHelpers) }
+
+    func purchase() async {
+        guard !purchasing, !purchased else { return }
+        purchasing = true
+        try? await wait(1.3)
+        purchasing = false
+        purchased = true
+        pulseCompanion(.cheer, for: 2)
+        if plannedHelpers > 0 { next() } else { finishOnboarding() }
     }
 
-    /// Zoom out over the whole page and its single line.
-    func finish() {
-        guard startReady, !busy else { return }
+    func restorePurchases() async {
+        restoreNote = "Looking…"
+        try? await wait(0.9)
+        restoreNote = "No earlier purchase found on this Apple ID."
+    }
+
+    /// The link and message are made up in the prototype; sharing is the system share sheet.
+    func markInviteSent() { inviteSent = true }
+
+    func previewInvite() {
+        invitedBy = "Sam"
+        authStage = .invited
+    }
+
+    /// The trial runs from today; the first payment is when it ends.
+    var trialEnds: Date { Calendar.current.date(byAdding: .day, value: Pricing.trialDays, to: Date()) ?? Date() }
+
+    /// The page gives way to the "all set" screen.
+    func finishOnboarding() {
+        guard !ended else { return }
+        hideSpeech()
         busy = true
         pulseCompanion(.cheer, for: 2)
-        overviewScale = min((screen.height - 120) / (screen.height * CGFloat(Self.lastStep + 1)), 1)
-        withAnimation(.timingCurve(0.65, 0, 0.35, 1, duration: reduceMotion ? 0.001 : 1.3)) { ended = true }
+        withAnimation(.easeInOut(duration: reduceMotion ? 0.001 : 0.5)) { ended = true }
         advanceTask = Task {
-            try? await wait(1.3)
-            withAnimation(.easeOut(duration: 0.38)) { endVisible = true }
+            try? await wait(0.35)
+            withAnimation(.easeOut(duration: 0.5)) { endVisible = true }
         }
     }
 
@@ -316,6 +367,23 @@ final class OnboardingFlow {
     func pick(experience: Experience) {
         answers.select(experience: experience)
         pulseCompanion(.encourage, for: 1.6)
+    }
+
+    func pick(activity: ActivityLevel) {
+        answers.select(activity: activity)
+        pulseCompanion(.gotit, for: 1.4)
+    }
+
+    func pick(foodGoal: FoodGoal) {
+        answers.select(foodGoal: foodGoal)
+        pulseCompanion(.encourage, for: 1.6)
+    }
+
+    func setWeeklyKilos(_ kilos: Double) { answers.select(weeklyKilos: kilos) }
+
+    func pick(foodView: FoodView) {
+        withAnimation(.snappy(duration: 0.25)) { answers.select(foodView: foodView) }
+        pulseCompanion(foodView == .habitsOnly ? .comfort : .gotit, for: 1.6)
     }
 
     func pick(equipment: Equipment) {
@@ -348,9 +416,17 @@ final class OnboardingFlow {
         }
     }
 
-    /// Tapping a coach makes it react.
+    /// Tapping a coach makes it react. The docked coach says the next line for the screen it is on.
     func poke() {
-        if companionState == .docked { pulseCompanion(.hello, for: 1.8) } else { pulseShow(.proud, for: 1.8) }
+        guard companionState == .docked, !companionAway else {
+            if companionState != .docked { pulseShow(.proud, for: 1.8) }
+            return
+        }
+        let lines = CoachLines.lines(for: stepValue, coachName: answers.displayName)
+        guard !lines.isEmpty else { pulseCompanion(.hello, for: 1.8); return }
+        let next = ((lineIndex[stepValue] ?? -1) + 1) % lines.count
+        lineIndex[stepValue] = next
+        say(lines[next])
     }
 
     func pulseHero(_ mood: CoachMood, for seconds: Double) {

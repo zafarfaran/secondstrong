@@ -1,6 +1,6 @@
 # Coach clips
 
-All eight coaches (Pebble, Fern, Wren, Bramble, Luna, Otto, Tilly, Miso), sixteen states each, rendered as
+All eight coaches (Pebble, Fern, Wren, Bramble, Luna, Otto, Tilly, Miso), twenty states each, rendered as
 transparent video from the same SVG rig as the mascot board (`../mascots/mascot-board.html`), animated with
 HyperFrames (HTML + GSAP, rendered frame by frame). Every coach shares the same states and timings, so the
 app's player and `manifest.json` work for any of them.
@@ -38,7 +38,8 @@ Player rule (see the `<script>` in `preview.html`, mirror it in Swift):
 | proud | session logged | | oops | something failed or didn't save |
 | lifting | strength set running | | gotit | entry saved |
 | stretching | warm-up | | breathe | guided wind-down breathing, 4s in / 4s out |
-| comfort | rough-night check-in | | | |
+| comfort | rough-night check-in | | idleLook, idleYawn, idleBounce | small idle moves for a quiet moment: look round, a yawn, two happy bounces; loop-only like idle, played once |
+| fall | the coach drops down the screen: squat and launch, a stretched fall, a squash and hop on landing (0.3 s in, 0.4 s loop, 0.7 s landing) |
 | resting | rest day | | | |
 
 ## Per-coach rig

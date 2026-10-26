@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Onboarding finale: four directions</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#5D534B;--pen:#A85A3C;--page:#E9E2D8;--apricot:#F0C9A8}
+body.dark{--ink:#F1E9DF;--ivory:#211B17;--card:#2A231F;--ink2:#B8AA9D;--pen:#E09A78;--page:#14100E;--apricot:#8a5a3a}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:24px 20px 60px;transition:background .3s}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:760px;line-height:1.45}
+.top button,.replay{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer}
+.row{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px}.opt{width:340px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:84px;margin-bottom:8px}
+.phone{position:relative;width:340px;height:620px;border-radius:32px;overflow:hidden;background:var(--ivory);box-shadow:0 10px 30px #0003;background-image:repeating-linear-gradient(transparent 0 31px,#8882 31px 32px);transition:background .3s}
+.stage{position:absolute;inset:0}
+.meta{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2)}
+.title{font-size:30px;font-weight:800;letter-spacing:-.035em;line-height:1.04}.title em{font-family:"Gochi";font-style:normal;font-weight:400;font-size:36px;letter-spacing:0}
+.head{position:absolute;left:26px;right:26px;top:64px}
+.btn{position:absolute;left:24px;right:24px;bottom:24px;height:52px;border-radius:26px;background:var(--ink);color:var(--ivory);font:600 16px "Bricolage";display:flex;align-items:center;justify-content:center}
+.hand{font-family:"Gochi"}
+.coach{position:absolute;width:120px;height:120px;pointer-events:none}.coach video{width:120px;height:120px;display:block}
+svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.abs{position:absolute}
+</style>
+</head>
+<body>
+<h1>Onboarding finale: four directions</h1>
+<p class="lede">What happens after the last question, replacing the zoomed-out pen line and "Your first week, on one line." Each one ends on the same promise: Monday is day one, three sessions, 85g protein, and a way into the app. Press Replay under a phone to watch it again. Nothing is built in the app yet.</p>
+<div class="top"><button id="mode">Night</button></div>
+<div class="row" id="row"></div>
+
+<script>
+const $=(r,s)=>r.querySelector(s);
+document.getElementById("mode").onclick=e=>{document.body.classList.toggle("dark");e.target.textContent=document.body.classList.contains("dark")?"Day":"Night"};
+const NS="http://www.w3.org/2000/svg";
+const D=[
+ {t:"A · The week unrolls",d:"The pen line comes down the page, then lays itself out as the seven days. Lifting days get a filled dot and a small dumbbell, rest days stay hollow. The coach cheers at the end of it. Calm, and it shows the plan itself."},
+ {t:"B · Day one stamp",d:"A paper ticket slides up and the coach's stamp lands on it with a thud: DAY 1. Torn paper bits fall. The three facts sit on the ticket like a boarding pass. Playful and a clear 'you are in' moment."},
+ {t:"C · Up the hill",d:"The hills from the plan screen. The pen path climbs to the flag in seven steps, one per day, and the coach walks it and plants the flag as the sun comes up. The most story, and it reuses the art you already have."},
+ {t:"D · Circled in pen",d:"A page from a journal. The week is written down the margin and the pen circles Monday, Wednesday and Friday one by one, then underlines 85g. The coach looks over from the corner. Quiet, personal, closest to the pen line."}
+];
+const DAYS=["M","T","W","T","F","S","S"],TRAIN=[0,2,4];
+const el=(tag,attrs={},parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent&&parent.appendChild(e);return e};
+const html=(s)=>{const d=document.createElement("div");d.innerHTML=s.trim();return d.firstChild};
+const draw=(p,ms,delay=0,ease="cubic-bezier(.4,.1,.3,1)")=>{const L=p.getTotalLength();p.style.strokeDasharray=L;return p.animate([{strokeDashoffset:L},{strokeDashoffset:0}],{duration:ms,delay,easing:ease,fill:"both"})};
+const pop=(n,delay,from="scale(.2)",ms=380)=>n.animate([{transform:from,opacity:0},{transform:"none",opacity:1}],{duration:ms,delay,easing:"cubic-bezier(.3,1.6,.5,1)",fill:"both"});
+const fade=(n,delay,ms=400,dy=8)=>n.animate([{opacity:0,transform:`translateY(${dy}px)`},{opacity:1,transform:"none"}],{duration:ms,delay,easing:"ease-out",fill:"both"});
+const coach=(st,clip,x,y,delay,flip)=>{const c=html(`<div class="coach" style="left:${x}px;top:${y}px"><video src="../coach-clips/webm/miso/${clip}.webm" muted playsinline loop autoplay></video></div>`);st.appendChild(c);if(flip)c.style.transform="scaleX(-1)";fade(c,delay,500,16);return c};
+
+const SHOW={
+0(st,later){ // week unrolls
+ st.innerHTML=`<div class="head"><div class="meta">Your program is ready</div><div class="title" style="margin-top:6px">Your first<br><em>week.</em></div></div>`;
+ const svg=el("svg",{viewBox:"0 0 340 620"},st);
+ // one line comes down from the top, bends, then runs through the seven days
+ const pts=DAYS.map((_,i)=>[36+i*44.7,330+(i%2?-10:8)]);
+ const path=el("path",{d:`M318 -10 C318 70 300 120 250 165 C190 215 60 205 40 275 C34 300 30 318 ${pts[0][0]} ${pts[0][1]} `+pts.slice(1).map((p,i)=>`Q ${(pts[i][0]+p[0])/2} ${(pts[i][1]+p[1])/2+(i%2?16:-16)} ${p[0]} ${p[1]}`).join(" "),fill:"none",stroke:"var(--pen)","stroke-width":3,"stroke-linecap":"round","stroke-linejoin":"round"},svg);
+ draw(path,2600,300,"cubic-bezier(.45,.05,.4,1)");
+ pts.forEach((p,i)=>{
+  const g=el("g",{},svg),t=TRAIN.includes(i);
+  const t0=1500+i*170;
+  el("circle",{cx:p[0],cy:p[1],r:t?9:7,fill:t?"var(--ink)":"var(--ivory)",stroke:"var(--ink)","stroke-width":2},g);
+  const lab=el("text",{x:p[0],y:p[1]+34,"text-anchor":"middle","font-family":"Bricolage","font-weight":700,"font-size":14,fill:"var(--ink)"},g);lab.textContent=DAYS[i];
+  if(t){const db=el("path",{d:`M${p[0]-9} ${p[1]-27} h18 M${p[0]-9} ${p[1]-32} v10 M${p[0]+9} ${p[1]-32} v10 M${p[0]-13} ${p[1]-29} v4 M${p[0]+13} ${p[1]-29} v4`,stroke:"var(--pen)","stroke-width":2.6,"stroke-linecap":"round",fill:"none"},g)}
+  else{const z=el("text",{x:p[0],y:p[1]-18,"text-anchor":"middle","font-family":"Gochi","font-size":15,fill:"var(--ink2)"},g);z.textContent="rest"}
+  g.style.transformOrigin=`${p[0]}px ${p[1]}px`;pop(g,t0);
+ });
+ const s1=html(`<div class="abs hand" style="left:26px;right:26px;top:410px;font-size:24px;color:var(--pen);text-align:center;line-height:1.1">Lift on Monday, Wednesday and Friday.<br>The rest is yours.</div>`);st.appendChild(s1);fade(s1,2900);
+ const s2=html(`<div class="abs" style="left:26px;right:26px;top:488px;text-align:center;font-weight:800;font-size:22px;letter-spacing:-.02em">85g <span style="font-weight:500;font-size:15px;color:var(--ink2)">protein a day</span></div>`);st.appendChild(s2);fade(s2,3300);
+ st.appendChild(html(`<div class="btn">Open Today</div>`));
+ coach(st,"cheer",210,160,2900);
+},
+1(st){ // day one stamp
+ st.innerHTML=`<div class="head" style="top:56px;text-align:center"><div class="meta">You're in</div><div class="title" style="margin-top:6px">Welcome to<br><em>Second Strong.</em></div></div>`;
+ const tk=html(`<div class="abs" style="left:34px;right:34px;top:190px;height:300px;background:#EFE6D6;color:#3B322C;border-radius:6px;box-shadow:0 12px 26px #0004;transform-origin:50% 100%;clip-path:polygon(0 0,100% 0,100% 100%,94% 97%,88% 100%,82% 97%,76% 100%,70% 97%,64% 100%,58% 97%,52% 100%,46% 97%,40% 100%,34% 97%,28% 100%,22% 97%,16% 100%,10% 97%,5% 100%,0 97%)">
+  <div style="padding:22px 22px 0"><div style="font-size:11px;font-weight:700;letter-spacing:.12em;color:#7b6c60">YOUR FIRST WEEK</div>
+  <div style="display:flex;justify-content:space-between;margin-top:14px;border-top:1.5px dashed #3b322c55;padding-top:12px"><div><div style="font-size:11px;color:#7b6c60;font-weight:600">STARTS</div><div style="font-weight:800;font-size:20px">Monday</div></div><div><div style="font-size:11px;color:#7b6c60;font-weight:600">SESSIONS</div><div style="font-weight:800;font-size:20px">3 a week</div></div><div><div style="font-size:11px;color:#7b6c60;font-weight:600">PROTEIN</div><div style="font-weight:800;font-size:20px">85g</div></div></div>
+  <div class="hand" style="font-size:22px;color:#A85A3C;margin-top:20px;line-height:1.1">Small, steady and yours.</div></div>
+  </div>`);st.appendChild(tk);
+ tk.animate([{transform:"translateY(420px) rotate(4deg)"},{transform:"none"}],{duration:700,delay:200,easing:"cubic-bezier(.2,.9,.3,1.1)",fill:"both"});
+ const stamp=html(`<div class="abs" style="left:118px;top:344px;width:130px;height:130px;transform:rotate(-14deg)"><svg viewBox="0 0 130 130"><circle cx="65" cy="65" r="58" fill="none" stroke="#A85A3C" stroke-width="5" opacity=".9"/><circle cx="65" cy="65" r="48" fill="none" stroke="#A85A3C" stroke-width="1.8" opacity=".9"/><text x="65" y="60" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="13" letter-spacing="3" fill="#A85A3C">DAY</text><text x="65" y="92" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="40" fill="#A85A3C">1</text></svg></div>`);
+ st.appendChild(stamp);
+ stamp.animate([{transform:"rotate(-14deg) scale(2.2)",opacity:0},{transform:"rotate(-14deg) scale(1)",opacity:.95}],{duration:260,delay:1400,easing:"cubic-bezier(.5,0,.9,.4)",fill:"both"});
+ tk.animate([{transform:"none"},{transform:"translateY(5px) rotate(-.6deg)"},{transform:"none"}],{duration:260,delay:1650,easing:"ease-out"});
+ for(let i=0;i<22;i++){const c=["#F0C9A8","#A85A3C","#C9B58A","#9EBA72","#E8C05F"][i%5],x=40+Math.random()*260;
+  const b=html(`<i class="abs" style="left:${x}px;top:200px;width:${6+Math.random()*7}px;height:${4+Math.random()*6}px;background:${c};border-radius:1px"></i>`);st.appendChild(b);
+  b.animate([{transform:"translate(0,0) rotate(0)",opacity:0},{transform:`translate(${(Math.random()-.5)*120}px,${-30-Math.random()*60}px) rotate(120deg)`,opacity:1,offset:.25},{transform:`translate(${(Math.random()-.5)*160}px,${260+Math.random()*160}px) rotate(${Math.random()*540}deg)`,opacity:1}],{duration:1900+Math.random()*700,delay:1600+Math.random()*200,easing:"cubic-bezier(.3,.6,.5,1)",fill:"both"});}
+ st.appendChild(html(`<div class="btn">Let's go</div>`));
+ coach(st,"proud",226,434,2300);
+},
+2(st){ // up the hill
+ const W=470,s=W/1170,L=-90,oy=620-84-780*s;
+ st.innerHTML=`<div class="head"><div class="meta">Your program is ready</div><div class="title" style="margin-top:6px">Monday is<br><em>day one.</em></div></div>`;
+ st.appendChild(html(`<img src="../../secondstrong-ios/Sources/SSDesign/Resources/Images/paper-plan.jpg" style="position:absolute;left:${L}px;bottom:84px;width:${W}px;display:block">`));
+ const sub=html(`<div class="abs" style="left:26px;right:26px;top:158px;font-size:15px;color:var(--ink2);line-height:1.4">Three sessions, 85g of protein a day, and a coach beside you the whole way.</div>`);st.appendChild(sub);fade(sub,3400);
+ const P=[[175,775],[258,715],[350,672],[450,630],[550,596],[640,540],[720,490],[800,432],[870,380],[935,318]].map(([x,y])=>[L+x*s,oy+y*s]);
+ const svg=el("svg",{viewBox:"0 0 340 620"},st);
+ const path=el("path",{d:"M"+P.map(p=>p.join(" ")).join(" L"),fill:"none",stroke:"var(--pen)","stroke-width":3.4,"stroke-linecap":"round","stroke-linejoin":"round","stroke-dasharray":"1 8"},svg);
+ const len=path.getTotalLength();
+ draw(path,3000,500,"ease-in-out").onfinish=()=>{path.style.strokeDasharray="none"};
+ const stops=[];for(let i=0;i<7;i++)stops.push(path.getPointAtLength(len*(.17+i*.125)));
+ stops.forEach((q,i)=>{
+  const g=el("g",{},svg),t=TRAIN.includes(i);
+  el("circle",{cx:q.x,cy:q.y,r:t?8:5.5,fill:t?"var(--ink)":"var(--ivory)",stroke:"var(--ivory)","stroke-width":2},g);
+  const tx=el("text",{x:q.x-12,y:q.y-6,"font-family":"Gochi","font-size":16,fill:"var(--ink)","text-anchor":"end"},g);tx.textContent=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][i];
+  g.style.transformOrigin=`${q.x}px ${q.y}px`;pop(g,700+i*380);
+ });
+ const sun=html(`<div class="abs" style="left:0;top:0;width:340px;height:620px;background:radial-gradient(circle at ${(L+590*s)/3.4}% ${(oy+370*s)/6.2}%,#F6B97A77,transparent 38%)"></div>`);st.appendChild(sun);sun.animate([{opacity:0},{opacity:1}],{duration:1600,delay:3000,fill:"both"});
+ const c=html(`<div class="coach" style="left:0;top:0;width:84px;height:84px"><video style="width:84px;height:84px" src="../coach-clips/webm/miso/lifting.webm" muted playsinline loop autoplay></video></div>`);st.appendChild(c);
+ const frames=[];for(let k=0;k<=24;k++){const q=path.getPointAtLength(len*k/24);frames.push({transform:`translate(${q.x-42}px,${q.y-70}px)`})}
+ c.animate(frames,{duration:3000,delay:500,easing:"ease-in-out",fill:"both"});
+ const flag=html(`<div class="abs hand" style="left:${P[9][0]-96}px;top:${P[9][1]-62}px;width:90px;text-align:right;font-size:20px;color:var(--pen)">Day one</div>`);st.appendChild(flag);fade(flag,3300);
+ st.appendChild(html(`<div class="btn">Open Today</div>`));
+},
+3(st){ // circled in pen
+ st.innerHTML=`<div class="head"><div class="meta">Your first week</div><div class="title" style="margin-top:6px">Written <em>down.</em></div></div>`;
+ const rows=[["Mon","Lift · 30 min",1],["Tue","A walk, if you fancy",0],["Wed","Lift · 30 min",1],["Thu","Rest",0],["Fri","Lift · 30 min",1],["Sat","Easy day",0],["Sun","Rest",0]];
+ const list=html(`<div class="abs" style="left:34px;right:34px;top:176px"></div>`);st.appendChild(list);
+ rows.forEach(([d,w],i)=>{const r=html(`<div style="height:42px;display:flex;align-items:center;gap:16px"><div style="width:44px;font-weight:800;font-size:17px">${d}</div><div class="hand" style="font-size:21px;color:var(--ink2)">${w}</div></div>`);list.appendChild(r);fade(r,200+i*110,350,6)});
+ const svg=el("svg",{viewBox:"0 0 340 620"},st);
+ rows.forEach(([d,w,t],i)=>{if(!t)return;const y=176+i*42+21,k=TRAIN.indexOf(i*1===0?0:[0,2,4].includes(i)?i:i);
+  const delay=1300+[0,2,4].indexOf(i)*750;
+  const p=el("path",{d:`M26 ${y-2} C28 ${y-24} 130 ${y-26} 252 ${y-20} C300 ${y-12} 296 ${y+22} 236 ${y+22} C130 ${y+26} 24 ${y+24} 24 ${y+2} C25 ${y-6} 40 ${y-14} 60 ${y-18}`,fill:"none",stroke:"var(--pen)","stroke-width":2.6,"stroke-linecap":"round"},svg);
+  draw(p,650,delay,"ease-in-out");});
+ const note=html(`<div class="abs hand" style="left:34px;top:490px;font-size:30px;color:var(--pen);line-height:1">85g<span style="font-size:20px"> protein, every day</span></div>`);st.appendChild(note);
+ note.animate([{clipPath:"inset(0 100% 0 0)"},{clipPath:"inset(0 0 0 0)"}],{duration:900,delay:3600,easing:"linear",fill:"both"});
+ const ul=el("path",{d:"M34 528 C100 536 190 534 296 524",fill:"none",stroke:"var(--pen)","stroke-width":2.6,"stroke-linecap":"round"},svg);draw(ul,600,4500);
+ st.appendChild(html(`<div class="btn">Open Today</div>`));
+ coach(st,"suggest",214,352,3900);
+}};
+function build(d,i){
+ const e=document.createElement("div");e.className="opt";
+ e.innerHTML=`<div class="tag">${d.t}</div><div class="why">${d.d}</div><div class="phone"><div class="stage"></div></div><button class="replay" style="margin-top:8px">Replay</button>`;
+ document.getElementById("row").appendChild(e);
+ const st=$(e,".stage"),run=()=>{st.getAnimations?.();st.innerHTML="";SHOW[i](st)};
+ $(e,".replay").onclick=run;setTimeout(run,300+i*150);
+}
+D.forEach(build);
+// ?t=ms freezes every animation at that moment (for checking frames)
+const T=new URLSearchParams(location.search).get('t');
+if(T!==null)setTimeout(()=>document.getAnimations().forEach(a=>{a.pause();a.currentTime=+T}),900);
+</script>
+</body>
+</html>

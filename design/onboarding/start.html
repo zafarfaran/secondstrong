@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>First step: four directions</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#5D534B;--pen:#A85A3C;--page:#E9E2D8;--apricot:#F0C9A8}
+body.dark{--ink:#F1E9DF;--ivory:#211B17;--card:#2A231F;--ink2:#B8AA9D;--pen:#E09A78;--page:#14100E;--apricot:#8a5a3a}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:24px 20px 60px;transition:background .3s}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:760px;line-height:1.45}
+.top button,.replay{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer}
+.row{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px}.opt{width:340px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:84px;margin-bottom:8px}
+.phone{position:relative;width:340px;height:620px;border-radius:32px;overflow:hidden;background:var(--ivory);box-shadow:0 10px 30px #0003;background-image:repeating-linear-gradient(transparent 0 31px,#8882 31px 32px);transition:background .3s}
+.stage{position:absolute;inset:0}
+.meta{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2)}
+.title{font-size:30px;font-weight:800;letter-spacing:-.035em;line-height:1.04}.title em{font-family:"Gochi";font-style:normal;font-weight:400;font-size:36px;letter-spacing:0}
+.head{position:absolute;left:26px;right:26px;top:64px}
+.btn{position:absolute;left:24px;right:24px;bottom:24px;height:52px;border-radius:26px;background:var(--ink);color:var(--ivory);font:600 16px "Bricolage";display:flex;align-items:center;justify-content:center}
+.hand{font-family:"Gochi"}
+.coach{position:absolute;width:120px;height:120px;pointer-events:none}.coach video{width:120px;height:120px;display:block}
+svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.abs{position:absolute}
+</style>
+</head>
+<body>
+<h1>First step after payment: four directions</h1>
+<p class="lede">The person has already been welcomed at the start, and the Begin your program screen showed the plan. So this last screen is about starting: the first small thing to do, not another hello or recap. Each one ends by handing them into the app. Here the person is Anna and the coach is Miso (fake data). Press Replay to watch again. Nothing is built in the app yet.</p>
+<div class="top"><button id="mode">Night</button></div>
+<div class="row" id="row"></div>
+<script>
+const $=(r,s)=>r.querySelector(s);
+document.getElementById("mode").onclick=e=>{document.body.classList.toggle("dark");e.target.textContent=document.body.classList.contains("dark")?"Day":"Night"};
+const NS="http://www.w3.org/2000/svg";
+const el=(tag,attrs={},parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent&&parent.appendChild(e);return e};
+const html=(s)=>{const d=document.createElement("div");d.innerHTML=s.trim();return d.firstChild};
+const draw=(p,ms,delay=0,ease="cubic-bezier(.4,.1,.3,1)")=>{const L=p.getTotalLength();p.style.strokeDasharray=L;return p.animate([{strokeDashoffset:L},{strokeDashoffset:0}],{duration:ms,delay,easing:ease,fill:"both"})};
+const pop=(n,delay,from="scale(.2)",ms=380)=>n.animate([{transform:from,opacity:0},{transform:"none",opacity:1}],{duration:ms,delay,easing:"cubic-bezier(.3,1.6,.5,1)",fill:"both"});
+const fade=(n,delay,ms=400,dy=8)=>n.animate([{opacity:0,transform:`translateY(${dy}px)`},{opacity:1,transform:"none"}],{duration:ms,delay,easing:"ease-out",fill:"both"});
+const coach=(st,clip,x,y,delay,flip)=>{const c=html(`<div class="coach" style="left:${x}px;top:${y}px"><video src="../coach-clips/webm/miso/${clip}.webm" muted playsinline loop autoplay></video></div>`);st.appendChild(c);if(flip)c.style.transform="scaleX(-1)";fade(c,delay,500,16);return c};
+
+
+
+const D=[
+ {t:"A · One small thing first",d:"Three tiny first steps to choose from, like a glass of water with breakfast. Pick one and the pen ticks it, the card fills in and the coach cheers: day one has started before they have left onboarding. An instant first win."},
+ {t:"B · When should I nudge you?",d:"The practical beginning: set the reminders (training days, a protein check, an evening wind-down) with switches that flip on, and the coach holds the bell. It doubles as the friendly lead-in to the iPhone notification permission."},
+ {t:"C · This is your Today",d:"The home screen builds itself piece by piece (Monday's session, the protein ring, the coach) with handwritten notes pointing at each: 'your session', 'your protein', 'me'. A short tour so the first open of the app is not a surprise."},
+ {t:"D · Hold to start day one",d:"One big ring button. Press and hold and it fills while the coach lifts, then a little burst and you are in. A small ritual that feels like a commitment, with a gentle 'Start Monday instead' for anyone who is not ready."}
+];
+const SHOW={
+0(st){
+ st.innerHTML=`<div class="head"><div class="meta">Your first step</div><div class="title" style="margin-top:6px">Let's start<br><em>small.</em></div><div style="margin-top:10px;font-size:15px;color:var(--ink2);line-height:1.4">Pick one tiny thing for today. That counts as day one.</div></div>`;
+ const opts=[["A glass of water with breakfast","water"],["A ten-minute walk","walk"],["Protein with your lunch","lunch"]];
+ const list=html(`<div class="abs" style="left:26px;right:26px;top:230px"></div>`);st.appendChild(list);
+ const rows=opts.map(([t],i)=>{const r=html(`<div style="height:56px;margin-bottom:10px;border-radius:20px;border:1.5px solid #8884;display:flex;align-items:center;gap:14px;padding:0 16px;font-weight:600;font-size:15.5px;position:relative;transition:background .35s,color .35s,border-color .35s"><span class="bx" style="width:26px;height:26px;border-radius:50%;border:2px solid currentColor;opacity:.55;flex:none"></span>${t}</div>`);list.appendChild(r);fade(r,300+i*150);return r});
+ const svg=el("svg",{viewBox:"0 0 340 620"},st);
+ // the demo finger picks the first card
+ const f=html(`<div class="abs" style="left:230px;top:330px;width:26px;height:26px;border-radius:50%;background:#A85A3C55;border:2px solid #A85A3C"></div>`);st.appendChild(f);
+ f.animate([{opacity:0,transform:"translate(40px,120px)"},{opacity:1,transform:"translate(0,0)",offset:.6},{opacity:1,transform:"scale(.8)",offset:.8},{opacity:0,transform:"scale(1.4)"}],{duration:1700,delay:1500,fill:"both"});
+ setTimeout(()=>{const r=rows[0];r.style.background="var(--ink)";r.style.color="var(--ivory)";r.style.borderColor="var(--ink)";const bx=r.querySelector(".bx");bx.style.opacity=1;bx.style.background="var(--ivory)";
+  const y=230+28,tick=el("path",{d:`M${26+16+6} ${y} l7 8 l12 -16`,fill:"none",stroke:"#3B322C","stroke-width":3.4,"stroke-linecap":"round","stroke-linejoin":"round"},svg);draw(tick,420,0);
+  const g=html(`<div class="abs hand" style="left:26px;width:170px;top:446px;font-size:27px;color:var(--pen);line-height:1.05">Day one has started.</div>`);st.appendChild(g);fade(g,200,500);
+  coach(st,"cheer",196,436,300).style.transform="scale(.82)";
+  for(let i=0;i<14;i++){const c=["#F0C9A8","#A85A3C","#C9B58A","#9EBA72"][i%4];const b=html(`<i class="abs" style="left:${60+Math.random()*220}px;top:300px;width:7px;height:5px;background:${c}"></i>`);st.appendChild(b);b.animate([{transform:"translate(0,0)",opacity:1},{transform:`translate(${(Math.random()-.5)*100}px,${120+Math.random()*120}px) rotate(300deg)`,opacity:0}],{duration:1400,delay:Math.random()*200,fill:"both"})}
+ },2700*(window.__t?0:1));
+ st.appendChild(html(`<div class="btn">Go to Today</div>`));
+},
+1(st){
+ st.innerHTML=`<div class="head"><div class="meta">Stay on track</div><div class="title" style="margin-top:6px">When shall I<br><em>nudge you?</em></div><div style="margin-top:10px;font-size:15px;color:var(--ink2);line-height:1.4">A few gentle reminders. Change them any time.</div></div>`;
+ const rows=[["Training days","Mon, Wed, Fri · 8:00 am"],["Protein check","Every day · 1:00 pm"],["Evening wind-down","Every day · 9:00 pm"]];
+ const list=html(`<div class="abs" style="left:26px;right:26px;top:224px"></div>`);st.appendChild(list);
+ rows.forEach(([a,b],i)=>{const r=html(`<div style="height:72px;margin-bottom:12px;border-radius:20px;border:1.5px solid #8884;display:flex;align-items:center;justify-content:space-between;padding:0 16px"><div><div style="font-weight:700;font-size:16px">${a}</div><div style="font-size:13px;color:var(--ink2);margin-top:2px">${b}</div></div><div class="sw" style="width:50px;height:30px;border-radius:15px;background:#8883;position:relative;transition:background .3s"><i style="position:absolute;left:3px;top:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #0004;transition:transform .3s cubic-bezier(.3,1.4,.5,1)"></i></div></div>`);list.appendChild(r);fade(r,300+i*150);
+  setTimeout(()=>{const sw=r.querySelector(".sw");sw.style.background="var(--ink)";sw.firstChild.style.transform="translateX(20px)"},1500+i*650)});
+ const c=coach(st,"suggest",210,432,2400);c.style.transform="scale(.82)";
+ const bell=html(`<div class="abs hand" style="left:30px;top:470px;font-size:22px;color:var(--pen);line-height:1.1;max-width:170px">I'll only knock<br>when it helps.</div>`);st.appendChild(bell);fade(bell,3000);
+ st.appendChild(html(`<div class="btn">Turn on reminders</div>`));
+},
+2(st){
+ st.innerHTML=`<div class="head"><div class="meta">Before you go in</div><div class="title" style="margin-top:6px">This is your <em>Today.</em></div></div>`;
+ const home=html(`<div class="abs" style="left:26px;right:26px;top:150px;height:350px"></div>`);st.appendChild(home);
+ const card1=html(`<div class="abs" style="left:0;right:0;top:0;height:92px;border-radius:20px;background:var(--ink);color:var(--ivory);padding:14px 18px"><div style="font-size:11px;letter-spacing:.09em;font-weight:600;opacity:.7">MONDAY</div><div style="font-weight:800;font-size:22px;letter-spacing:-.02em;margin-top:4px">Lift · 30 min</div><div style="font-size:13px;opacity:.75;margin-top:2px">Dumbbells at home</div></div>`);home.appendChild(card1);
+ const card2=html(`<div class="abs" style="left:0;width:136px;top:108px;height:150px;border-radius:20px;border:1.5px solid #8884;background:var(--ivory);padding:14px"><div style="font-size:11px;letter-spacing:.09em;font-weight:600;color:var(--ink2)">PROTEIN</div><svg viewBox="0 0 80 80" style="position:relative;width:80px;height:80px;margin:8px auto 0;display:block"><circle cx="40" cy="40" r="32" fill="none" stroke="#8883" stroke-width="8"/><circle class="rg" cx="40" cy="40" r="32" fill="none" stroke="#A85A3C" stroke-width="8" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" transform="rotate(-90 40 40)"/></svg><div style="text-align:center;font-weight:800;font-size:15px;margin-top:-52px">0 / 85g</div></div>`);home.appendChild(card2);
+ const card3=html(`<div class="abs" style="right:0;width:136px;top:108px;height:150px;border-radius:20px;border:1.5px solid #8884;background:var(--ivory);padding:14px"><div style="font-size:11px;letter-spacing:.09em;font-weight:600;color:var(--ink2)">YOUR COACH</div><video src="../coach-clips/webm/miso/idle.webm" muted playsinline loop autoplay style="width:110px;height:110px;display:block;margin:0 auto"></video></div>`);home.appendChild(card3);
+ const card4=html(`<div class="abs" style="left:0;right:0;top:274px;height:64px;border-radius:20px;border:1.5px dashed #8886;padding:12px 18px;font-size:14px;color:var(--ink2)"><b style="color:var(--ink)">This week</b><br>M · W · F lifting, rest the other days</div>`);home.appendChild(card4);
+ [card1,card2,card3,card4].forEach((c,i)=>fade(c,300+i*450,500,18));
+ const rg=card2.querySelector(".rg");rg.animate([{strokeDashoffset:201},{strokeDashoffset:190}],{duration:900,delay:1300,fill:"both"});
+ const svg=el("svg",{viewBox:"0 0 340 620"},st);
+ [["your session",26,150,288,92,196,1900],["your protein",26,258,136,150,30,2600],["me!",178,258,136,150,150,3300]].forEach(([t,x,y,w,h,tx,d])=>{
+  const r=el("rect",{x:x-4,y:y-4,width:w+8,height:h+8,rx:24,fill:"none",stroke:"var(--pen)","stroke-width":2.6,"stroke-linecap":"round"},svg);draw(r,700,d-300,"ease-in-out");
+  const n=html(`<div class="abs hand" style="left:${x+w-96+(t==="your session"?0:0)}px;top:${y-14}px;font-size:19px;color:var(--pen);background:var(--ivory);padding:0 8px;border-radius:8px;white-space:nowrap">${t}</div>`);st.appendChild(n);fade(n,d+300)});
+ st.appendChild(html(`<div class="btn">Show me around</div>`));
+},
+3(st){
+ st.innerHTML=`<div class="head" style="text-align:center"><div class="meta">Ready when you are</div><div class="title" style="margin-top:6px">Start <em>day one.</em></div></div>`;
+ const R=84,C=2*Math.PI*R;
+ const w=html(`<div class="abs" style="left:70px;top:190px;width:200px;height:200px"><svg viewBox="0 0 200 200" style="position:absolute;inset:0"><circle cx="100" cy="100" r="${R}" fill="none" stroke="#8883" stroke-width="10"/><circle class="pr" cx="100" cy="100" r="${R}" fill="none" stroke="#A85A3C" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" transform="rotate(-90 100 100)"/></svg><div class="bt" style="position:absolute;inset:22px;border-radius:50%;background:var(--ink);color:var(--ivory);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;text-align:center;line-height:1.15;transition:transform .2s">Hold to<br>begin</div></div>`);st.appendChild(w);
+ fade(w,300);
+ const pr=w.querySelector(".pr"),bt=w.querySelector(".bt");
+ const f=html(`<div class="abs" style="left:150px;top:276px;width:30px;height:30px;border-radius:50%;background:#A85A3C55;border:2px solid #A85A3C"></div>`);st.appendChild(f);
+ f.animate([{opacity:0,transform:"translate(60px,90px)"},{opacity:1,transform:"translate(0,0)",offset:.25},{opacity:1,transform:"scale(.85)",offset:.9},{opacity:0,transform:"scale(1.6)"}],{duration:3500,delay:1200,fill:"both"});
+ setTimeout(()=>{bt.style.transform="scale(.94)"},1700);
+ pr.animate([{strokeDashoffset:C},{strokeDashoffset:0}],{duration:2200,delay:1700,easing:"ease-in",fill:"both"});
+ setTimeout(()=>{bt.style.transform="scale(1)";bt.innerHTML="Day one<br>starts now";
+  const burst=html(`<div class="abs" style="left:70px;top:190px;width:200px;height:200px;border-radius:50%;border:4px solid #F0C9A8"></div>`);st.appendChild(burst);burst.animate([{transform:"scale(.9)",opacity:1},{transform:"scale(1.9)",opacity:0}],{duration:900,easing:"ease-out",fill:"both"});
+  for(let i=0;i<16;i++){const a=i/16*Math.PI*2,c=["#F0C9A8","#A85A3C","#C9B58A","#9EBA72"][i%4];const b=html(`<i class="abs" style="left:166px;top:286px;width:8px;height:6px;background:${c}"></i>`);st.appendChild(b);b.animate([{transform:"translate(0,0)",opacity:1},{transform:`translate(${Math.cos(a)*140}px,${Math.sin(a)*140}px) rotate(240deg)`,opacity:0}],{duration:1000,fill:"both",easing:"ease-out"})}
+  const g=html(`<div class="abs hand" style="left:0;right:0;top:420px;text-align:center;font-size:26px;color:var(--pen)">Let's go, Anna.</div>`);st.appendChild(g);fade(g,200);
+ },3900);
+ coach(st,"lifting",8,398,500).style.transform="scale(.8)";
+ const alt=html(`<div class="abs" style="left:0;right:0;bottom:84px;text-align:center;font-size:14px;font-weight:600;color:var(--ink2)">Start Monday instead</div>`);st.appendChild(alt);fade(alt,900);
+ st.appendChild(html(`<div class="btn" style="background:none;border:1.5px solid #8885;color:var(--ink)">Skip the ring, go to Today</div>`));
+}};
+function build(d,i){
+ const e=document.createElement("div");e.className="opt";
+ e.innerHTML=`<div class="tag">${d.t}</div><div class="why">${d.d}</div><div class="phone"><div class="stage"></div></div><button class="replay" style="margin-top:8px">Replay</button>`;
+ document.getElementById("row").appendChild(e);
+ const st=$(e,".stage"),run=()=>{st.innerHTML="";SHOW[i](st)};
+ $(e,".replay").onclick=run;setTimeout(run,300+i*150);
+}
+D.forEach(build);
+</script>
+</body>
+</html>

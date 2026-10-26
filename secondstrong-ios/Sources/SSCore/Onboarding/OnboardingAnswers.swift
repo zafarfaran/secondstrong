@@ -23,6 +23,10 @@ public struct OnboardingAnswers: Equatable, Sendable {
     public private(set) var bodySkipped = false
     public private(set) var experience: Experience?
     public private(set) var equipment: Equipment?
+    public private(set) var activity: ActivityLevel?
+    public private(set) var foodGoal: FoodGoal?
+    public private(set) var weeklyKilos = FoodGoal.cut.defaultWeeklyKilos
+    public private(set) var foodView = FoodView.calories
     private var nameEdited = false
 
     public init() {}
@@ -130,9 +134,44 @@ public struct OnboardingAnswers: Equatable, Sendable {
 
     public mutating func select(equipment: Equipment) { self.equipment = equipment }
 
+    // MARK: food and energy (SS-0024)
+
+    public mutating func select(activity level: ActivityLevel) { activity = level }
+
+    /// A new goal starts at its own gentle pace.
+    public mutating func select(foodGoal goal: FoodGoal) {
+        foodGoal = goal
+        weeklyKilos = goal.defaultWeeklyKilos
+    }
+
+    /// Snaps to 0.05 kg and stays inside the goal's cap, so no slider position can ask for more.
+    public mutating func select(weeklyKilos kilos: Double) {
+        guard let goal = foodGoal, goal != .hold else { return }
+        let snapped = (kilos / FoodGoal.kiloStep).rounded() * FoodGoal.kiloStep
+        weeklyKilos = min(max(snapped, FoodGoal.kiloStep), goal.maxWeeklyKilos)
+    }
+
+    public mutating func select(foodView view: FoodView) { foodView = view }
+
+    /// A calorie target needs age, height and weight, and never for pregnancy, breastfeeding or an eating-disorder history.
+    public var asksForEnergy: Bool {
+        asksForBody && !bodySkipped && birthDate != nil && heightCm != nil && weightKg != nil
+    }
+
+    /// Calories are the default. She can turn them off on the goal screen (spec section 7: offered in onboarding).
+    public var showsCalories: Bool { asksForEnergy && foodView == .calories }
+
+    /// The food and activity screens are skipped when no calorie target is possible.
+    public func isAsked(_ step: OnboardingStep) -> Bool {
+        switch step {
+        case .activity, .goal: asksForEnergy
+        default: true
+        }
+    }
+
     public func canContinue(from step: OnboardingStep, today: BirthDate = .today()) -> Bool {
         switch step {
-        case .welcome, .coach, .building, .plan: true
+        case .welcome, .coach, .building, .plan, .paywall, .invite: true
         case .consent: consented
         case .stage: stage != nil
         case .goals: !goals.isEmpty
@@ -140,6 +179,8 @@ public struct OnboardingAnswers: Equatable, Sendable {
         case .safety: !safety.isEmpty
         case .body: !asksForBody || bodySkipped || weightKg != nil
         case .training: experience != nil && equipment != nil
+        case .activity: activity != nil
+        case .goal: foodGoal != nil || foodView == .habitsOnly
         case .days: days.count >= Self.minDays
         }
     }

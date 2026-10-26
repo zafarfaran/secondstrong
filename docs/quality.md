@@ -6,7 +6,7 @@ changes. Last updated 2026-10-20.
 | Area | Grade | Notes |
 |---|---|---|
 | SSCore | B | Paths, answers, plan, mascot motion; 30 tests |
-| SSDesign | B | Palette, fonts, coach clip player (16 states), pill button; player and alpha tests |
+| SSDesign | B | Palette, fonts, coach clip player (20 states), pill button; player and alpha tests |
 | Onboarding | C | Six-screen prototype works on macOS; iOS build unverified; 8 geometry tests plus a playthrough |
 | Paywall and subscriptions | - | |
 | Coach and food features | - | |

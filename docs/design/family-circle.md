@@ -50,6 +50,8 @@ The feature has failed even if it works technically when:
 | D7 | All four value ideas are wanted: understand her, do small things for her, train alongside her, practical help | Owner |
 | D9 | A gifted year carries the same 7-day free trial | Owner |
 | D10 | Sign-in offers Apple, Google and email link. Family plan price and seats are decided later | Owner |
+| D11 | Launch pricing, a decision to revisit later (pounds, VAT included): solo 9.99 a month; solo plus one helper 12.99; each helper after the first adds 4.00. A helper is a supporter (a son or daughter), not a main user: they use the Family area, guides and cheers and check in with the member. Cap of four helpers (agent's assumption) | Owner |
+| D12 | Yearly prices, a decision to revisit later: eight months' price, ending in .99 (solo 79.99, solo + 1 helper 103.99, + 2 135.99, + 3 167.99, + 4 199.99) | Owner |
 | D8 | Build order: foundation, understand, do things, train alongside, practical help | Agreed in conversation |
 
 ## How it works
@@ -83,8 +85,23 @@ stage answers, coach conversations, free text.
 
 ### Paying
 
-- Anyone can pay for a plan. A family plan covers several members on one subscription
-  with one bill (D5). **Open:** the number of seats and the price.
+- Anyone can pay for a plan. A family plan covers several members on one subscription with one bill (D5).
+  Launch pricing (D11, D12), to be revisited later. Pounds, VAT included:
+
+  | Plan | Per month | Per year |
+  |---|---|---|
+  | Solo | 9.99 | 79.99 |
+  | Solo + 1 helper | 12.99 | 103.99 |
+  | Solo + 2 helpers | 16.99 | 135.99 |
+  | Solo + 3 helpers | 20.99 | 167.99 |
+  | Solo + 4 helpers | 24.99 | 199.99 |
+
+  A helper is a supporter, not a main user: they use the Family area, guides, cheers and the shared overview, and the
+  two can check in on each other. These replace the spec's solo prices (monthly 14.99 or 17.99, annual 79.99, weekly
+  4.99); weekly is dropped for now because it would cost about 21 a month. Apple cannot sell "per extra person" as a
+  quantity, so each row is its own store product, monthly and yearly (ten in all), and adding someone upgrades to the
+  next row. Keep every price in one place in code so it can change in one edit. **Open:** whether a helper has their own
+  coach and plan (it affects AI cost), currency confirmation, and the maximum number of helpers (four is assumed).
 - Trial: the 7-day trial from the pricing spec applies once per account ever, and a gifted
   year carries it too (D9). **Open:** how this works for a family plan in the same subscription
   group, and whether the store lets a subscription be bought for another person at all: Apple has

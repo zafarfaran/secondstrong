@@ -8,7 +8,7 @@ import Testing
         a.toggle(day: .wed)
         a.toggle(day: .mon)
         let plan = FirstWeekPlan(a)
-        #expect(plan.coachNote == "Mon first. Easy on rough mornings. — Luna")
+        #expect(plan.coachNote == "Mon first. Easy does it. — Luna")
         #expect(plan.trainingDays == [.mon, .wed])
     }
 

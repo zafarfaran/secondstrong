@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Food scan animation</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#7A6E64;--pen:#A85A3C;--page:#E4DCD1;--line:#3b322c1c;--track:#3b322c14;--paper:#FFFDF8}
+body.dark{--ink:#F1E9DF;--ivory:#1B1613;--card:#26201C;--ink2:#A89C90;--pen:#E09A78;--page:#0F0C0A;--line:#f1e9df1c;--track:#f1e9df18;--paper:#2A231E}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:26px 24px 70px}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:900px;line-height:1.5;font-size:14.5px}
+.top button,.rs{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer;margin-right:6px}
+.row{display:flex;gap:26px;flex-wrap:wrap;margin-top:22px}.opt{width:330px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:112px;margin-bottom:12px}
+.device{zoom:.8;width:426px;height:898px;border-radius:64px;background:linear-gradient(145deg,#3a3a3d,#17171a);padding:12px;position:relative;box-shadow:inset 0 0 0 2px #55555a,inset 0 0 0 5px #0a0a0b}
+.screen{position:relative;width:402px;height:874px;border-radius:52px;overflow:hidden;background:var(--ivory)}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:126px;height:37px;border-radius:24px;background:#000;z-index:60}
+.hand{font-family:"Gochi"}.meta{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+.abs{position:absolute}.mv{position:absolute;pointer-events:none}.mv video{width:100%;height:100%;display:block}
+.nocal .kcal{display:none!important}
+.fab{position:absolute;right:22px;bottom:112px;width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--ivory);display:flex;align-items:center;justify-content:center;z-index:45;cursor:pointer;transition:transform .15s}
+.fab:active{transform:scale(.9)}.fab svg,.bar svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.bar{position:absolute;left:34px;right:34px;bottom:30px;height:64px;border-radius:32px;background:var(--ivory);box-shadow:0 0 0 1px var(--line);display:flex;align-items:center;z-index:44}
+.bar .ind{position:absolute;top:8px;height:48px;border-radius:24px;background:var(--card);width:20%;left:0}
+.bar i{flex:1;display:flex;justify-content:center;position:relative;z-index:2;color:var(--ink2)}.bar i.on{color:var(--ink)}.bar svg{width:25px;height:25px}
+.week{display:flex;justify-content:space-between}.day{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--ink2);width:48px}
+.day .w{position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center}.day .n{position:absolute;font-size:14px;font-weight:700;color:var(--ink)}
+.meal{display:flex;align-items:center;gap:13px;padding:10px;border-radius:20px;background:var(--card);margin-bottom:9px;animation:slidein .5s cubic-bezier(.2,.9,.3,1.2) both}
+.meal b{font-size:15.5px;display:block}.meal small{color:var(--ink2);font-size:12.5px}.meal .r{margin-left:auto;text-align:right;font-weight:800;font-size:15px}
+@keyframes slidein{from{opacity:0;transform:translateY(22px) scale(.96)}to{opacity:1;transform:none}}
+.plate{width:56px;height:56px;flex:none}
+.pop{animation:pop .45s cubic-bezier(.2,1.6,.4,1)}@keyframes pop{0%{transform:scale(.6)}100%{transform:scale(1)}}
+.num{font-weight:800;letter-spacing:-.05em;line-height:1}
+.bump{animation:bump .5s ease}@keyframes bump{40%{transform:scale(1.12)}}
+.stampa{animation:stamp .5s cubic-bezier(.2,1.3,.4,1) both}@keyframes stamp{0%{opacity:0;transform:rotate(-8deg) scale(1.9)}100%{opacity:1;transform:rotate(-6deg) scale(1)}}
+.wave{position:absolute;left:0;width:200%;height:30px;bottom:100%;animation:wv 3.2s linear infinite}.wave.b{animation-duration:5s;animation-direction:reverse;opacity:.55}
+@keyframes wv{to{transform:translateX(-50%)}}
+.drop{position:absolute;animation:dropin .7s cubic-bezier(.5,0,.9,.5) both;z-index:30}@keyframes dropin{from{transform:translateY(-120px) scale(1.3);opacity:1}to{transform:translateY(90px) scale(.5);opacity:0}}
+.tape{position:absolute;top:-9px;left:50%;width:54px;height:18px;margin-left:-27px;background:#e9d8a6aa;transform:rotate(-3deg)}
+.menu{position:absolute;right:22px;bottom:178px;background:var(--ivory);border-radius:22px;box-shadow:0 0 0 1px var(--line);padding:6px;z-index:50;width:210px;animation:slidein .25s both}
+.menu div{display:flex;gap:12px;align-items:center;padding:11px 12px;font-weight:600;font-size:15px;border-radius:14px;cursor:pointer}.menu div:hover{background:var(--card)}
+.menu svg{width:20px;height:20px;fill:none;stroke:var(--pen);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.pad{position:absolute;left:0;right:0;top:0;bottom:0;padding:62px 22px 0;overflow:hidden}
+.scroll{position:absolute;left:0;right:0;bottom:0;overflow-y:auto;scrollbar-width:none;padding:0 22px 190px}.scroll::-webkit-scrollbar{display:none}
+.wk{display:flex;justify-content:space-between}
+.wd{display:flex;flex-direction:column;align-items:center;gap:7px;width:44px;font-size:11px;font-weight:700;color:var(--ink2);letter-spacing:.04em}
+.wd .c{width:40px;height:40px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:14.5px;font-weight:700;color:var(--ink);position:relative}
+.wd.sel .c{background:var(--ink);color:var(--ivory)}.wd.sel{color:var(--ink)}.wd .c svg{position:absolute;inset:0}
+.sum{background:var(--card);border-radius:28px;padding:18px 20px;display:flex;gap:18px;align-items:center}
+.macro{display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:700;color:var(--ink2);margin-top:7px}.macro i{flex:1;height:4px;border-radius:2px;background:var(--track);display:block;overflow:hidden}.macro i b{display:block;height:100%;background:var(--ink);border-radius:2px;transition:width .9s cubic-bezier(.3,.8,.3,1)}
+.tlw{position:relative;margin-top:22px;padding-left:58px}
+.tlw:before{content:"";position:absolute;left:46px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.it{position:relative;margin-bottom:12px}.it .tm{position:absolute;left:-58px;top:22px;width:36px;font-size:12px;font-weight:700;color:var(--ink2);text-align:right}
+.it .dt{position:absolute;left:-16px;top:25px;width:10px;height:10px;border-radius:50%;background:var(--ivory);border:2.5px solid var(--pen)}
+.mc{display:flex;gap:14px;align-items:center;padding:12px;border-radius:24px;background:var(--card)}
+.mc b{display:block;font-size:16px;letter-spacing:-.01em;line-height:1.2}.mc small{color:var(--ink2);font-size:12.5px;display:block;margin-top:3px}
+.pp{margin-left:auto;font-weight:800;font-size:13.5px;padding:6px 11px;border-radius:14px;background:var(--ivory);flex:none}
+.nt{display:flex;gap:11px;align-items:flex-start;margin:0 0 12px -2px;position:relative}
+.nt .av{width:42px;height:42px;border-radius:50%;background:var(--card);overflow:hidden;position:relative;flex:none}.nt .av video{position:absolute;left:-3px;top:-3px;width:48px;height:48px}
+.nt .tx{font-size:14.5px;line-height:1.35;padding-top:2px}.nt .tx .h{font-family:"Gochi";font-size:21px;color:var(--pen);line-height:1;display:block;margin-bottom:2px}
+.ghost{display:flex;align-items:center;gap:12px;padding:14px;border-radius:24px;border:1.5px dashed var(--ink2);color:var(--ink2);font-weight:700;font-size:14.5px}
+.fade{animation:fu .5s cubic-bezier(.2,.8,.3,1) both}@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero2{position:absolute;left:0;right:0;top:0;height:230px;overflow:hidden}.hero2 img{width:100%;height:100%;object-fit:cover;object-position:50% 100%}
+
+.cam{position:absolute;inset:0;background:#000}.cam svg.ph{position:absolute;inset:0;width:100%;height:100%}
+.gl{position:absolute;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#0006;color:#fff;width:44px;height:44px;z-index:5}
+.gl svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.pillw{white-space:nowrap;position:absolute;color:#fff;background:#0007;border-radius:20px;padding:9px 16px;font-size:13.5px;font-weight:600;z-index:5;display:flex;align-items:center;gap:8px}
+.modes{position:absolute;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:5}.modes span{color:#fffc;font-weight:700;font-size:14px;padding:8px 14px;border-radius:18px}.modes span.on{background:#fff;color:#3B322C}
+.shut{position:absolute;width:78px;height:78px;border-radius:50%;border:4px solid #fff;display:flex;align-items:center;justify-content:center;z-index:5;cursor:pointer}.shut i{width:60px;height:60px;border-radius:50%;background:#fff;display:block;transition:transform .12s}.shut:active i{transform:scale(.88)}
+.thumb{position:absolute;width:48px;height:48px;border-radius:13px;border:2px solid #fff;background:#a98a66;z-index:5;overflow:hidden}
+.br{position:absolute;width:46px;height:46px;border:4px solid #fff;z-index:4}
+.scan{position:absolute;left:0;right:0;height:2px;background:#fff;animation:sc 2.2s ease-in-out infinite;z-index:4}@keyframes sc{0%{top:18%}50%{top:78%}100%{top:18%}}
+.dim{position:absolute;inset:0;background:#0006;z-index:3}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--ivory);border-radius:30px 30px 0 0;padding:12px 22px 28px;z-index:20;animation:up .45s cubic-bezier(.2,.9,.3,1) both}@keyframes up{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 14px}
+.chip2{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding:7px 12px;border-radius:15px;background:var(--card);margin:0 6px 6px 0}.chip2 b{color:var(--ink2);font-weight:700}
+.stp{display:flex;align-items:center;gap:6px;background:var(--card);border-radius:18px;padding:4px}.stp span{padding:9px 16px;border-radius:14px;font-weight:700;font-size:14px;color:var(--ink2)}.stp span.on{background:var(--ink);color:var(--ivory)}
+.btn{display:flex;align-items:center;justify-content:center;height:54px;border-radius:27px;background:var(--ink);color:var(--ivory);font-weight:700;font-size:16px;cursor:pointer}
+.btn2{display:flex;align-items:center;justify-content:center;height:54px;border-radius:27px;border:1.5px solid var(--line);font-weight:700;font-size:15px;cursor:pointer;color:var(--ink)}
+.stg{position:absolute;left:30px;right:30px;top:340px;z-index:10;background:var(--ivory);border-radius:28px;padding:20px;text-align:center}
+.shim{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--track),var(--line),var(--track));background-size:200% 100%;animation:sh 1.3s linear infinite}@keyframes sh{to{background-position:-200% 0}}
+.toast{position:absolute;left:22px;right:22px;top:62px;background:var(--ink);color:var(--ivory);border-radius:22px;padding:14px 18px;font-weight:700;z-index:70;animation:fu .4s both;display:flex;gap:10px;align-items:center}
+.cbtn{cursor:pointer}.state{font-size:12px;color:var(--ink2);margin-top:8px}
+
+:root{--k:1}
+.ov{position:absolute;inset:0;z-index:4;pointer-events:none}.ov svg{position:absolute;inset:0;width:100%;height:100%}
+.stg2{position:absolute;left:0;right:0;bottom:92px;display:grid;place-items:center;z-index:9}
+.stg2 span{grid-area:1/1;white-space:nowrap;background:var(--ivory);color:var(--ink);font-weight:700;font-size:15px;padding:12px 20px;border-radius:24px;opacity:0}
+.tag{position:absolute;z-index:6;background:#fff;color:#3B322C;font-weight:800;font-size:13.5px;padding:7px 13px;border-radius:15px;white-space:nowrap;transform:scale(0);transform-origin:left center;display:flex;align-items:center;gap:7px}
+.tag i{width:9px;height:9px;border-radius:50%;background:#A85A3C;display:block}
+.tl{position:absolute;z-index:5;height:2px;background:#fff;transform-origin:left center;transform:scaleX(0)}
+.pdot{position:absolute;z-index:5;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid #A85A3C;margin:-6px 0 0 -6px;transform:scale(0)}
+.wr{position:absolute;z-index:6;font-family:"Gochi";color:#FFF3DC;white-space:nowrap}
+.rp{background:none;border:1px solid #8885;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer;font:600 12.5px Bricolage}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes grow{to{transform:scaleX(1)}}@keyframes grow2{to{transform:var(--r,rotate(0deg)) scaleX(1)}}
+@keyframes pillshow{0%{opacity:0;transform:translateY(6px)}10%,86%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fadein{to{opacity:1}}
+@keyframes sweep{0%{transform:translateY(-130px)}45%{transform:translateY(560px)}50%{transform:translateY(560px)}95%,100%{transform:translateY(-130px)}}
+@keyframes sweep2{0%{transform:translateY(0)}100%{transform:translateY(520px)}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(.97)}}
+@keyframes tick{to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<h1>Scanning a meal: four animations</h1>
+<p class="lede">What you see while Miso reads the photo, about five seconds, in three steps: looking, spotting the food, estimating portions. Each loops by itself; <b>Replay</b> restarts it and <b>Slow-mo</b> stretches it so you can study it. All use the same plate photo. Everything is flat paper, no glows. With Reduce Motion on, the app would show D instead of whichever you pick. Fake data. Nothing is built.</p>
+<div class="top"><button id="mode">Night</button><button id="slow">Slow-mo: off</button></div>
+<div class="row" id="row"></div>
+<script>
+const $=(s,r=document)=>r.querySelector(s);
+const CL="../coach-clips/webm/miso/";
+const photo=(blur,vb)=>`<svg class="ph" viewBox="${vb||"0 0 402 874"}" preserveAspectRatio="xMidYMid slice" style="${blur?"filter:blur(6px) brightness(.8)":""}"><defs><linearGradient id="wd" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9A7752"/><stop offset="1" stop-color="#6B4F36"/></linearGradient></defs><rect width="402" height="874" fill="url(#wd)"/>${[80,170,260,350,440,530,620,710,800].map(y=>`<path d="M0 ${y}q200 ${y%3*5-6} 402 0" stroke="#5a3f2a" stroke-opacity=".35" fill="none" stroke-width="2"/>`).join("")}
+<circle cx="201" cy="430" r="158" fill="#F6F1E7"/><circle cx="201" cy="430" r="130" fill="none" stroke="#E3D9C6" stroke-width="3"/>
+<g transform="rotate(-12 190 430)"><rect x="118" y="372" width="112" height="112" rx="18" fill="#D8A864"/><rect x="128" y="382" width="92" height="92" rx="12" fill="#E7C084"/></g><g transform="rotate(10 220 440)"><rect x="196" y="388" width="104" height="104" rx="18" fill="#D2A05C"/><rect x="206" y="398" width="84" height="84" rx="12" fill="#E3BA7C"/></g>
+<ellipse cx="170" cy="418" rx="34" ry="28" fill="#fff"/><circle cx="172" cy="418" r="14" fill="#F2B63A"/><ellipse cx="250" cy="440" rx="32" ry="27" fill="#fff"/><circle cx="252" cy="440" r="13" fill="#EFAE30"/>
+<circle cx="215" cy="486" r="19" fill="#FFFDF4"/><circle cx="238" cy="494" r="15" fill="#FFFDF4"/><circle cx="195" cy="498" r="13" fill="#FFFDF4"/>
+<circle cx="154" cy="474" r="9" fill="#6C9A52"/><circle cx="168" cy="482" r="7" fill="#7DAA6A"/>
+<rect x="352" y="300" width="14" height="260" rx="7" fill="#C9C9CC" transform="rotate(8 359 430)"/></svg>`;
+
+const T=(n)=>`calc(${n}s*var(--k))`;
+const A=(name,dur,delay,extra="")=>`animation:${name} ${T(dur)} ${T(delay)} both ${extra}`;
+const stage=(texts)=>`<div class="stg2">${texts.map(([t,a,b])=>`<span style="${A("pillshow",b-a,a)}">${t}</span>`).join("")}</div>`;
+const STG=[["Looking at your photo",0,1.6],["Spotting the food",1.6,3.2],["Estimating portions",3.2,4.8]];
+const pts={egg:[210,425],toast:[160,452],cheese:[215,490]};
+const tag=(txt,x,y,at,dir=1,up=1)=>{const len=70,ex=x+dir*len*Math.cos(Math.PI/6),ey=y-up*len*0.5,ang=dir>0?-30*up:(up>0?-150:150);
+ const pos=dir>0?`left:${ex}px;transform-origin:left center`:`right:${402-ex}px;transform-origin:right center`;
+ return `<div class="pdot" style="left:${x}px;top:${y}px;${A("pop",.3,at)}"></div><div class="tl" style="left:${x}px;top:${y}px;width:${len}px;--r:rotate(${ang}deg);transform:var(--r) scaleX(0);${A("grow2",.3,at+.1)}"></div><div class="tag" style="${pos};top:${ey-16}px;${A("pop",.35,at+.3)}"><i></i>${txt}</div>`};
+const CONCEPTS=[
+{name:"A · Scan band and tags",why:"A band sweeps over the photo while the corners breathe. Then small tags pin down what is on the plate, one at a time. A dashed ring is drawn around the plate while the portion is measured, and the protein number counts up at the end.",
+ build:()=>`<div class="cam">${photo(true)}
+  <div class="ov" style="top:0"><div style="position:absolute;left:0;right:0;top:200px;height:130px;background:linear-gradient(#fff0,#ffffff55);border-bottom:2px solid #fff;${A("sweep",3.2,0)}"></div></div>
+  <svg class="ph" style="z-index:3;position:absolute;inset:0" viewBox="0 0 402 874" preserveAspectRatio="xMidYMid slice"><circle cx="201" cy="430" r="172" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="1082" stroke-dashoffset="1082" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:201px 430px;${A("draw",1.4,3.2)}"/></svg>
+  <div style="position:absolute;left:51px;right:51px;top:236px;height:316px;${A("breathe",1.6,0,"infinite")}">${[["left:0;top:0;border-right:0;border-bottom:0;border-top-left-radius:20px"],["right:0;top:0;border-left:0;border-bottom:0;border-top-right-radius:20px"],["left:0;bottom:0;border-right:0;border-top:0;border-bottom-left-radius:20px"],["right:0;bottom:0;border-left:0;border-top:0;border-bottom-right-radius:20px"]].map(s=>`<div class="br" style="${s[0]}"></div>`).join("")}</div>
+  ${tag("Eggs ×2",218,418,1.9)}${tag("Toast ×2",150,448,2.3,-1,1)}${tag("Cottage cheese",215,492,2.7,-1,-1)}
+  <div class="wr" style="left:0;right:0;top:640px;text-align:center;font-size:44px;opacity:0;${A("fadein",.4,4.5)}">≈ 28g protein</div>
+  ${stage(STG)}</div>`},
+{name:"B · Miso's lens",why:"The photo stays soft, and a round lens glides over it, bringing one food at a time into focus while a tag pops up for it. Miso peeks in at the corner, thinking. The lens opens wide over the plate when it measures the portion.",
+ build:()=>{const L=[[170,418,70,.4],[250,440,70,1.5],[215,490,60,2.6],[201,430,175,3.6]];
+  const kf=`@keyframes lens{0%{clip-path:circle(0px at 201px 300px)}8%{clip-path:circle(70px at 170px 418px)}30%{clip-path:circle(70px at 170px 418px)}38%{clip-path:circle(70px at 250px 440px)}56%{clip-path:circle(70px at 250px 440px)}64%{clip-path:circle(60px at 215px 490px)}80%{clip-path:circle(60px at 215px 490px)}92%,100%{clip-path:circle(175px at 201px 430px)}}`;
+  return `<style>${kf}</style><div class="cam">${photo(true)}<div class="cam" style="${A("lens",4.6,0)}">${photo(false)}</div>
+  ${tag("Eggs ×2",218,418,1.0)}${tag("Toast ×2",150,448,1.6,-1,1)}${tag("Cottage cheese",215,492,2.9,-1,-1)}
+  <div class="abs" style="left:6px;bottom:100px;width:160px;height:160px;z-index:8;pointer-events:none"><video src="${CL}thinking.webm" muted playsinline loop autoplay style="width:100%;height:100%"></video></div>
+  <div class="wr" style="left:0;right:0;top:640px;text-align:center;font-size:44px;opacity:0;${A("fadein",.4,4.5)}">≈ 28g protein</div>
+  ${stage(STG)}</div>`}},
+{name:"C · Pen and ink",why:"The same pen as the onboarding: it draws a hand-inked loop around each food, writes its name beside it in handwriting, and finally writes the protein number with an underline. It reads as Miso making notes on your plate, and is the most on-brand.",
+ build:()=>{const loop=(cx,cy,rx,ry,at,label,lx,ly,rot=-6)=>`<svg class="ph" style="z-index:5" viewBox="0 0 402 874" preserveAspectRatio="xMidYMid slice"><path d="M${cx-rx} ${cy} C${cx-rx} ${cy-ry*1.15} ${cx+rx} ${cy-ry*1.2} ${cx+rx+4} ${cy} C${cx+rx} ${cy+ry*1.2} ${cx-rx-6} ${cy+ry*1.1} ${cx-rx+8} ${cy-ry*.5}" fill="none" stroke="#FFE9C7" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="520" stroke-dashoffset="520" style="${A("draw",.8,at)}"/></svg><div class="wr" style="left:${lx}px;top:${ly}px;font-size:26px;opacity:0;transform:rotate(${rot}deg);${A("fadein",.3,at+.6)}">${label}</div>`;
+  return `<div class="cam">${photo(true)}<div class="dim" style="background:#0003"></div>
+  ${loop(172,420,52,40,.4,"2 eggs",62,330,-8)}${loop(250,440,48,38,1.3,"toast",290,356,6)}${loop(215,490,38,28,2.2,"cottage cheese",96,600,-4)}
+  <svg class="ph" style="z-index:5" viewBox="0 0 402 874" preserveAspectRatio="xMidYMid slice"><circle cx="201" cy="430" r="170" fill="none" stroke="#FFE9C7" stroke-width="2.6" stroke-dasharray="9 11" stroke-linecap="round" style="opacity:0;${A("fadein",.4,3.2)}"/></svg>
+  <div class="wr" style="left:0;right:0;top:640px;text-align:center;font-size:52px;opacity:0;${A("fadein",.5,3.9)}">about 28g protein</div>
+  <svg class="ph" style="z-index:5" viewBox="0 0 402 874" preserveAspectRatio="xMidYMid slice"><path d="M90 710 C150 722 250 700 312 714" fill="none" stroke="#FFE9C7" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="260" stroke-dashoffset="260" style="${A("draw",.6,4.3)}"/></svg>
+  ${stage(STG)}</div>`}},
+{name:"D · Quiet checklist",why:"No effects on the photo. Miso's face and three steps tick off in a card, with a thin bar filling. The calmest and cheapest, and the one shown when Reduce Motion is on.",
+ build:()=>`<div class="cam">${photo(true)}<div class="dim" style="background:#0005"></div>
+  <div style="position:absolute;left:28px;right:28px;top:300px;background:var(--ivory);border-radius:30px;padding:22px 22px 24px;z-index:8">
+   <div style="display:flex;gap:14px;align-items:center;margin-bottom:16px"><div style="width:62px;height:62px;border-radius:50%;background:var(--card);overflow:hidden;position:relative;flex:none"><video src="${CL}thinking.webm" muted playsinline loop autoplay style="position:absolute;left:-4px;top:-4px;width:70px;height:70px"></video></div><div><span class="hand" style="font-size:23px;color:var(--pen);display:block;line-height:1">Miso</span><b style="font-size:17px">Reading your meal</b></div></div>
+   ${["Looking at your photo","Spotting the food","Estimating portions"].map((t,i)=>`<div style="display:flex;gap:12px;align-items:center;padding:8px 0;opacity:0;transform:translateY(8px);${A("tick",.4,i*1.5)}"><span style="width:22px;height:22px;border-radius:50%;background:var(--pen);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;opacity:0;${A("fadein",.3,i*1.5+1.2)}">✓</span><span style="font-weight:600;font-size:15px;margin-left:-34px;padding-left:34px">${t}</span></div>`).join("")}
+   <div style="height:5px;border-radius:3px;background:var(--track);margin-top:14px;overflow:hidden"><div style="height:5px;background:var(--pen);transform-origin:left;transform:scaleX(0);${A("grow",4.6,0)}"></div></div></div></div>`}
+];
+CONCEPTS.forEach(c=>{
+ const e=document.createElement("div");e.className="opt";e.innerHTML=`<div class="tag0 tagt" style="font-weight:800;margin-bottom:3px">${c.name}</div><div class="why">${c.why}</div><div class="device"><div class="screen"><div class="island"></div><div class="mount"></div></div></div><div style="margin-top:10px"><button class="rp">Replay</button></div>`;
+ $("#row").appendChild(e);const m=$(".mount",e);
+ const play=()=>{m.innerHTML="";void m.offsetWidth;m.innerHTML=c.build()};
+ play();$(".rp",e).onclick=play;c.loop=setInterval(play,(c.name.startsWith("D")?6.4:7.0)*1000*(parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--k"))||1));
+});
+let slow=false;
+$("#slow").onclick=ev=>{slow=!slow;document.documentElement.style.setProperty("--k",slow?2.5:1);ev.target.textContent="Slow-mo: "+(slow?"on":"off");CONCEPTS.forEach(c=>clearInterval(c.loop));document.querySelectorAll(".rp").forEach(b=>b.click())};
+$("#mode").onclick=ev=>{document.body.classList.toggle("dark");ev.target.textContent=document.body.classList.contains("dark")?"Day":"Night"};
+</script></body></html>

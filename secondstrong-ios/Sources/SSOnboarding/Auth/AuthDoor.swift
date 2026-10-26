@@ -30,11 +30,14 @@ struct AuthDoor: View {
                     .frame(maxWidth: 320, alignment: .leading)
                     .padding(.top, 10)
                 #if DEBUG
-                Button("Prototype only: a returning member") { flow.previewAuth(.returning) }
-                    .buttonStyle(.plain)
-                    .font(SSFont.display(12, weight: 600))
-                    .foregroundStyle(Palette.pen)
-                    .padding(.top, 10)
+                HStack(spacing: 14) {
+                    Button("Prototype: returning member") { flow.previewAuth(.returning) }
+                    Button("Prototype: invited") { flow.previewInvite() }
+                }
+                .buttonStyle(.plain)
+                .font(SSFont.display(12, weight: 600))
+                .foregroundStyle(Palette.pen)
+                .padding(.top, 10)
                 #endif
                 Spacer(minLength: 0)
             }

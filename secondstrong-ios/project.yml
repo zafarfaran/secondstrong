@@ -15,10 +15,16 @@ targets:
     dependencies:
       - package: SecondStrongKit
         product: SSOnboarding
+      - package: SecondStrongKit
+        product: SSToday
+      - target: MisoWidgets
+        embed: true
     info:
       path: App/Info.plist
       properties:
         CFBundleDisplayName: Second Strong
+        NSCameraUsageDescription: Second Strong uses the camera so you can photograph a meal. The photo stays on your phone.
+        NSPhotoLibraryUsageDescription: Choose a photo of a meal for your coach to read.
         UILaunchScreen:
           UIColorName: LaunchBackground
           UIImageName: LaunchMark
@@ -28,5 +34,32 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.secondstrong.app
+        SWIFT_VERSION: "6.0"
+        TARGETED_DEVICE_FAMILY: "1"
+  MisoWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - Widgets
+    dependencies:
+      - package: SecondStrongKit
+        product: SSWidgets
+      - package: SecondStrongKit
+        product: SSCore
+      - package: SecondStrongKit
+        product: SSDesign
+    info:
+      path: Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: Miso
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Widgets/MisoWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.secondstrong.app]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.secondstrong.app.widgets
         SWIFT_VERSION: "6.0"
         TARGETED_DEVICE_FAMILY: "1"

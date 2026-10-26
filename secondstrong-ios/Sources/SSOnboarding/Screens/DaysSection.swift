@@ -19,7 +19,7 @@ struct DaysSection: View {
                 .padding(.top, 14)
                 .animation(nil, value: flow.answers.days)
             Spacer(minLength: 0)
-            PillButton("Make my plan", enabled: flow.answers.canContinue(from: .days)) { flow.next() }
+            PillButton(flow.answers.asksForEnergy ? "Continue" : "Make my plan", enabled: flow.answers.canContinue(from: .days)) { flow.next() }
                 .penAnchor(.next(OnboardingStep.days.rawValue))
         }
     }

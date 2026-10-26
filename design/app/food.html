@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Food tab concepts</title>
+<style>
+@font-face{font-family:"Bricolage";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/BricolageGrotesque.ttf");font-weight:200 800}
+@font-face{font-family:"Gochi";src:url("../../secondstrong-ios/Sources/SSDesign/Resources/Fonts/GochiHand-Regular.ttf")}
+:root{--ink:#3B322C;--ivory:#FBF8F4;--card:#F6F0E8;--ink2:#7A6E64;--pen:#A85A3C;--page:#E4DCD1;--line:#3b322c1c;--track:#3b322c14}
+body.dark{--ink:#F1E9DF;--ivory:#1B1613;--card:#26201C;--ink2:#A89C90;--pen:#E09A78;--page:#0F0C0A;--line:#f1e9df1c;--track:#f1e9df18}
+*{box-sizing:border-box;margin:0}
+body{background:var(--page);font-family:"Bricolage",system-ui,sans-serif;color:var(--ink);padding:26px 24px 70px}
+h1{font-size:26px;font-weight:800;letter-spacing:-.02em}.lede{color:var(--ink2);margin:6px 0 12px;max-width:900px;line-height:1.5;font-size:14.5px}
+.top button{font:600 12.5px "Bricolage";border:1px solid #8885;background:none;color:var(--ink);border-radius:15px;height:30px;padding:0 14px;cursor:pointer;margin-right:6px}
+.row{display:flex;gap:26px;flex-wrap:wrap;margin-top:22px}.opt{width:330px}.tag{font-weight:800;margin-bottom:3px}.why{font-size:13px;color:var(--ink2);line-height:1.4;min-height:112px;margin-bottom:12px}
+.device{zoom:.8;width:426px;height:898px;border-radius:64px;background:linear-gradient(145deg,#3a3a3d,#17171a);padding:12px;position:relative;box-shadow:inset 0 0 0 2px #55555a,inset 0 0 0 5px #0a0a0b}
+.screen{position:relative;width:402px;height:874px;border-radius:52px;overflow:hidden;background:var(--ivory)}
+.island{position:absolute;top:11px;left:50%;transform:translateX(-50%);width:126px;height:37px;border-radius:24px;background:#000;z-index:50}
+.pad{position:absolute;inset:0;padding:64px 22px 110px;overflow:hidden}
+.hand{font-family:"Gochi"}.meta{font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+h2{font-size:31px;font-weight:800;letter-spacing:-.04em}
+.week{display:flex;justify-content:space-between;margin:14px 0 16px}
+.day{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-size:11.5px;font-weight:700;color:var(--ink2);width:48px}
+.day.sel{color:var(--ink)}.day .n{position:absolute;font-size:14px;font-weight:700;color:var(--ink)}.day .w{position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center}
+.card{background:var(--card);border-radius:26px;padding:18px}
+.chip{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;font-weight:700}
+.meal{display:flex;align-items:center;gap:13px;padding:11px;border-radius:20px;background:var(--card);margin-bottom:9px}
+.th{width:58px;height:58px;border-radius:15px;flex:none;display:flex;align-items:center;justify-content:center}
+.th svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.meal b{font-size:15.5px;display:block}.meal small{color:var(--ink2);font-size:12.5px}.meal .r{margin-left:auto;text-align:right;font-weight:800;font-size:15px}
+.fab{position:absolute;right:22px;bottom:112px;width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--ivory);display:flex;align-items:center;justify-content:center;z-index:25;cursor:pointer}
+.fab svg,.bar svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.menu{position:absolute;right:22px;bottom:178px;background:var(--ivory);border-radius:22px;box-shadow:0 0 0 1px var(--line);padding:6px;z-index:40;width:200px}
+.menu div{display:flex;gap:12px;align-items:center;padding:11px 12px;font-weight:600;font-size:15px;border-radius:14px}.menu svg{width:20px;height:20px;fill:none;stroke:var(--pen);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bar{position:absolute;left:34px;right:34px;bottom:30px;height:64px;border-radius:32px;background:var(--ivory);box-shadow:0 0 0 1px var(--line);display:flex;align-items:center;z-index:30}
+.bar .ind{position:absolute;top:8px;height:48px;border-radius:24px;background:var(--card);width:20%;left:0}
+.bar i{flex:1;display:flex;justify-content:center;position:relative;z-index:2;color:var(--ink2)}.bar i.on{color:var(--ink)}.bar svg{width:25px;height:25px}
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:16px 2px 10px}.sec b{font-size:18px;letter-spacing:-.02em}
+.slot{border-radius:22px;background:var(--card);padding:6px 12px 10px;margin-bottom:10px}
+.slot .h{display:flex;justify-content:space-between;align-items:center;padding:8px 2px;font-weight:800;font-size:15px}
+.slot .h span{font-weight:600;color:var(--ink2);font-size:13px}
+.mini{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:14px}.mini .t{width:34px;height:34px;border-radius:10px;flex:none}
+.note{display:flex;gap:10px;align-items:flex-start;margin:4px 0 10px 26px;padding:12px 14px;border-radius:18px;border:1.5px dashed var(--line);font-size:14px;line-height:1.35}
+.tl{position:relative;margin-left:34px;border-left:2px solid var(--line);padding-left:20px}.tl .tm{position:absolute;left:-76px;width:56px;text-align:right;font-size:12px;font-weight:700;color:var(--ink2)}
+.tl .dot{position:absolute;left:-8px;width:12px;height:12px;border-radius:50%;background:var(--pen)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px 0;text-align:center;font-size:11px;font-weight:700;color:var(--ink2)}
+.cal .c{display:flex;justify-content:center;padding:2px 0;cursor:pointer}.cal .c .w{position:relative;width:38px;height:38px;display:flex;align-items:center;justify-content:center}
+.cal .c .n{position:absolute;font-size:12.5px;color:var(--ink);font-weight:700}
+.sw{position:absolute;left:0;right:0;bottom:6px;text-align:center}
+</style></head>
+<body>
+<h1>Food tab: four layouts</h1>
+<p class="lede">Based on how Cal AI works: a week strip with a ring on each day, one big card for what is left today, a short list of what you ate with photos, and a round + button to scan. Ours differs where it has to: protein comes first, and calories are optional. The <b>Calories</b> switch shows both, because some members (eating-disorder history, pregnant or breastfeeding, or anyone who opted out) never see a calorie number. No shadows. Fake data. Nothing is built. Tap days, the + button and the calendar on each phone.</p>
+<div class="top"><button id="mode">Night</button><button id="cal">Calories: on</button></div>
+<div class="row" id="row"></div>
+<p class="lede" style="margin-top:28px;font-size:12.5px">Cal AI sources: <a href="https://screensdesign.com/apps/cal-ai-calorie-tracker/?av=3193&id=1739&vt=1">screensdesign.com Cal AI screens</a>, <a href="https://apps.apple.com/app/id6535683072">App Store listing</a>, <a href="https://screensdesign.com/articles/calorie-tracker-app-design/">calorie tracker design article</a>.</p>
+<script>
+const $=(s,r=document)=>r.querySelector(s);
+const state={cal:true,sel:[3,3,3,3],month:false,menu:[0,0,0,0]};
+const DAYS=["M","T","W","T","F","S","S"];
+// protein, kcal, targets 85g / 1540
+const PT=85,KT=1540;
+const WEEK=[{p:80,k:1500},{p:88,k:1610},{p:70,k:1380},{p:62,k:1090},{p:0,k:0},{p:0,k:0},{p:0,k:0}];
+const FOOD={bk:[["Greek yoghurt, berries","8:05",310,24,"#C98B5E"],["Coffee, oat milk","8:40",60,2,"#8E9E86"]],ln:[["Eggs on toast, cottage cheese","12:40",480,28,"#D9A47A"]],dn:[],sn:[["Almonds, handful","15:30",240,10,"#A58FB5"]]};
+const ALL=[...FOOD.bk,...FOOD.ln,...FOOD.sn];
+const plate='<path d="M4 13a8 8 0 0016 0zM12 5v3M8 6l1 2M16 6l-1 2"/>';
+const ringSvg=(p,size,sw,col)=>{const r=(size-sw)/2,c=2*Math.PI*r;return `<svg width="${size}" height="${size}" style="transform:rotate(-90deg;position:absolute"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--track)" stroke-width="${sw}"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${col||"var(--pen)"}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-Math.min(1,p))}" style="transform:rotate(-90deg);transform-origin:center"/></svg>`};
+const dayRing=(i,sel)=>{const d=WEEK[i];return `<div class="day ${sel?"sel":""}" data-d="${i}">${DAYS[i]}<div class="w">${ringSvg(d.p/PT,40,3.2,sel?"var(--pen)":"var(--ink2)")}<span class="n">${((26+i-1)%31)+1}</span></div></div>`};
+const week=(k)=>`<div class="week">${WEEK.map((_,i)=>dayRing(i,i===state.sel[k])).join("")}</div>`;
+const tot=()=>({p:ALL.reduce((a,m)=>a+m[3],0)+ (state.sel[0]===3?0:0),k:ALL.reduce((a,m)=>a+m[2],0)});
+const tb=(c)=>`<div class="th" style="background:${c}"><svg viewBox="0 0 24 24">${plate}</svg></div>`;
+const row=(m)=>`<div class="meal">${tb(m[4])}<div><b>${m[0]}</b><small>${m[1]}</small></div><div class="r">${m[3]}g<small style="display:${state.cal?"block":"none"}">${m[2]} kcal</small></div></div>`;
+const IC={food:'<path d="M6 3v7a3 3 0 006 0V3M9 3v18M18 3c-2.2 2-3.2 5-3.2 8H18v10"/>',train:'<path d="M3 9.5v5M6.2 7v10M17.8 7v10M21 9.5v5M6.2 12h11.6"/>',today:'<path d="M4 12l8-7 8 7M6 10.5V20h12v-9.5"/>',coach:'<path d="M4.5 5.5h15v10.5H10l-5.5 4z"/>',progress:'<path d="M4 20v-9M10 20V4M16 20v-6M22 20H2"/>'};
+const bar=`<div class="bar"><div class="ind" style="left:0"></div>${Object.keys(IC).map(k=>`<i class="${k==="food"?"on":""}"><svg viewBox="0 0 24 24">${IC[k]}</svg></i>`).join("")}</div>`;
+const plus='<svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>';
+const MENU=`<div class="menu"><div><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="12" cy="12" r="3.2"/></svg>Scan a meal</div><div><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>Search food</div><div><svg viewBox="0 0 24 24"><path d="M5 20l1-4L17 5l3 3L9 19zM15 7l3 3"/></svg>Quick add</div></div>`;
+const fab=(k)=>`<div class="fab" data-m="${k}">${plus}</div>${state.menu[k]?MENU:""}`;
+const dev=(inner,k)=>`<div class="device"><div class="screen"><div class="island"></div>${inner}${fab(k)}${bar}</div></div>`;
+const head=(sub)=>`<div class="meta">Thursday 29 October</div><h2>Food</h2>`;
+const ProteinBig=()=>{const t=tot();return `<div style="display:flex;align-items:baseline;gap:8px"><span style="font-size:64px;font-weight:800;letter-spacing:-.05em;line-height:1">${t.p}</span><span style="font-size:18px;font-weight:700;color:var(--ink2)">of ${PT}g protein</span></div><div style="height:8px;border-radius:4px;background:var(--track);margin:12px 0 4px"><div style="height:8px;border-radius:4px;background:var(--ink);width:${Math.round(t.p/PT*100)}%"></div></div>`};
+const V=[
+(k)=>{const t=tot();return dev(`<div class="pad">${head()}${week(k)}
+ <div class="card" style="display:flex;align-items:center;gap:18px;padding:20px">
+  <div style="position:relative;width:132px;height:132px;flex:none">${ringSvg(state.cal?t.k/KT:t.p/PT,132,11)}<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><b style="font-size:34px;letter-spacing:-.04em;line-height:1">${state.cal?KT-t.k:PT-t.p}</b><span style="font-size:12px;color:var(--ink2);font-weight:600;margin-top:2px">${state.cal?"kcal left":"g protein left"}</span></div></div>
+  <div style="flex:1;display:grid;gap:12px">
+   <div><div class="meta">Protein</div><b style="font-size:19px">${t.p}<span style="color:var(--ink2);font-weight:600;font-size:13px"> / ${PT}g</span></b><div style="height:5px;border-radius:3px;background:var(--track);margin-top:5px"><div style="height:5px;border-radius:3px;background:var(--pen);width:${t.p/PT*100}%"></div></div></div>
+   ${state.cal?`<div><div class="meta">Eaten</div><b style="font-size:19px">${t.k}<span style="color:var(--ink2);font-weight:600;font-size:13px"> kcal</span></b></div>`:`<div><div class="meta">Meals</div><b style="font-size:19px">${ALL.length}<span style="color:var(--ink2);font-weight:600;font-size:13px"> logged</span></b></div>`}
+  </div></div>
+ <div class="sec"><b>Recently logged</b><span class="meta">${ALL.length} items</span></div>${ALL.slice().reverse().slice(0,3).map(row).join("")}</div>`,k)},
+(k)=>{const slot=(n,list,tm)=>`<div class="slot"><div class="h">${n}<span>${list.length?list.reduce((a,m)=>a+m[3],0)+"g":tm}</span></div>${list.length?list.map(m=>`<div class="mini"><div class="t" style="background:${m[4]}"></div><div style="flex:1"><b>${m[0]}</b></div><span style="color:var(--ink2)">${state.cal?m[2]+" kcal":m[3]+"g"}</span></div>`).join(""):`<div style="color:var(--ink2);font-size:13.5px;padding:2px 0 4px">Nothing yet. Tap + to add.</div>`}</div>`;
+ return dev(`<div class="pad">${head()}${week(k)}${ProteinBig()}
+ <div style="display:flex;gap:10px;margin:10px 0 6px">${["Carbs 98g","Fat 41g","Fibre 17g"].map(x=>`<span class="chip" style="padding:7px 12px;border-radius:14px;background:var(--card)">${x}</span>`).join("")}${state.cal?`<span class="chip" style="padding:7px 12px;border-radius:14px;background:var(--card);margin-left:auto">450 kcal left</span>`:""}</div>
+ ${slot("Breakfast",FOOD.bk)}${slot("Lunch",FOOD.ln)}${slot("Dinner",FOOD.dn,"Usually 6:30 pm")}</div>`,k)},
+(k)=>{const open=state.month;const t=tot();
+ const cells=[];const start=3;for(let i=0;i<start;i++)cells.push("");for(let d=1;d<=31;d++)cells.push(d);
+ const mk=(d)=>{if(!d)return `<div class="c"></div>`;const p=d<29?[.9,1,.8,.95,.7,.5,.6,.9,1,.85,.4,.7,.9,.95,.8,.6,.9,1,.7,.85,.9,.5,.8,.9,.95,.9,1,.8][d-1]:d===29?t.p/PT:0;const s=d===29;return `<div class="c" data-day="${d}"><div class="w">${ringSvg(p,38,3,s?"var(--pen)":"var(--ink2)")}<span class="n" style="${s?"":"font-weight:600"}">${d}</span></div></div>`};
+ return dev(`<div class="pad"><div style="display:flex;justify-content:space-between;align-items:center"><div><div class="meta">October</div><h2>Food</h2></div><div data-month="1" style="font-weight:700;font-size:13.5px;border-radius:16px;padding:8px 14px;background:var(--card);cursor:pointer">${open?"Week":"Month"}</div></div>
+ ${open?`<div class="cal" style="margin-top:14px">${DAYS.map(d=>`<div>${d}</div>`).join("")}${cells.map(mk).join("")}</div>`:week(k)}
+ ${open?"":`<div class="card" style="margin-top:2px">${ProteinBig()}<div style="display:${state.cal?"flex":"none"};justify-content:space-between;margin-top:8px;font-size:13.5px;color:var(--ink2);font-weight:600"><span>${t.k} eaten</span><span>${KT-t.k} kcal left</span></div></div><div class="sec"><b>Today</b></div>${ALL.slice(0,3).map(row).join("")}`}
+ ${open?`<div class="card" style="margin-top:14px;display:flex;justify-content:space-between;align-items:center"><div><div class="meta">Thursday 29</div><b style="font-size:20px">${t.p}g protein</b><div style="color:var(--ink2);font-size:13px;margin-top:2px">${state.cal?t.k+" kcal · ":""}${ALL.length} meals</div></div><span class="hand" style="font-size:26px;color:var(--pen)">20 of 28 days on target</span></div>`:""}</div>`,k)},
+(k)=>{const t=tot();const note=(txt)=>`<div class="note"><span class="hand" style="font-size:22px;color:var(--pen);line-height:1">Miso</span><span>${txt}</span></div>`;
+ const item=(m)=>`<div style="position:relative;margin-bottom:6px"><div class="tm" style="top:18px">${m[1]}</div><div class="dot" style="top:22px"></div><div class="meal" style="margin-bottom:6px">${tb(m[4])}<div><b>${m[0]}</b><small>${m[3]}g protein${state.cal?" · "+m[2]+" kcal":""}</small></div></div></div>`;
+ return dev(`<div class="pad">${head()}${week(k)}
+ <div style="display:flex;gap:10px;margin-bottom:14px"><div class="card" style="flex:1;padding:14px"><div class="meta">Protein</div><b style="font-size:26px;letter-spacing:-.03em">${t.p}<span style="font-size:14px;color:var(--ink2);font-weight:600">/${PT}g</span></b></div>${state.cal?`<div class="card" style="flex:1;padding:14px"><div class="meta">Left</div><b style="font-size:26px;letter-spacing:-.03em">${KT-t.k}<span style="font-size:14px;color:var(--ink2);font-weight:600"> kcal</span></b></div>`:`<div class="card" style="flex:1;padding:14px"><div class="meta">Meals</div><b style="font-size:26px;letter-spacing:-.03em">${ALL.length}</b></div>`}</div>
+ <div class="tl">${item(FOOD.bk[0])}${note("Good start: 24g before 9. Lunch with eggs would do the rest.")}${item(FOOD.ln[0])}${item(FOOD.sn[0])}
+ <div style="position:relative;margin-top:4px"><div class="dot" style="top:10px;background:var(--ink2)"></div><div style="color:var(--ink2);font-size:14px;padding:2px 0">Dinner, around 6:30. 23g to go.</div></div></div></div>`,k)},
+];
+const ITEMS=[
+["A · Ring and recent","Closest to Cal AI. A week strip with a ring on each day, one card with a big ring for what is left (calories, or protein when calories are off), protein beside it, then the last few things you ate with photos. Fast and familiar."],
+["B · Protein first, by meal","Protein is the headline, the same big number as Today. Carbs, fat and fibre are small chips; calories are one chip, or gone. Meals sit in Breakfast, Lunch and Dinner boxes, so gaps are obvious."],
+["C · Calendar you can open","A week strip that opens into the whole month, each day a ring showing how close you got. Tap a day to see it. Gives the look back that Cal AI's calendar does, with a streak line in Miso's handwriting."],
+["D · Day as a timeline","The day runs down a line by time, with Miso's short notes between meals. Totals sit in two small cards on top. Feels like a diary and makes the coach part of the page."]];
+const stages=[];
+ITEMS.forEach(([t,d],i)=>{const e=document.createElement("div");e.className="opt";e.innerHTML=`<div class="tag">${t}</div><div class="why">${d}</div><div class="stage"></div>`;$("#row").appendChild(e);stages.push([i,$(".stage",e)])});
+function render(){stages.forEach(([i,st])=>{st.innerHTML=V[i](i);
+ st.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{state.sel[i]=+b.dataset.d;render()});
+ st.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{state.menu[i]=state.menu[i]?0:1;render()});
+ st.querySelectorAll("[data-month]").forEach(b=>b.onclick=()=>{state.month=!state.month;render()});});}
+$("#mode").onclick=e=>{document.body.classList.toggle("dark");e.target.textContent=document.body.classList.contains("dark")?"Day":"Night";render()};
+$("#cal").onclick=e=>{state.cal=!state.cal;e.target.textContent="Calories: "+(state.cal?"on":"off");render()};
+render();
+</script></body></html>
